@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@/utils/config.ts > 配置文件 1`] = `
+{
+  "baseApiPrefix": "/api/",
+  "baseRouterPrefix": "/sub/",
+}
+`;

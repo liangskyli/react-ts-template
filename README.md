@@ -9,6 +9,7 @@
 - **import顺序自动美化排序**：集成了 prettier-plugin-sort-imports 插件，可以自动美化 import 顺序，提高代码的可读性和可维护性。
 - **mock服务**：提供http，socket接口的mock服务功能，mock数据场景化手动编写。支持mock数据更改时热更新获取新数据。
 - **其他**：提供一些方便根据环境运行、打包的命令；配置了分包策略等等。
+- **单元测试**：基于vitest提供单元测试的案例。
 
 ## 技术栈一览
 
@@ -22,7 +23,7 @@
 - **classnames**：动态类名管理工具，特别适合条件渲染样式。
 - **[@liangskyli/axios-request](https://github.com/liangskyli/request/blob/main/packages/axios-request/README.md)**：封装 HTTP 请求库，更方便与后端接口对接。
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
-
+- **单元测试**：基于vitest实现代码的单元测试。
 
 ## 项目规范与配置
 
@@ -49,6 +50,7 @@
 ├── .husky # Husky 配置文件夹，用于管理 Git 钩子
 │   └── commit-msg # 检查提交钩子配置
 │   └── pre-commit # 格式化钩子配置
+├── __test__ # 单元测试文件目录
 ├── mock # 接口mock数据
 ├── public # 静态资源目录，用于存放不经过 Vite 处理的静态资源
 ├── src # 源代码目录
@@ -86,7 +88,9 @@
 ├── README.md
 ├── stylelint.config.js # Stylelint 配置文件，用于样式文件的风格和错误检查
 ├── tsconfig.json # TypeScript 配置文件
-└── vite.config.ts # Vite 配置文件，用于定义 Vite 项目的构建和服务选项
+├── vite.config.ts # Vite 配置文件，用于定义 Vite 项目的构建和服务选项
+├── vitest.config.ts # 单元测试配置文件
+└── vitest.setup.ts # 单元测试环境初始化配置
 ```
 
 ## 总结
