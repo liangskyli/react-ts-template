@@ -1,0 +1,173 @@
+@import './variable';
+@import './z-index';
+@import './color';
+@import './spacing';
+
+html,
+body,
+#root {
+  height: auto;
+  min-height: 100%;
+  user-select: none;
+  text-size-adjust: none;
+  -webkit-touch-callout: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* 浮动 */
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear {
+  clear: both;
+  overflow: hidden;
+}
+
+.clearfix::before,
+.clearfix::after {
+  display: table;
+  content: '';
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.pos-r {
+  position: relative;
+}
+
+.pos-a {
+  position: absolute;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.fix-screen {
+  position: fixed;
+  inset: 0;
+}
+
+.scrollable {
+  overflow: hidden auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.word-break {
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.text-delete {
+  text-decoration: line-through;
+}
+
+.a-no-underline {
+  text-decoration: none;
+}
+
+.txt-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.txt-tow-ellipsis {
+  /* stylelint-disable-next-line value-no-vendor-prefix */
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* stylelint-disable-next-line value-no-vendor-prefix */
+  -webkit-line-clamp: 2;
+  word-break: break-all;
+  /* stylelint-disable-next-line value-no-vendor-prefix */
+  -webkit-box-orient: vertical;
+}
+
+.txt-left {
+  text-align: left;
+}
+
+.txt-center {
+  text-align: center;
+}
+
+.txt-right {
+  text-align: right;
+}
+
+.bold {
+  font-weight: @bold-font-weight;
+}
+
+/* 字体 20-50 如：fz20,fz22,fz24 */
+.fz(80);
+.fz(@n, @i: 20) when (@i =< @n) {
+  .fz@{i} {
+    font-size: @i*1px;
+  }
+  .fz(@n, @i + 2);
+}
+
+/* 行高 20-50 如：lh20,lh22,lh24 */
+.lh(80);
+.lh(@n, @i: 20) when (@i =< @n) {
+  .lh@{i} {
+    line-height: @i*1px;
+  }
+  .lh(@n, @i + 2);
+}
+
+.lh-n {
+  line-height: normal;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+.flex-align-items-center {
+  align-items: center;
+}

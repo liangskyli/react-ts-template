@@ -1,0 +1,8 @@
+.pg-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding-top: 200px;
+  text-align: center;
+}
