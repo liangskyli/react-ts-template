@@ -1,9 +1,9 @@
 import { createStore, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-interface State {
+type State = {
   isLoading: boolean;
-}
+};
 
 type Action = {
   showLoading: () => void;

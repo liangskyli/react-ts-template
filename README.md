@@ -20,10 +20,15 @@
 - **Less 预编译**：使用xxx.module.less，支持CSS Modules）。
 - **zustand**：轻量级的状态管理库。通过对比 Redux、Dva、React-Toolkit、MobX，以及 `useContext` 结合 `useReducer` 的管理方式，最终选择了更简单的 Zustand。
 - **Immer**：简化不可变数据结构操作，尤其在多层次嵌套对象中处理更方便。
+- **optics-ts**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
 - **classnames**：动态类名管理工具，特别适合条件渲染样式。
 - **[@liangskyli/axios-request](https://github.com/liangskyli/request/blob/main/packages/axios-request/README.md)**：封装 HTTP 请求库，更方便与后端接口对接。
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
 - **单元测试**：基于vitest实现代码的单元测试。
+
+### 🔧 其他推荐工具
+
+- **[接口开发提效工具](https://github.com/liangskyli/mock/blob/master/packages/http-mock-gen/README.md)**：基于openapi v3 生成 ts数据类型和http mock 数据代码。
 
 ## 项目规范与配置
 

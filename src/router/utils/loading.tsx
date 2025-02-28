@@ -5,8 +5,6 @@ const Loading = () => (
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: '200px',
-      height: '100px',
     }}
   >
     <div
@@ -17,7 +15,7 @@ const Loading = () => (
         justifyContent: 'space-between',
       }}
     >
-      <span style={{ marginTop: '9px', fontSize: '12px' }}>加载中...</span>
+      <span style={{ fontSize: '12px' }}>加载中...</span>
     </div>
   </div>
 );
