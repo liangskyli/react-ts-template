@@ -11,8 +11,10 @@ const Index = () => {
   const router = useRouter();
   const { setABC, getAllData, setBCDF } = useOpticsStoreStore();
   const [count, setCount] = useState(1);
+
   return (
     <div className="txt-center mt10">
+      <title>overwrite title</title>
       <button
         onClick={() => router.push('/index')}
         className={classNames(styles.testButton, 'test-button-local')}
