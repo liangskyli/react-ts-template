@@ -13,6 +13,7 @@ dist-ssr
 /dist*
 *.local
 coverage
+/release/
 
 # Editor directories and files
 .idea
