@@ -1,6 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-//import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import createProtocol from './create-protocol';
 
 export type IContext = {
@@ -31,9 +30,7 @@ function createMainWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      // sandbox: false,
-      // preload: path.join(__dirname, '../preload/index.mjs'),
-      preload: fileURLToPath(new URL('../preload/index.cjs', import.meta.url)),
+      preload: path.join(__dirname, '../preload/index.cjs'),
     },
   });
   context.mainWindow = mainWindow;
@@ -52,7 +49,8 @@ function createMainWindow() {
     mainWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/sub/`);
   } else {
     createProtocol('app');
-    mainWindow.loadURL('app://./renderer/index.html');
+    mainWindow.loadURL('app://../renderer/index.html#/sub/');
+    //mainWindow.loadURL('app://../renderer/index.html#/sub/test/test1');
   }
 }
 

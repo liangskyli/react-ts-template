@@ -1,4 +1,5 @@
-import type { ElectronViteConfig } from 'electron-vite';
+import type { ElectronViteConfig} from 'electron-vite';
+import { externalizeDepsPlugin } from 'electron-vite';
 import { defineConfig } from 'electron-vite';
 import { resolve } from 'node:path';
 import { mergeConfig } from 'vite';
@@ -11,7 +12,7 @@ export default defineConfig((configEnv) => {
   >(getViteConfig(configEnv), {
     root: '.',
     build: {
-      target: 'chrome*',
+      target: undefined,
       outDir: 'dist-electron/renderer',
       rollupOptions: {
         input: {
@@ -23,6 +24,7 @@ export default defineConfig((configEnv) => {
 
   return {
     main: {
+      plugins: [externalizeDepsPlugin()],
       build: {
         outDir: 'dist-electron/main',
         rollupOptions: {
@@ -33,6 +35,7 @@ export default defineConfig((configEnv) => {
       },
     },
     preload: {
+      plugins: [externalizeDepsPlugin()],
       build: {
         outDir: 'dist-electron/preload',
         rollupOptions: {
