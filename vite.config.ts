@@ -1,14 +1,13 @@
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'node:path';
 import process from 'node:process';
-import type { ConfigEnv, UserConfig } from 'vite';
+import type { UserConfig, UserConfigFnObject } from 'vite';
 import { defineConfig, loadEnv } from 'vite';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 
 const routerBase = `/sub/`;
-
-export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
+export const getViteConfig: UserConfigFnObject = ({ mode }) => {
   // 获取`.env`环境配置文件
   const env = loadEnv(mode, process.cwd());
   const mockProxy: Required<UserConfig>['server']['proxy'] = {
@@ -45,7 +44,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     ],
     resolve: {
       alias: {
-        '@': resolve(import.meta.dirname, 'src'),
+        '@': resolve(__dirname, 'src'),
       },
     },
     css: {
@@ -92,4 +91,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       proxy: proxy,
     },
   };
-});
+};
+
+export default defineConfig(getViteConfig);
