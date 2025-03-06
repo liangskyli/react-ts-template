@@ -1,8 +1,7 @@
-import type { ElectronViteConfig} from 'electron-vite';
+import type { ElectronViteConfig } from 'electron-vite';
 import { externalizeDepsPlugin } from 'electron-vite';
-import { defineConfig } from 'electron-vite';
+import { defineConfig, mergeConfig } from 'electron-vite';
 import { resolve } from 'node:path';
-import { mergeConfig } from 'vite';
 import { getViteConfig } from './vite.config';
 
 export default defineConfig((configEnv) => {
