@@ -3,7 +3,8 @@ import request from '@/services/request/base.ts';
 import config from '@/utils/config.ts';
 
 const { baseApiPrefix } = config;
-const createApi = request.createApi({ baseURL: baseApiPrefix });
+const serverHost = import.meta.env.VITE_SERVER_URL ?? '';
+const createApi = request.createApi({ baseURL: serverHost + baseApiPrefix });
 const requestApi = {
   getList: createApi<IBaseJsonData<{ name: string }>>({
     url: 'test1/get-list',

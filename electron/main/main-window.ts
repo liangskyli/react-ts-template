@@ -46,7 +46,7 @@ function createMainWindow() {
     }
   });
   if (isDevelopment && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/sub/`);
+    mainWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/sub/`);
   } else {
     createProtocol('app');
     mainWindow.loadURL('app://../renderer/index.html#/sub/');

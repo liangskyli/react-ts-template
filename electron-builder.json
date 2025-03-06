@@ -24,7 +24,10 @@
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
+    "deleteAppDataOnUninstall": true,
+    "uninstallDisplayName": "${productName} ${buildVersion}",
+    "artifactName": "${productName}_${version}.${ext}",
+    "shortcutName": "${productName}_${version}"
   },
   "publish": {
     "provider": "generic",
