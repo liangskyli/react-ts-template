@@ -18,6 +18,7 @@
 - **React 19 & React-DOM**：使用最新版 React 实现前端高性能和更流畅的用户体验。
 - **React-Router**：最新v7版本，支持路由懒加载，优化页面切换性能。
 - **Less 预编译**：使用xxx.module.less，支持CSS Modules）。
+- **SCSS 预编译**：全面采用新版 SCSS，使用 `@use` 替代 `@import`，模块化更强。
 - **zustand**：轻量级的状态管理库。通过对比 Redux、Dva、React-Toolkit、MobX，以及 `useContext` 结合 `useReducer` 的管理方式，最终选择了更简单的 Zustand。
 - **Immer**：简化不可变数据结构操作，尤其在多层次嵌套对象中处理更方便。
 - **optics-ts**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。

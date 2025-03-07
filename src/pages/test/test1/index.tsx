@@ -6,6 +6,7 @@ import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
 import './index.less';
 import styles from './index.module.less';
+import './index.scss';
 
 const Index = () => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const Index = () => {
         <div>
           optics-ts适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
         </div>
-        <div>
+        <div className="test-scss">
           <button
             onClick={() => {
               setCount(count + 1);

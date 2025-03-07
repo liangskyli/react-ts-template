@@ -1,0 +1,9 @@
+@use '@/styles/scss/variable.scss' as variables;
+
+.test-scss {
+  padding: 10px;
+
+  button {
+    color: variables.$color-test;
+  }
+}
