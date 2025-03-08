@@ -6,7 +6,7 @@ type IConfig = {
 };
 
 const config: IConfig = {
-  baseRouterPrefix: '/sub/',
+  baseRouterPrefix: import.meta.env.VITE_BASE_ROUTER_PREFIX,
   baseApiPrefix: '/api/',
 };
 

@@ -6,11 +6,10 @@ import { defineConfig, loadEnv } from 'vite';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 
-const routerBase = `/sub/`;
-
 export const getViteConfig: UserConfigFnObject = ({ mode }) => {
   // 获取`.env`环境配置文件
   const env = loadEnv(mode, process.cwd());
+  const routerBase = env.VITE_BASE_ROUTER_PREFIX;
   const mockProxy: Required<UserConfig>['server']['proxy'] = {
     '/api/': {
       target: `http://0.0.0.0:${env.VITE_MOCK_APP_PORT}`,
@@ -82,6 +81,8 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
         'zustand',
         'classnames',
         'immer',
+        'axios',
+        'optics-ts',
       ],
     },
     server: {
