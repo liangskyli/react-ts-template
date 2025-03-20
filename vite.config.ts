@@ -1,3 +1,4 @@
+import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'node:path';
 import process from 'node:process';
@@ -39,6 +40,10 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
           useFlatConfig: true,
           lintCommand: 'eslint "./src/**/*.{ts,tsx,js,jsx,cjs,mjs}"',
         },
+      }),
+      legacy({
+        targets: ['defaults', 'chrome >= 51', 'iOS >= 10'],
+        polyfills: true,
       }),
     ],
     resolve: {
