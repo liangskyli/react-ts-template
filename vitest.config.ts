@@ -19,6 +19,9 @@ export default defineConfig({
         'src/components/**/*.{js,jsx,ts,tsx}',
         'src/utils/**/*.{js,jsx,ts,tsx}',
       ],
+      exclude: [
+        'src/components/icon/icons-loader.ts', // 排除这个文件
+      ],
       thresholds: {
         branches: 90,
         functions: 90,

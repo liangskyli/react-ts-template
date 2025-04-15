@@ -1,14 +1,5 @@
-import type { FC, SVGAttributes } from 'react';
-
-const svgModules = import.meta.glob<
-  true,
-  string,
-  undefined | FC<SVGAttributes<SVGSVGElement>>
->('@/icons/**/*.svg', {
-  query: '?react',
-  eager: true,
-  import: 'default',
-});
+import type { SVGAttributes } from 'react';
+import svgModules from '@/components/icon/icons-loader';
 
 export type IconProps = {
   /** icon名字，含路径的全名 */
