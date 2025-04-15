@@ -42,7 +42,6 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
         },
       }),
       legacy({
-        targets: ['defaults', 'chrome >= 51', 'iOS >= 10'],
         polyfills: true,
       }),
     ],
@@ -63,7 +62,7 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
       },
     },
     build: {
-      target: 'esnext', // 最低 es2015/es6
+      // target: 'esnext', // 最低 es2015/es6
       outDir: env.VITE_OUT_DIR || 'dist',
       // 单个 chunk 文件的大小超过 2000kB 时发出警告（默认：超过500kb警告）
       chunkSizeWarningLimit: 2000,
