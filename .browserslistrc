@@ -1,3 +1,6 @@
 defaults
 chrome >= 51
-iOS >= 10
+firefox >= 53
+safari >= 10
+iOS >= 10.3
+edge >= 15
