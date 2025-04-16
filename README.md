@@ -1,18 +1,83 @@
-## 简介
-- 在现代前端开发中，我们常常需要快速搭建一个 React 项目。而 `create-react-app` 脚手架也已经很久不维护了，为了解决这一需求，**React-Ts-Template** 应运而生！这是一个基于最新的 **React 19、TypeScript 和 Vite 6** 打造的项目模板，旨在帮助你极速启动项目，节省大量重复的配置时间。同时，模板集成了各种开发规范和流行插件，开箱即用，让你专注于业务逻辑的实现！
+# React-Ts-Template
 
-## 功能配备
+<p align="center">
+  <img src="public/vite.svg" alt="React-Ts-Template Logo" width="200"/>
+</p>
 
-- **路由懒加载**：封装实现了路由懒加载，提升页面切换性能，减少初始加载时间。（详见`router`）
-- **全局状态管理**：提供了 Zustand 全局状态管理示例代码，简化跨组件状态共享，提升开发效率。（详见`store`）
-- **Axios 请求封装**：对 Axios 进行封装，统一处理 HTTP 请求和响应，简化与后端接口的交互流程。（详见`services`）
-- **工具函数、hooks**：提供了一些方便实用的工具函数和hooks。（详见`utils`、`hooks`）
-- **import顺序自动美化排序**：集成了 prettier-plugin-sort-imports 插件，可以自动美化 import 顺序，提高代码的可读性和可维护性。
-- **mock服务**：提供http，socket接口的mock服务功能，mock数据场景化手动编写。支持mock数据更改时热更新获取新数据。
-- **其他**：提供一些方便根据环境运行、打包的命令；配置了分包策略等等。
-- **单元测试**：基于vitest提供单元测试的案例。
+<p align="center">
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-%2361DAFB?logo=react" alt="React Version"></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-%23007ACC?logo=typescript" alt="TypeScript Version"></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-6-%23646CFF?logo=vite" alt="Vite Version"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%3E%3D18.20.0-brightgreen?logo=node.js" alt="Node Version"></a>
+  <a href="https://github.com/liangskyli/react-ts-template/blob/main/LICENSE"><img src="https://img.shields.io/github/license/liangskyli/react-ts-template" alt="License"></a>
+</p>
 
-## 技术栈一览
+## 📖 简介
+
+一个现代化的 React 项目模板，基于 **React 19 + TypeScript + Vite 6** 构建。告别繁琐的项目初始化配置，让你专注于业务开发。
+
+### 为什么选择 React-Ts-Template？
+
+- 🚀 基于最新稳定版 React 19，享受更好的性能和新特性
+- 📦 开箱即用的工程化配置
+- 🔧 完善的开发工具链和代码规范
+- 🎯 TypeScript 保驾护航，代码更可靠
+- 🎨 支持 Less/SCSS 和 CSS Modules
+- 📱 响应式设计支持
+- ⚡️ Vite 驱动，开发体验一流
+
+## 🎯 主要特性
+
+### 核心功能
+- ✨ 路由懒加载 - 优化首屏加载时间
+- 🔄 状态管理 (Zustand) - 简单高效的状态管理方案
+- 📡 HTTP 请求封装 - 基于 Axios 的统一请求处理
+- 🎭 Mock 服务 - 支持接口数据模拟，提供场景化的数据管理
+
+
+### 开发体验
+- 📝 ESLint + Prettier + Stylelint - 代码质量保证
+- 🔍 TypeScript 类型检查
+- 🎨 自动格式化 import 语句顺序
+- 🧪 Vitest 单元测试支持
+
+
+## 🚀 快速开始
+
+### 环境要求
+- Node.js: ^18.20.0 || ^20.0.0 || >=22.0.0
+- 包管理器: pnpm
+
+### 安装依赖
+```bash
+pnpm install
+```
+
+### 开发模式
+```bash
+# 标准开发模式
+pnpm dev
+
+# 带 Mock 数据的开发模式
+pnpm dev:mock
+pnpm dev:mock-server  # 新开终端运行 mock 服务
+```
+
+### 生产构建
+```bash
+pnpm build:pro
+```
+
+## 🔧 环境配置
+
+项目支持多环境配置：
+- `.env` - 基础配置
+- `.env.dev` - 开发环境
+- `.env.pro` - 生产环境
+- `.env.test` - 测试环境
+- `.env.dev-mock` - Mock 开发环境
+
+## 📚 技术栈
 
 ### 🛠 技术栈选型
 
@@ -29,28 +94,39 @@
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
 - **单元测试**：基于vitest实现代码的单元测试。
 
-### 🔧 其他推荐工具
+### 核心依赖
+- React 19
+- React Router v7
+- TypeScript
+- Vite 6
+- Tailwind CSS v3
+- Zustand (状态管理)
+- Axios (HTTP 请求)
 
+### 工具链
+- ESLint
+- Prettier
+- Stylelint
+- Husky
+- Commitlint
+- Vitest
+
+### 🔧 其他推荐工具
 - **[接口开发提效工具](https://github.com/liangskyli/mock/blob/master/packages/http-mock-gen/README.md)**：基于openapi v3 生成 ts数据类型和http mock 数据代码。
 
-## 项目规范与配置
+## 📝 开发规范
 
-为确保团队合作时的代码一致性和规范性，**React-Ts-Template** 引入了一整套项目规范：
+### 代码风格
+- 文件/文件夹命名：`kebab-case`
+- 样式命名：BEM 规范
+- 组件命名：PascalCase
+- TypeScript 优先
 
-- **全面使用 ESM 规范**：采用模块化导入，符合现代 JavaScript 的发展趋势。
-- **包管理器强制使用 pnpm**：提高依赖安装速度，减少磁盘空间占用，解决幽灵依赖问题。
-- **样式 BEM 命名规范**：结构清晰，减少样式冲突，提升代码可维护性（如果采用CSS Modules，需要使用xxx.module.less）。
-- **文件与文件夹命名**：统一使用 `kebab-case`，这种最可靠，尤其是在版本控制共享代码时，不同操作系统对大小写的敏感性不同。
-
-### 💡 高效的代码规范管理
-
-除了代码结构的规范化，项目还集成了多种代码质量检查工具，确保开发体验与代码质量：
-
-- **ESLint**：代码风格和错误检查，已升级到最新版，弃用 `.eslintignore`，改用 `ignores` 配置项。
-- **Prettier**：统一代码格式，避免团队协作中因格式问题产生的冲突。
-- **Stylelint**：针对样式的 Lint 工具，确保 Css,Less,SCSS 代码的一致性。
-- **Commitlint** + **Husky** + **Lint-Staged**：配合 Git Hooks 实现代码提交规范化，避免低质量代码入库。
-- **EditorConfig**：编辑器的统一配置，减少因编辑器差异产生的问题。
+### Git 提交规范
+使用 Conventional Commits 规范，例如：
+- `feat: add new feature`
+- `fix: resolve bug`
+- `docs: update documentation`
 
 ## 项目结构
 
@@ -108,39 +184,28 @@
 └── vitest.setup.ts # 单元测试环境初始化配置
 ```
 
-## 总结
+## 🔄 降级指南
 
-**React-Ts-Template** 项目模板的目标是通过预设的最佳实践配置，减少开发者在项目初始化时的琐碎配置步骤，让你可以更快上手项目开发。同时，配备了成熟的开发工具链和强大的插件支持，以确保团队开发的一致性和代码的高质量。如果你正在寻找一款高效的 React 项目模板，不妨试试 **React-Ts-Template**！
-
-**👉 赶快 Star 项目，开启你的 React 项目之旅！**
-
-> [React-Ts-Template](https://github.com/liangskyli/react-ts-template)
-
-
-## 注意
-> 1.本项目使用了19版本的相关特性，如需要降级到18版本，需要更改19版本新特性的替换方案，并使用如下命令降级到18版本。  
-> - RouterTitle组件和页面动态设置里<title>标签使用react-helmet替换
+如需降级到 React 18，请执行：
 ```bash
 pnpm install react@18.3.1 react-dom@18.3.1
 ```
+注意：需要替换 React 19 特有功能
+- RouterTitle组件和页面动态设置里title标签使用react-helmet替换
 
-## 支持环境："node": "^18.20.0 || ^20.0.0 || >=22.0.0"
 
-## 本地mock服务启动
-```bash
-$ pnpm i
-$ pnpm dev:mock
-# 新开一个命令窗口启动mock服务
-$ pnpm dev:mock-server
-```
+## 🤝 贡献指南
 
-## 非本地mock服务启动
-```bash
-$ pnpm i
-$ pnpm dev
-```
+欢迎提交 Issue 和 Pull Request。请确保：
+1. Fork 项目并创建特性分支
+2. 遵循项目代码规范
+3. 提供清晰的提交信息
+4. 更新相关文档
 
-## 项目编译
-```bash
-pnpm build:pro
-```
+## 📄 许可证
+
+[MIT License](LICENSE)
+
+## 🌟 支持项目
+
+如果这个项目对你有帮助，请给它一个 Star ⭐️
