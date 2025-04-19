@@ -87,6 +87,7 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
         'immer',
         'axios',
         'optics-ts',
+        '@headlessui/react',
       ],
     },
     server: {

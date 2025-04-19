@@ -84,11 +84,12 @@ pnpm build:pro
 - **React 19 & React-DOM**：使用最新版 React 实现前端高性能和更流畅的用户体验。
 - **React-Router**：最新v7版本，支持路由懒加载，优化页面切换性能。
 - **[tailwindcss](https://v3.tailwindcss.com/)**：使用tailwindcss@3版本，兼容性好。
+- **[Headless UI](https://headlessui.com/)**：无样式的UI组件库，完全可定制且完美配合Tailwind CSS。
 - **Less 预编译**：使用xxx.module.less，支持CSS Modules）。
 - **SCSS 预编译**：全面采用新版 SCSS，使用 `@use` 替代 `@import`，模块化更强。
-- **zustand**：轻量级的状态管理库。通过对比 Redux、Dva、React-Toolkit、MobX，以及 `useContext` 结合 `useReducer` 的管理方式，最终选择了更简单的 Zustand。
+- **[zustand](https://github.com/pmndrs/zustand)**：轻量级的状态管理库。通过对比 Redux、Dva、React-Toolkit、MobX，以及 `useContext` 结合 `useReducer` 的管理方式，最终选择了更简单的 Zustand。
 - **Immer**：简化不可变数据结构操作，尤其在多层次嵌套对象中处理更方便。
-- **optics-ts**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
+- **[optics-ts](https://github.com/akheron/optics-ts)**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
 - **classnames**：动态类名管理工具，特别适合条件渲染样式。
 - **[@liangskyli/axios-request](https://github.com/liangskyli/request/blob/main/packages/axios-request/README.md)**：封装 HTTP 请求库，更方便与后端接口对接。
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
@@ -100,6 +101,7 @@ pnpm build:pro
 - TypeScript
 - Vite 6
 - Tailwind CSS v3
+- Headless UI
 - Zustand (状态管理)
 - Axios (HTTP 请求)
 
