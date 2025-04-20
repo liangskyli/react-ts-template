@@ -6,6 +6,14 @@ export type Props = {
 const AjaxLoading = (props: Props) => {
   const { visible } = props;
 
-  return <div>{visible && <Loading />}</div>;
+  return (
+    <div>
+      {visible && (
+        <div className="fixed inset-0 z-mask bg-white/0">
+          <Loading />
+        </div>
+      )}
+    </div>
+  );
 };
 export default AjaxLoading;

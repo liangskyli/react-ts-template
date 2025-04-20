@@ -12,6 +12,10 @@ export default {
           DEFAULT: '#e23' /** 主题色/强提示 */,
         },
         link: '#09f' /** 链接/信息 */,
+        mask: 'rgba(0, 0, 0, 0.7)',
+      },
+      zIndex: {
+        mask: '1000',
       },
     },
   },

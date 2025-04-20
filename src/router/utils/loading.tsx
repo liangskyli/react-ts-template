@@ -1,21 +1,10 @@
+import Icon from '@/components/icon';
+
 const Loading = () => (
-  <div
-    style={{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-    }}
-  >
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <span style={{ fontSize: '12px' }}>加载中...</span>
+  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="flex h-32 w-32 flex-col items-center justify-center rounded-lg bg-mask text-white">
+      <Icon className="animate-spin" name="loading" />
+      <div className="mt-2 text-base">加载中...</div>
     </div>
   </div>
 );
