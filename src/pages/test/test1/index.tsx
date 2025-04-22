@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import classNames from 'classnames';
 import Icon from '@/components/icon';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
+import { cn } from '@/utils/styles.ts';
 import './index.less';
 import styles from './index.module.less';
 import './index.scss';
@@ -18,7 +18,7 @@ const Index = () => {
       <title>overwrite title</title>
       <button
         onClick={() => router.push('/index')}
-        className={classNames(styles.testButton, 'test-button-local')}
+        className={cn(styles.testButton, 'test-button-local')}
       >
         跳转测试页面
       </button>
@@ -27,7 +27,7 @@ const Index = () => {
           const data = await requestApi.getList({ params: { id: 'id' } });
           console.log(data);
         }}
-        className={classNames(styles.testButton, 'test-button-local')}
+        className={cn(styles.testButton, 'test-button-local')}
       >
         请求接口
       </button>
@@ -59,16 +59,16 @@ const Index = () => {
         </div>
       </div>
 
-      <Icon name="help" className={classNames('block', styles.svgCenter)} />
+      <Icon name="help" className={cn('block', styles.svgCenter)} />
       <Icon
         name="dir1/apply"
-        className={classNames('block', styles.svgCenter)}
+        className={cn('block', styles.svgCenter)}
         width={100}
         height={100}
       />
       <Icon
         name="dir1/apply"
-        className={classNames('block', styles.svgCenter, styles.yellow)}
+        className={cn('block', styles.svgCenter, styles.yellow)}
         width={100}
         height={100}
       />
