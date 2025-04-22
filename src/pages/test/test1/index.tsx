@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Icon from '@/components/icon';
+import Toast from '@/components/toast';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
@@ -12,10 +13,24 @@ const Index = () => {
   const router = useRouter();
   const { setABC, getAllData, setBCDF } = useOpticsStoreStore();
   const [count, setCount] = useState(1);
-
+  const handleShowToast = () => {
+    // 基础提示
+    Toast.show('这是一条提示消息', {
+      duration: 3000,
+      afterClose: () => {
+        console.log('afterClose');
+      },
+    });
+  };
   return (
     <div className="mt-[10px] text-center">
       <title>overwrite title</title>
+      <button
+        className="mx-auto my-52 block rounded bg-red px-4 py-2 text-sm text-white"
+        onClick={handleShowToast}
+      >
+        显示Toast
+      </button>
       <button
         onClick={() => router.push('/index')}
         className={cn(styles.testButton, 'test-button-local')}
