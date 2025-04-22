@@ -2,34 +2,53 @@ import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import AjaxLoading from '@/components/ajax-loading';
 
+// Mock Mask组件
+vi.mock('@/components/mask', () => ({
+  default: ({ visible, children, className }: never) =>
+    visible ? (
+      <div data-testid="mask" className={className}>
+        {children}
+      </div>
+    ) : null,
+}));
+
 // Mock Loading组件
 vi.mock('@/router/utils/loading.tsx', () => ({
-  default: () => <div data-testid="loading-component">加载中...</div>,
+  default: () => <div data-testid="loading">Loading Component</div>,
 }));
 
 describe('AjaxLoading Component', () => {
-  it('should not render Loading component when visible is false', () => {
+  it('should not render when visible is false', () => {
     const { queryByTestId } = render(<AjaxLoading visible={false} />);
-    expect(queryByTestId('loading-component')).toBeNull();
+    expect(queryByTestId('mask')).toBeNull();
+    expect(queryByTestId('loading')).toBeNull();
   });
 
-  it('should render Loading component when visible is true', () => {
+  it('should render when visible is true', () => {
     const { getByTestId } = render(<AjaxLoading visible={true} />);
-    expect(getByTestId('loading-component')).toBeInTheDocument();
+    const maskElement = getByTestId('mask');
+    const loadingElement = getByTestId('loading');
+
+    expect(maskElement).toBeInTheDocument();
+    expect(maskElement).toHaveClass('bg-mask/0');
+    expect(loadingElement).toBeInTheDocument();
   });
 
-  it('should toggle Loading component based on visible prop', () => {
+  it('should toggle visibility based on prop changes', () => {
     const { queryByTestId, rerender } = render(<AjaxLoading visible={false} />);
 
-    // 初始状态：不显示
-    expect(queryByTestId('loading-component')).toBeNull();
+    // 初始状态：不可见
+    expect(queryByTestId('mask')).toBeNull();
+    expect(queryByTestId('loading')).toBeNull();
 
-    // 切换到显示状态
+    // 切换到可见状态
     rerender(<AjaxLoading visible={true} />);
-    expect(queryByTestId('loading-component')).toBeInTheDocument();
+    expect(queryByTestId('mask')).toBeInTheDocument();
+    expect(queryByTestId('loading')).toBeInTheDocument();
 
-    // 切换回不显示状态
+    // 切换回不可见状态
     rerender(<AjaxLoading visible={false} />);
-    expect(queryByTestId('loading-component')).toBeNull();
+    expect(queryByTestId('mask')).toBeNull();
+    expect(queryByTestId('loading')).toBeNull();
   });
 });

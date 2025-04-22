@@ -1,3 +1,4 @@
+import Mask from '@/components/mask';
 import Loading from '@/router/utils/loading.tsx';
 
 export type Props = {
@@ -7,13 +8,9 @@ const AjaxLoading = (props: Props) => {
   const { visible } = props;
 
   return (
-    <div>
-      {visible && (
-        <div className="fixed inset-0 z-mask bg-white/0">
-          <Loading />
-        </div>
-      )}
-    </div>
+    <Mask visible={visible} className="bg-mask/0">
+      <Loading />
+    </Mask>
   );
 };
 export default AjaxLoading;
