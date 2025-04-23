@@ -51,7 +51,7 @@ export const Toast = (props: ToastProps) => {
         { 'pointer-events-auto': !maskClickable },
         { 'pointer-events-none': maskClickable },
       )}
-      className={cn('w-[80vw]', positionStyles[position])}
+      className={cn('w-[80vw] bg-transparent', positionStyles[position])}
       afterClose={afterClose}
       disableBodyScroll={!maskClickable}
       destroyOnClose={destroyOnClose}
