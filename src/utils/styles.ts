@@ -1,5 +1,13 @@
-import clsx from 'classnames';
-import { twMerge } from 'tailwind-merge';
+import classNames from 'classnames';
+import { extendTailwindMerge } from 'tailwind-merge';
+
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      z: [{ z: ['popup', 'mask'] }],
+    },
+  },
+});
 
 type ClassValue =
   | string
@@ -15,5 +23,5 @@ interface ClassDictionary {
 type ClassArray = ClassValue[];
 
 export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs));
+  return twMerge(classNames(inputs));
 }

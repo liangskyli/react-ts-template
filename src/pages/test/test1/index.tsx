@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Icon from '@/components/icon';
+import Popup from '@/components/popup';
 import Toast from '@/components/toast';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
@@ -22,9 +23,50 @@ const Index = () => {
       },
     });
   };
+
+  const [visibleCenterPopup, setVisibleCenterPopup] = useState(false);
+  const [visibleBottomPopup, setVisibleBottomPopup] = useState(false);
   return (
     <div className="mt-[10px] text-center">
       <title>overwrite title</title>
+      <button
+        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+        onClick={() => setVisibleCenterPopup(true)}
+      >
+        显示中间弹出层
+      </button>
+      <Popup
+        visible={visibleCenterPopup}
+        onClose={() => setVisibleCenterPopup(false)}
+        className="w-[300px]"
+        position="center"
+      >
+        <div className="p-4" onClick={() => console.log('content')}>
+          <h3 className="mb-2 text-lg font-bold">标题</h3>
+          <p>这里是弹出层内容</p>
+          <button
+            className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+            onClick={() => setVisibleCenterPopup(false)}
+          >
+            关闭
+          </button>
+        </div>
+      </Popup>
+      <button
+        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+        onClick={() => setVisibleBottomPopup(true)}
+      >
+        显示底部弹出层
+      </button>
+      <Popup
+        visible={visibleBottomPopup}
+        onClose={() => setVisibleBottomPopup(false)}
+        position="bottom"
+      >
+        <div className="p-4">
+          这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容
+        </div>
+      </Popup>
       <button
         className="mx-auto my-52 block rounded bg-red px-4 py-2 text-sm text-white"
         onClick={handleShowToast}

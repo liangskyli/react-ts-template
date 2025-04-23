@@ -2,9 +2,10 @@ import type { ReactElement, ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
 type GetContainerFun = () => HTMLElement | undefined;
-export type GetContainer = HTMLElement | GetContainerFun | undefined;
+/** 指定挂载的节点,如果为 null 的话，会渲染到当前节点 */
+export type GetContainer = HTMLElement | GetContainerFun | undefined | null;
 
-function resolveContainer(getContainer: GetContainer) {
+export function resolveContainer(getContainer: GetContainer) {
   const container =
     typeof getContainer === 'function'
       ? (getContainer as GetContainerFun)()
@@ -16,7 +17,7 @@ export function renderToContainer(
   getContainer: GetContainer,
   node: ReactElement,
 ) {
-  if (getContainer) {
+  if (getContainer !== null && getContainer) {
     const container = resolveContainer(getContainer);
     return createPortal(node, container) as ReactPortal;
   }

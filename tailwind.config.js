@@ -15,6 +15,7 @@ export default {
         mask: 'rgba(0, 0, 0, 0.7)',
       },
       zIndex: {
+        popup: '1000',
         mask: '1000',
       },
     },

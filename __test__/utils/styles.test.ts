@@ -6,6 +6,8 @@ describe('cn utility function', () => {
     expect(cn('px-2 py-1', 'px-4')).toBe('py-1 px-4');
     expect(cn('p-4', 'p-6')).toBe('p-6');
     expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
+    expect(cn('z-1', 'z-mask')).toBe('z-mask');
+    expect(cn('bg-main', 'bg-red-500', 'bg-red')).toBe('bg-red');
   });
 
   it('should handle non-tailwind classes', () => {
