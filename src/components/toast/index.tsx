@@ -1,24 +1,31 @@
-import type { ReactNode } from 'react';
-import { createRoot } from 'react-dom/client';
-import type { ToastProps } from './Toast';
-import { Toast as InternalToast } from './Toast';
+import { type ReactNode } from 'react';
+import { type Root, createRoot } from 'react-dom/client';
+import type { GetContainer } from '@/utils/render-to-container.ts';
+import { resolveContainer } from '@/utils/render-to-container.ts';
+import { Toast as InternalToast, type ToastProps } from './Toast';
 
-let toastRoot: ReturnType<typeof createRoot> | null = null;
-let container: HTMLDivElement | null = null;
+let container: HTMLElement | null = null;
+let toastRoot: Root | null = null;
 
 const destroy = () => {
-  if (container && toastRoot) {
-    toastRoot.unmount();
-    document.body.removeChild(container);
+  if (container) {
+    container.parentNode?.removeChild(container);
     container = null;
-    toastRoot = null;
   }
+  toastRoot = null;
 };
 
-const show = (props: Omit<ToastProps, 'visible' | 'onClose'>) => {
+type IShowProps = Omit<ToastProps, 'visible' | 'onClose'> & {
+  getContainer?: Omit<GetContainer, 'null'>;
+};
+
+const show = (props: IShowProps) => {
+  const { getContainer = document.body } = props;
+
   if (!container) {
+    const toastRootElement = resolveContainer(getContainer as GetContainer);
     container = document.createElement('div');
-    document.body.appendChild(container);
+    toastRootElement.appendChild(container);
     toastRoot = createRoot(container);
   }
 
@@ -40,10 +47,11 @@ const show = (props: Omit<ToastProps, 'visible' | 'onClose'>) => {
 const Toast = {
   show: (
     message: ReactNode,
-    options?: Omit<ToastProps, 'message' | 'visible' | 'onClose'>,
+    options?: Omit<IShowProps, 'message' | 'visible' | 'onClose'>,
   ) => show({ message, ...options }),
 
   clear: () => {
+    // 强制销毁
     destroy();
   },
 };

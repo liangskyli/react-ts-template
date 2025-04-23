@@ -42,6 +42,19 @@ Toast.show('底部提示', { position: 'bottom' });
 Toast.show('中间提示', { position: 'center' });
 ```
 
+### 自定义挂载节点
+
+```tsx
+// 指定挂载到某个DOM节点
+const container = document.querySelector('#custom-container');
+Toast.show('自定义容器中的提示', { getContainer: container });
+
+// 使用函数返回挂载节点
+Toast.show('动态容器中的提示', {
+  getContainer: () => document.querySelector('#dynamic-container')
+});
+```
+
 ### 手动关闭
 
 ```tsx
@@ -89,12 +102,14 @@ Toast.show(
 
 ### Options
 
-| 参数            | 说明                       | 类型                              | 默认值        |
-|---------------|--------------------------|---------------------------------|------------|
-| duration      | 提示持续时间（毫秒），设置为 0 则不会自动关闭 | `number`                        | `3000`     |
-| position      | 提示显示位置                   | `'top' \| 'bottom' \| 'center'` | `'center'` |
-| afterClose    | 完全关闭后的回调函数               | `() => void`                    | -          |
-| maskClickable | 是否允许背景点击                 | `boolean`                       | `false`    |
+| 参数             | 说明                       | 类型                                   | 默认值             |
+|----------------|--------------------------|--------------------------------------|-----------------|
+| duration       | 提示持续时间（毫秒），设置为 0 则不会自动关闭 | `number`                             | `3000`          |
+| position       | 提示显示位置                   | `'top' \| 'bottom' \| 'center'`      | `'center'`      |
+| afterClose     | 完全关闭后的回调函数               | `() => void`                         | -               |
+| maskClickable  | 是否允许背景点击                 | `boolean`                            | `false`         |
+| destroyOnClose | 关闭时是否销毁内容                | `boolean`                            | `true`          |
+| getContainer   | 自定义轻提示的挂载节点              | `HTMLElement \| (() => HTMLElement)` | `document.body` |
 
 ### Toast.clear
 
@@ -106,6 +121,10 @@ Toast.clear()
 
 ## 注意事项
 
-1. Toast 默认采用单例模式，同一时间只会显示一个 Toast。
+1. Toast 采用单例模式，同一时间只会显示一个 Toast。新的 Toast 会替换当前显示的 Toast。
 2. 当设置 `duration` 为 0 时，Toast 不会自动关闭，需要手动调用返回的关闭函数或 `Toast.clear()` 来关闭。
-3. Toast 组件会自动创建一个新的 DOM 节点挂载到 body 上，并在关闭时隐藏，调用Toast.clear才清理。
+3. `afterClose` 回调会在 Toast 完全关闭后立即执行。
+4. Toast 组件会自动创建一个新的 DOM 节点挂载到指定容器中（默认为 body）。
+5. 支持连续多次调用，但只会显示最后一次调用的内容。
+6. 当 `destroyOnClose` 为 `true` 时，Toast 关闭后会立即销毁其内容；为 `false` 时则会保留内容但隐藏。
+7. 调用Toast.clear会强制销毁所有Toast内容。

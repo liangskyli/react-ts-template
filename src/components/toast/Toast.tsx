@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
-import Mask from '@/components/mask';
+import Popup from '@/components/popup';
 import { cn } from '@/utils/styles.ts';
 
 export type ToastProps = {
@@ -11,6 +11,8 @@ export type ToastProps = {
   onClose?: () => void;
   afterClose?: () => void;
   maskClickable?: boolean;
+  /** 是否在关闭时销毁内容 */
+  destroyOnClose?: boolean;
 };
 
 export const Toast = (props: ToastProps) => {
@@ -22,7 +24,9 @@ export const Toast = (props: ToastProps) => {
     onClose,
     afterClose,
     maskClickable = false,
+    destroyOnClose = true,
   } = props;
+
   useEffect(() => {
     if (visible && duration > 0) {
       const timer = setTimeout(() => {
@@ -39,30 +43,27 @@ export const Toast = (props: ToastProps) => {
   };
 
   return (
-    <Mask
+    <Popup
       visible={visible}
-      className={cn(
+      position="center"
+      maskClassName={cn(
         'bg-mask/0',
         { 'pointer-events-auto': !maskClickable },
         { 'pointer-events-none': maskClickable },
       )}
+      className={cn('w-[80vw]', positionStyles[position])}
       afterClose={afterClose}
       disableBodyScroll={!maskClickable}
+      destroyOnClose={destroyOnClose}
+      getContainer={null}
     >
-      <div
-        className={cn(
-          'absolute left-1/2 z-10 w-[80vw] -translate-x-1/2',
-          positionStyles[position],
+      <div className="mx-auto w-fit min-w-[120px] rounded-lg bg-mask px-4 py-3">
+        {message && (
+          <div className="break-words text-center text-sm text-white">
+            {message}
+          </div>
         )}
-      >
-        <div className="mx-auto w-fit min-w-[120px] rounded-lg bg-mask px-4 py-3">
-          {message && (
-            <div className="break-words text-center text-sm text-white">
-              {message}
-            </div>
-          )}
-        </div>
       </div>
-    </Mask>
+    </Popup>
   );
 };
