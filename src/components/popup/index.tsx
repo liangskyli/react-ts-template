@@ -127,6 +127,7 @@ const Popup = (props: PopupProps) => {
         visible={visible}
         onMaskClick={closeOnMaskClick ? onClose : undefined}
         disableBodyScroll={disableBodyScroll}
+        getContainer={null}
       />
       <Transition
         show={visible}

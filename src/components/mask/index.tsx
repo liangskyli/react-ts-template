@@ -29,7 +29,7 @@ const Mask = (props: MaskProps) => {
   const {
     visible = false,
     children,
-    getContainer,
+    getContainer = document.body,
     className = '',
     onMaskClick,
     destroyOnClose = false,

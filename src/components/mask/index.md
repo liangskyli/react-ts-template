@@ -56,13 +56,13 @@ export default () => {
 
 ## API
 
-| 属性                | 说明              | 类型                                                | 默认值         |
-|-------------------|-----------------|---------------------------------------------------|-------------|
-| visible           | 是否显示遮罩层         | `boolean`                                         | `false`     |
-| className         | 自定义类名           | `string`                                          | -           |
-| onMaskClick       | 点击遮罩层时的回调函数     | `(event: MouseEvent<HTMLDivElement>) => void`     | -           |
-| getContainer      | 指定遮罩层渲染的容器      | `HTMLElement \| (() => HTMLElement) \| undefined` | `undefined` |
-| children          | 遮罩层内容           | `ReactNode`                                       | -           |
-| destroyOnClose    | 关闭时是否销毁子元素      | `boolean`                                         | `false`     |
-| disableBodyScroll | 是否在显示遮罩层时禁用背景滚动 | `boolean`                                         | `true`      |
-| afterClose        | 完全关闭后的回调函数      | `() => void`                                     | -           |
+| 属性                | 说明                              | 类型                                                        | 默认值             |
+|-------------------|---------------------------------|-----------------------------------------------------------|-----------------|
+| visible           | 是否显示遮罩层                         | `boolean`                                                 | `false`         |
+| className         | 自定义类名                           | `string`                                                  | -               |
+| onMaskClick       | 点击遮罩层时的回调函数                     | `(event: MouseEvent<HTMLDivElement>) => void`             | -               |
+| getContainer      | 指定遮罩层渲染的容器,如果为 null 的话，会渲染到当前节点 | `HTMLElement \| (() => HTMLElement) \| undefined \| null` | `document.body` |
+| children          | 遮罩层内容                           | `ReactNode`                                               | -               |
+| destroyOnClose    | 关闭时是否销毁子元素                      | `boolean`                                                 | `false`         |
+| disableBodyScroll | 是否在显示遮罩层时禁用背景滚动                 | `boolean`                                                 | `true`          |
+| afterClose        | 完全关闭后的回调函数                      | `() => void`                                              | -               |
