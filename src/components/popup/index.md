@@ -62,7 +62,8 @@ export default () => {
 | position | 弹出位置 | `'bottom' \| 'top' \| 'left' \| 'right' \| 'center'` | `'bottom'` |
 | children | 内容 | `ReactNode` | - |
 | maskClassName | 遮罩类名 | `string` | - |
-| className | 弹出层类名 | `string` | - |
+| className | 容器类名 | `string` | - |
+| bodyClassName | 内容区域类名 | `string` | - |
 | closeOnMaskClick | 点击遮罩层是否关闭 | `boolean` | `true` |
 | onClose | 关闭时触发 | `() => void` | - |
 | afterClose | 完全关闭后触发 | `() => void` | - |

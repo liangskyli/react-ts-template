@@ -1,21 +1,27 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
+import type { PopupProps } from '@/components/popup';
 import Popup from '@/components/popup';
+import Toast from '@/components/toast/index.tsx';
 import { cn } from '@/utils/styles.ts';
 
-export type ToastProps = {
+export type InternalToastProps = {
   message?: ReactNode;
   duration?: number;
   position?: 'top' | 'bottom' | 'center';
   visible: boolean;
   onClose?: () => void;
-  afterClose?: () => void;
   maskClickable?: boolean;
-  /** 是否在关闭时销毁内容 */
-  destroyOnClose?: boolean;
-};
+} & Pick<
+  PopupProps,
+  | 'maskClassName'
+  | 'className'
+  | 'bodyClassName'
+  | 'afterClose'
+  | 'destroyOnClose'
+>;
 
-export const Toast = (props: ToastProps) => {
+export const InternalToast = (props: InternalToastProps) => {
   const {
     message,
     duration = 3000,
@@ -25,6 +31,9 @@ export const Toast = (props: ToastProps) => {
     afterClose,
     maskClickable = false,
     destroyOnClose = true,
+    maskClassName,
+    className,
+    bodyClassName,
   } = props;
 
   useEffect(() => {
@@ -42,6 +51,13 @@ export const Toast = (props: ToastProps) => {
     bottom: 'bottom-[20%]',
   };
 
+  const popupAfterClose = () => {
+    if (destroyOnClose) {
+      Toast.clear();
+    }
+    afterClose?.();
+  };
+
   return (
     <Popup
       visible={visible}
@@ -50,9 +66,15 @@ export const Toast = (props: ToastProps) => {
         'bg-mask/0',
         { 'pointer-events-auto': !maskClickable },
         { 'pointer-events-none': maskClickable },
+        maskClassName,
       )}
-      className={cn('w-[80vw] bg-transparent', positionStyles[position])}
-      afterClose={afterClose}
+      className={cn('z-toast', className)}
+      bodyClassName={cn(
+        'w-[80vw] bg-transparent',
+        positionStyles[position],
+        bodyClassName,
+      )}
+      afterClose={popupAfterClose}
       disableBodyScroll={!maskClickable}
       destroyOnClose={destroyOnClose}
       getContainer={null}

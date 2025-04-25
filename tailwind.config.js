@@ -17,6 +17,7 @@ export default {
       zIndex: {
         popup: '1000',
         mask: '1000',
+        toast: '5000',
       },
     },
   },

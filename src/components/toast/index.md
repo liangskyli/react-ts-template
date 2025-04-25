@@ -110,6 +110,9 @@ Toast.show(
 | maskClickable  | 是否允许背景点击                 | `boolean`                            | `false`         |
 | destroyOnClose | 关闭时是否销毁内容                | `boolean`                            | `true`          |
 | getContainer   | 自定义轻提示的挂载节点              | `HTMLElement \| (() => HTMLElement)` | `document.body` |
+| maskClassName  | 遮罩类名                     | `string`                             | -               |
+| className      | 容器类名                     | `string`                             | -               |
+| bodyClassName  | 内容区域类名                   | `string`                             | -               |
 
 ### Toast.clear
 

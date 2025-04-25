@@ -17,8 +17,10 @@ export type PopupProps = {
   position?: Position;
   /** 遮罩类名 */
   maskClassName?: string;
-  /** 弹出层类名 */
+  /** 容器类名 */
   className?: string;
+  /** 内容区域类名 */
+  bodyClassName?: string;
   /** 点击蒙层是否关闭 */
   closeOnMaskClick?: boolean;
   /** 关闭时的回调 */
@@ -102,6 +104,7 @@ const Popup = (props: PopupProps) => {
     children,
     maskClassName,
     className,
+    bodyClassName,
     closeOnMaskClick = true,
     onClose,
     afterClose,
@@ -121,7 +124,7 @@ const Popup = (props: PopupProps) => {
   const transition = transitionStyles[position];
 
   const node = (
-    <div className="fixed z-popup">
+    <div className={cn('fixed z-popup', className)}>
       <Mask
         className={cn('z-0', maskClassName)}
         visible={visible}
@@ -148,7 +151,7 @@ const Popup = (props: PopupProps) => {
           className={cn(
             'z-1 fixed overflow-auto bg-white',
             positionStyles[position],
-            className,
+            bodyClassName,
           )}
           style={{
             pointerEvents: isContentTransitionFinish ? 'auto' : 'none',

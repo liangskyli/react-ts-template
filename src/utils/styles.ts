@@ -4,7 +4,7 @@ import { extendTailwindMerge } from 'tailwind-merge';
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
-      z: [{ z: ['popup', 'mask'] }],
+      z: [{ z: ['popup', 'mask', 'toast'] }],
     },
   },
 });

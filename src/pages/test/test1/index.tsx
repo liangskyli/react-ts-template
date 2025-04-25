@@ -14,15 +14,6 @@ const Index = () => {
   const router = useRouter();
   const { setABC, getAllData, setBCDF } = useOpticsStoreStore();
   const [count, setCount] = useState(1);
-  const handleShowToast = () => {
-    // 基础提示
-    Toast.show('这是一条提示消息', {
-      duration: 3000,
-      afterClose: () => {
-        console.log('afterClose');
-      },
-    });
-  };
 
   const [visibleCenterPopup, setVisibleCenterPopup] = useState(false);
   const [visibleBottomPopup, setVisibleBottomPopup] = useState(false);
@@ -68,10 +59,31 @@ const Index = () => {
         </div>
       </Popup>
       <button
-        className="mx-auto my-52 block rounded bg-red px-4 py-2 text-sm text-white"
-        onClick={handleShowToast}
+        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+        onClick={() => {
+          Toast.show('这是一条提示消息', {
+            duration: 3000,
+            maskClickable: true,
+            afterClose: () => {
+              console.log('afterClose');
+            },
+          });
+        }}
       >
-        显示Toast
+        显示Toast1
+      </button>
+      <button
+        className="mx-auto mb-10 mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+        onClick={() => {
+          Toast.show('这是一条提示消息2222', {
+            duration: 3000,
+            destroyOnClose: false,
+            maskClickable: true,
+            getContainer: document.querySelector('#root')!,
+          });
+        }}
+      >
+        显示Toast2
       </button>
       <button
         onClick={() => router.push('/index')}

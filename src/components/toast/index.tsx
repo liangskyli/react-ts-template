@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { type Root, createRoot } from 'react-dom/client';
 import type { GetContainer } from '@/utils/render-to-container.ts';
 import { resolveContainer } from '@/utils/render-to-container.ts';
-import { Toast as InternalToast, type ToastProps } from './Toast';
+import { InternalToast, type InternalToastProps } from './internal-toast.tsx';
 
 let container: HTMLElement | null = null;
 let toastRoot: Root | null = null;
@@ -15,12 +15,15 @@ const destroy = () => {
   toastRoot = null;
 };
 
-type IShowProps = Omit<ToastProps, 'visible' | 'onClose'> & {
+type IToastProps = Omit<InternalToastProps, 'visible' | 'onClose'> & {
   getContainer?: Omit<GetContainer, 'null'>;
 };
 
-const show = (props: IShowProps) => {
-  const { getContainer = document.body } = props;
+const show = (props: IToastProps) => {
+  const { getContainer = document.body, destroyOnClose = true } = props;
+  if (destroyOnClose) {
+    destroy();
+  }
 
   if (!container) {
     const toastRootElement = resolveContainer(getContainer as GetContainer);
@@ -47,7 +50,7 @@ const show = (props: IShowProps) => {
 const Toast = {
   show: (
     message: ReactNode,
-    options?: Omit<IShowProps, 'message' | 'visible' | 'onClose'>,
+    options?: Omit<IToastProps, 'message' | 'visible' | 'onClose'>,
   ) => show({ message, ...options }),
 
   clear: () => {
@@ -56,5 +59,5 @@ const Toast = {
   },
 };
 
-export type { ToastProps } from './Toast';
+export type { InternalToastProps } from './internal-toast.tsx';
 export default Toast;

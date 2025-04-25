@@ -2,25 +2,37 @@ import { act, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Toast from '@/components/toast';
 
-// Mock Mask组件
-vi.mock('@/components/mask', () => ({
+// Mock Popup组件
+vi.mock('@/components/popup', () => ({
   default: ({
     visible,
     children,
     afterClose,
+    className,
+    maskClassName,
+    bodyClassName,
   }: {
     visible: boolean;
     children: React.ReactNode;
     afterClose?: () => void;
+    className?: string;
+    maskClassName?: string;
+    bodyClassName?: string;
   }) => {
     if (!visible) {
-      // 当 visible 变为 false 时，触发 afterClose
       setTimeout(() => {
         afterClose?.();
       }, 0);
       return null;
     }
-    return <div data-testid="mask">{children}</div>;
+    return (
+      <div data-testid="popup" className={className}>
+        <div data-testid="mask" className={maskClassName}>
+          {children}
+        </div>
+        <div data-testid="bodyClassName" className={bodyClassName}></div>
+      </div>
+    );
   },
 }));
 
@@ -159,5 +171,56 @@ describe('Toast Component', () => {
     });
 
     expect(screen.queryByText(message)).not.toBeInTheDocument();
+  });
+
+  it('should apply correct z-index class', () => {
+    const message = 'Test Message';
+    act(() => {
+      Toast.show(message);
+    });
+
+    expect(screen.getByTestId('mask').parentElement).toHaveClass('z-toast');
+  });
+
+  it('should handle maskClickable prop correctly', () => {
+    const message = 'Test Message';
+
+    act(() => {
+      Toast.show(message, { maskClickable: true });
+    });
+    expect(screen.getByTestId('mask')).toHaveClass('pointer-events-none');
+
+    act(() => {
+      Toast.clear();
+      Toast.show(message, { maskClickable: false });
+    });
+    expect(screen.getByTestId('mask')).toHaveClass('pointer-events-auto');
+  });
+
+  it('should apply position styles correctly', () => {
+    const message = 'Test Message';
+
+    // Test top position
+    act(() => {
+      Toast.show(message, { position: 'top' });
+    });
+    screen.debug();
+    expect(screen.getByTestId('bodyClassName')).toHaveClass('top-[20%]');
+
+    // Test bottom position
+    act(() => {
+      Toast.clear();
+      Toast.show(message, { position: 'bottom' });
+    });
+    expect(screen.getByTestId('bodyClassName')).toHaveClass('bottom-[20%]');
+
+    // Test center position (default)
+    act(() => {
+      Toast.clear();
+      Toast.show(message, { position: 'center' });
+    });
+    const centerElement = screen.getByTestId('bodyClassName');
+    expect(centerElement).toHaveClass('top-1/2');
+    expect(centerElement).toHaveClass('-translate-y-1/2');
   });
 });
