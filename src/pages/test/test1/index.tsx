@@ -29,6 +29,18 @@ const Index = () => {
               <p>这里是弹出层内容</p>
               <button
                 className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+                onClick={() => {
+                  Toast.show('dialog toast1', {
+                    afterClose: () => {
+                      console.log('afterClose dialog toast1');
+                    },
+                  });
+                }}
+              >
+                dialog toast1
+              </button>
+              <button
+                className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
                 onClick={() => popup1.close()}
               >
                 关闭
@@ -53,7 +65,7 @@ const Index = () => {
       <Popup
         visible={visibleCenterPopup}
         onClose={() => setVisibleCenterPopup(false)}
-        className="w-[300px]"
+        bodyClassName="w-[300px]"
         position="center"
         destroyOnClose
         closeOnMaskClick={false}
@@ -62,6 +74,18 @@ const Index = () => {
         <div className="p-4" onClick={() => console.log('content')}>
           <h3 className="mb-2 text-lg font-bold">标题</h3>
           <p>这里是弹出层内容</p>
+          <button
+            className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+            onClick={() => {
+              Toast.show('dialog toast2', {
+                afterClose: () => {
+                  console.log('afterClose dialog toast2');
+                },
+              });
+            }}
+          >
+            dialog toast2
+          </button>
           <button
             className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
             onClick={() => setVisibleCenterPopup(false)}
@@ -88,11 +112,12 @@ const Index = () => {
       <button
         className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
         onClick={() => {
-          Toast.show('这是一条提示消息', {
+          Toast.show('这是一条提示消息显示Toast1', {
             duration: 3000,
             maskClickable: true,
+            position: 'bottom',
             afterClose: () => {
-              console.log('afterClose');
+              console.log('afterClose1');
             },
           });
         }}
@@ -104,9 +129,11 @@ const Index = () => {
         onClick={() => {
           Toast.show('这是一条提示消息2222', {
             duration: 3000,
-            destroyOnClose: false,
             maskClickable: true,
-            getContainer: document.querySelector('#root')!,
+            //getContainer: document.querySelector('#root')!,
+            afterClose: () => {
+              console.log('afterClose2');
+            },
           });
         }}
       >

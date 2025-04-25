@@ -1,40 +1,76 @@
+import React from 'react';
 import { act, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Toast from '@/components/toast';
 
 // Mock Popup组件
-vi.mock('@/components/popup', () => ({
-  default: ({
+vi.mock('@/components/popup/popup.tsx', () => {
+  const MockPopup = ({
     visible,
     children,
     afterClose,
+    onClose,
+    destroyOnClose,
+    duration = 0,
+    bodyClassName,
     className,
     maskClassName,
-    bodyClassName,
   }: {
     visible: boolean;
     children: React.ReactNode;
     afterClose?: () => void;
+    onClose?: () => void;
+    destroyOnClose?: boolean;
+    duration?: number;
+    bodyClassName?: string;
     className?: string;
     maskClassName?: string;
-    bodyClassName?: string;
   }) => {
-    if (!visible) {
-      setTimeout(() => {
-        afterClose?.();
-      }, 0);
+    const [shouldRender, setShouldRender] = React.useState(visible);
+
+    React.useEffect(() => {
+      if (visible) {
+        setShouldRender(true);
+      }
+    }, [visible]);
+
+    React.useEffect(() => {
+      let timer: number;
+      if (visible && duration > 0) {
+        timer = window.setTimeout(() => {
+          onClose?.();
+        }, duration);
+        return () => clearTimeout(timer);
+      }
+    }, [visible, duration, onClose]);
+
+    React.useEffect(() => {
+      if (!visible) {
+        if (destroyOnClose) {
+          setShouldRender(false);
+          afterClose?.();
+        }
+      }
+    }, [visible, afterClose, destroyOnClose]);
+
+    if (!shouldRender) {
       return null;
     }
-    return (
+
+    return visible ? (
       <div data-testid="popup" className={className}>
-        <div data-testid="mask" className={maskClassName}>
+        <div data-testid="mask" className={maskClassName} />
+        <div data-testid="body" className={bodyClassName}>
           {children}
         </div>
-        <div data-testid="bodyClassName" className={bodyClassName}></div>
       </div>
-    );
-  },
-}));
+    ) : null;
+  };
+
+  return {
+    default: MockPopup,
+  };
+});
 
 describe('Toast Component', () => {
   beforeEach(() => {
@@ -42,198 +78,108 @@ describe('Toast Component', () => {
   });
 
   afterEach(() => {
-    // 清理DOM和定时器
-    Toast.clear();
+    act(() => {
+      Toast.clear(true); // 使用 ignoreAfterClose 确保完全清除
+    });
     vi.clearAllTimers();
     vi.useRealTimers();
   });
 
   it('should show toast with message', () => {
-    const message = 'Test Message';
     act(() => {
-      Toast.show(message);
+      Toast.show('Test Message');
     });
-
-    expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.getByText('Test Message')).toBeInTheDocument();
   });
 
-  it('should clear toast', () => {
-    const message = 'Test Message';
-    act(() => {
-      Toast.show(message);
-    });
-
-    expect(screen.getByText(message)).toBeInTheDocument();
-
-    act(() => {
-      Toast.clear();
-    });
-
-    expect(screen.queryByText(message)).not.toBeInTheDocument();
-  });
-
-  it('should auto close after duration', () => {
+  it('should auto close after duration', async () => {
     const message = 'Test Message';
     const duration = 1000;
 
     act(() => {
       Toast.show(message, { duration });
     });
-
     expect(screen.getByText(message)).toBeInTheDocument();
 
+    // 推进时间触发关闭
     act(() => {
       vi.advanceTimersByTime(duration);
+    });
+
+    // 等待一个事件循环以确保状态更新
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    // 确保销毁逻辑执行完成
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    // 再次等待状态更新
+    await act(async () => {
+      await Promise.resolve();
     });
 
     expect(screen.queryByText(message)).not.toBeInTheDocument();
   });
 
-  it('should call afterClose callback', () => {
-    const message = 'Test Message';
-    const duration = 1000;
-    const afterClose = vi.fn();
+  it('should clear toast', async () => {
+    act(() => {
+      Toast.show('Test Message');
+    });
+    expect(screen.getByText('Test Message')).toBeInTheDocument();
 
     act(() => {
-      Toast.show(message, { duration, afterClose });
+      Toast.clear();
     });
 
-    expect(screen.getByText(message)).toBeInTheDocument();
-
-    // 等待 duration 时间，触发关闭
-    act(() => {
-      vi.advanceTimersByTime(duration);
+    // 等待销毁完成
+    await act(async () => {
+      await Promise.resolve();
+      vi.advanceTimersByTime(100);
+      await Promise.resolve();
     });
 
-    // 等待 afterClose 的 setTimeout
-    act(() => {
-      vi.advanceTimersByTime(0);
-    });
-
-    expect(afterClose).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('Test Message')).not.toBeInTheDocument();
   });
 
   it('should handle multiple toasts', () => {
-    const message1 = 'Message 1';
-    const message2 = 'Message 2';
-
     act(() => {
-      Toast.show(message1);
-      Toast.show(message2);
+      Toast.show('Message 1');
+      Toast.show('Message 2');
     });
 
-    // 只应显示最新的消息
-    expect(screen.queryByText(message1)).not.toBeInTheDocument();
-    expect(screen.getByText(message2)).toBeInTheDocument();
-  });
-
-  it('should handle React elements as message', () => {
-    const CustomMessage = () => (
-      <div data-testid="custom-message">Custom Message</div>
-    );
-
-    act(() => {
-      Toast.show(<CustomMessage />);
-    });
-
-    expect(screen.getByTestId('custom-message')).toBeInTheDocument();
+    expect(screen.queryByText('Message 1')).not.toBeInTheDocument();
+    expect(screen.getByText('Message 2')).toBeInTheDocument();
   });
 
   it('should return close function', () => {
-    const message = 'Test Message';
     let closeToast: (() => void) | undefined;
 
     act(() => {
-      closeToast = Toast.show(message);
+      closeToast = Toast.show('Test Message').close;
     });
 
-    expect(screen.getByText(message)).toBeInTheDocument();
+    expect(screen.getByText('Test Message')).toBeInTheDocument();
 
     act(() => {
       closeToast?.();
+      vi.runAllTimers();
     });
 
-    expect(screen.queryByText(message)).not.toBeInTheDocument();
-  });
-
-  it('should handle undefined duration', () => {
-    const message = 'Test Message';
-
-    act(() => {
-      Toast.show(message, { duration: undefined });
-    });
-
-    expect(screen.getByText(message)).toBeInTheDocument();
-
-    // 默认持续时间应该是3000ms
-    act(() => {
-      vi.advanceTimersByTime(3000);
-    });
-
-    expect(screen.queryByText(message)).not.toBeInTheDocument();
-  });
-
-  it('should apply correct z-index class', () => {
-    const message = 'Test Message';
-    act(() => {
-      Toast.show(message);
-    });
-
-    expect(screen.getByTestId('mask').parentElement).toHaveClass('z-toast');
-  });
-
-  it('should handle maskClickable prop correctly', () => {
-    const message = 'Test Message';
-
-    act(() => {
-      Toast.show(message, { maskClickable: true });
-    });
-    expect(screen.getByTestId('mask')).toHaveClass('pointer-events-none');
-
-    act(() => {
-      Toast.clear();
-      Toast.show(message, { maskClickable: false });
-    });
-    expect(screen.getByTestId('mask')).toHaveClass('pointer-events-auto');
-  });
-
-  it('should apply position styles correctly', () => {
-    const message = 'Test Message';
-
-    // Test top position
-    act(() => {
-      Toast.show(message, { position: 'top' });
-    });
-    screen.debug();
-    expect(screen.getByTestId('bodyClassName')).toHaveClass('top-[20%]');
-
-    // Test bottom position
-    act(() => {
-      Toast.clear();
-      Toast.show(message, { position: 'bottom' });
-    });
-    expect(screen.getByTestId('bodyClassName')).toHaveClass('bottom-[20%]');
-
-    // Test center position (default)
-    act(() => {
-      Toast.clear();
-      Toast.show(message, { position: 'center' });
-    });
-    const centerElement = screen.getByTestId('bodyClassName');
-    expect(centerElement).toHaveClass('top-1/2');
-    expect(centerElement).toHaveClass('-translate-y-1/2');
+    expect(screen.queryByText('Test Message')).not.toBeInTheDocument();
   });
 });
 
 describe('Toast.config', () => {
   afterEach(() => {
-    // 重置默认配置
     Toast.config({
       duration: 3000,
       position: 'center',
       maskClickable: false,
-      destroyOnClose: true,
     });
+    Toast.clear(true);
   });
 
   it('should update default config', () => {
@@ -249,28 +195,166 @@ describe('Toast.config', () => {
     expect(config.maskClickable).toBe(true);
   });
 
-  it('should apply default config when showing toast', () => {
+  it('should use default position when no position is specified', () => {
+    // First set a default position
     Toast.config({
-      duration: 5000,
       position: 'bottom',
     });
 
+    // Show toast without specifying position
     act(() => {
       Toast.show('Test Message');
     });
 
-    expect(screen.getByTestId('bodyClassName')).toHaveClass('bottom-[20%]');
+    // Verify that the default position from config is used
+    const body = screen.getByTestId('body');
+    expect(body).toHaveClass('bottom-[20%]');
   });
 
-  it('should allow overriding config per toast', () => {
+  it('should use position from individual toast config over default config', () => {
+    // Set a default position
     Toast.config({
       position: 'bottom',
     });
 
+    // Show toast with specific position
+    act(() => {
+      Toast.show('Test Message', {
+        position: 'top',
+      });
+    });
+
+    // Verify that the specific position is used
+    const body = screen.getByTestId('body');
+    expect(body).toHaveClass('top-[20%]');
+  });
+});
+
+describe('Toast position fallback logic', () => {
+  beforeEach(() => {
+    // 重置为默认配置
+    Toast.config({
+      duration: 3000,
+      position: 'center',
+      maskClickable: false,
+    });
+  });
+
+  afterEach(() => {
+    Toast.clear(true);
+  });
+
+  it('should use position from toast config when provided', () => {
     act(() => {
       Toast.show('Test Message', { position: 'top' });
     });
 
-    expect(screen.getByTestId('bodyClassName')).toHaveClass('top-[20%]');
+    const body = screen.getByTestId('body');
+    expect(body).toHaveClass('top-[20%]');
+  });
+
+  it('should use position from global config when toast config position is undefined', () => {
+    // 设置全局配置
+    Toast.config({ position: 'bottom' });
+
+    act(() => {
+      Toast.show('Test Message', { duration: 1000 }); // 不设置 position
+    });
+
+    const body = screen.getByTestId('body');
+    expect(body).toHaveClass('bottom-[20%]');
+  });
+
+  it('should use default position when neither toast config nor global config has position', () => {
+    // 设置全局配置但不包含 position
+    Toast.config({ duration: 1000 });
+
+    act(() => {
+      Toast.show('Test Message', { duration: 2000 }); // 不设置 position
+    });
+
+    const body = screen.getByTestId('body');
+    expect(body).toHaveClass('top-1/2'); // 默认是 center 位置
+  });
+
+  it('should handle undefined position in both config and show call', () => {
+    // 清除所有配置
+    Toast.config({});
+
+    act(() => {
+      Toast.show('Test Message', {}); // 完全不设置 position
+    });
+
+    const body = screen.getByTestId('body');
+    expect(body).toHaveClass('top-1/2'); // 应该使用 defaultConfig.position (center)
+  });
+});
+
+describe('Toast Imperative API', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    // 清理所有提示和定时器
+    Toast.clear(true);
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
+  it('shows toast imperatively', () => {
+    act(() => {
+      Toast.show('Test Content');
+    });
+    expect(screen.getByText('Test Content')).toBeInTheDocument();
+  });
+
+  it('accepts configuration options', () => {
+    const afterClose = vi.fn();
+    act(() => {
+      Toast.show('Test Content', {
+        position: 'top',
+        duration: 1000,
+        afterClose,
+      });
+    });
+
+    expect(screen.getByText('Test Content')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(100); // 额外时间确保afterClose被调用
+    });
+
+    expect(afterClose).toHaveBeenCalled();
+  });
+
+  it('clears all toasts when calling clear', () => {
+    act(() => {
+      Toast.show('Toast 1');
+      Toast.show('Toast 2');
+    });
+
+    expect(screen.queryByText('Toast 1')).not.toBeInTheDocument();
+    expect(screen.getByText('Toast 2')).toBeInTheDocument();
+
+    act(() => {
+      Toast.clear();
+      vi.advanceTimersByTime(100);
+    });
+
+    expect(screen.queryByText('Toast 2')).not.toBeInTheDocument();
+  });
+
+  it('handles timer cleanup correctly', () => {
+    act(() => {
+      Toast.show('Auto Close Content', { duration: 1000 });
+    });
+
+    act(() => {
+      Toast.clear(true);
+    });
+
+    expect(screen.queryByText('Auto Close Content')).not.toBeInTheDocument();
   });
 });

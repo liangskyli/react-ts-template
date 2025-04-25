@@ -1,6 +1,6 @@
 # Toast 轻提示
 
-轻提示组件，用于页面中展示重要的提示信息。
+轻提示组件，用于页面中展示重要的提示信息。基于 Popup 组件实现。
 
 ## 代码演示
 
@@ -141,7 +141,6 @@ Toast.clear()
 | position       | 提示显示位置                   | `'top' \| 'bottom' \| 'center'`      | `'center'`      |
 | afterClose     | 完全关闭后的回调函数               | `() => void`                         | -               |
 | maskClickable  | 是否允许背景点击                 | `boolean`                            | `false`         |
-| destroyOnClose | 关闭时是否销毁内容                | `boolean`                            | `true`          |
 | getContainer   | 自定义轻提示的挂载节点              | `HTMLElement \| (() => HTMLElement)` | `document.body` |
 | maskClassName  | 遮罩类名                     | `string`                             | -               |
 | className      | 容器类名                     | `string`                             | -               |
@@ -152,8 +151,6 @@ Toast.clear()
 1. Toast 采用单例模式，同一时间只会显示一个 Toast。新的 Toast 会替换当前显示的 Toast。
 2. 当设置 `duration` 为 0 时，Toast 不会自动关闭，需要手动调用返回的关闭函数或 `Toast.clear()` 来关闭。
 3. `afterClose` 回调会在 Toast 完全关闭后立即执行。
-4. Toast 组件会自动创建一个新的 DOM 节点挂载到指定容器中（默认为 body）。
+4. Toast 组件基于 Popup 组件实现，继承了 Popup 的部分特性。
 5. 支持连续多次调用，但只会显示最后一次调用的内容。
-6. 当 `destroyOnClose` 为 `true` 时，Toast 关闭后会立即销毁其内容；为 `false` 时则会保留内容但隐藏。
-7. 调用 Toast.clear 会强制销毁所有 Toast 内容。
-8. 通过 `Toast.config()` 设置的全局配置可以被单次调用的配置覆盖。
+6. 通过 `Toast.config()` 设置的全局配置可以被单次调用的配置覆盖。

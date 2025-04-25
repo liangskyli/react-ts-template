@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Popup from '@/components/popup';
+import Toast from '@/components/toast';
 
 // Mock Mask组件
 vi.mock('@/components/mask', () => ({
@@ -214,6 +215,53 @@ describe('Popup Component', () => {
     expect(afterClose).toHaveBeenCalledTimes(0);
     expect(screen.queryByText('Content')).not.toBeInTheDocument();
   });
+
+  it('handles duration prop correctly', () => {
+    const onClose = vi.fn();
+    render(
+      <Popup visible duration={1000} onClose={onClose}>
+        Content
+      </Popup>,
+    );
+
+    expect(screen.getByText('Content')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it('generates unique popup id when not provided', () => {
+    const { rerender } = render(<Popup visible>Content</Popup>);
+    const firstId = screen
+      .getByText('Content')
+      .closest('.z-popup')
+      ?.getAttribute('data-popup-id');
+
+    rerender(<Popup visible>Content</Popup>);
+    const secondId = screen
+      .getByText('Content')
+      .closest('.z-popup')
+      ?.getAttribute('data-popup-id');
+
+    expect(firstId).toBeTruthy();
+    expect(secondId).toBeTruthy();
+    expect(firstId).toBe(secondId);
+  });
+
+  it('uses provided popupId', () => {
+    const customId = 'custom-popup-id';
+    render(
+      <Popup visible popupId={customId}>
+        Content
+      </Popup>,
+    );
+
+    const popup = screen.getByText('Content').closest('.z-popup');
+    expect(popup).toHaveAttribute('data-popup-id', customId);
+  });
 });
 
 describe('Popup Imperative API', () => {
@@ -339,5 +387,63 @@ describe('Popup Imperative API', () => {
 
     // 清理
     document.body.removeChild(customContainer);
+  });
+
+  it('updates default config and gets config', () => {
+    const newConfig = {
+      position: 'top',
+      className: 'global-class',
+    };
+
+    // @ts-expect-error ignore
+    Popup.config(newConfig);
+    expect(Popup.getConfig()).toEqual(expect.objectContaining(newConfig));
+
+    // 重置配置以不影响其他测试
+    Popup.config({
+      position: 'bottom',
+      className: undefined,
+    });
+  });
+
+  it('clears specific type of popups with ignoreAfterClose', () => {
+    const afterClose = vi.fn();
+
+    act(() => {
+      // 创建 popup 类型
+      Popup.show('Popup Content', { afterClose });
+      // 创建 toast 类型 (假设已导入 Toast)
+      Toast.show('Toast Content', { afterClose });
+    });
+
+    act(() => {
+      // 只清除 popup 类型，并忽略 afterClose
+      Popup.clear(true);
+      vi.advanceTimersByTime(0);
+    });
+
+    // popup 的 afterClose 不应被调用
+    expect(afterClose).not.toHaveBeenCalled();
+    expect(screen.queryByText('Popup Content')).not.toBeInTheDocument();
+    // toast 内容应该还在
+    expect(screen.getByText('Toast Content')).toBeInTheDocument();
+    act(() => {
+      // 只清除 toast 类型
+      Toast.clear(true);
+      vi.advanceTimersByTime(0);
+    });
+    expect(screen.queryByText('Toast Content')).not.toBeInTheDocument();
+  });
+
+  it('handles timer cleanup correctly', () => {
+    act(() => {
+      Popup.show('Auto Close Content', { duration: 1000 });
+    });
+
+    act(() => {
+      Popup.clear(true);
+    });
+    // 内容应该已经被移除
+    expect(screen.queryByText('Auto Close Content')).not.toBeInTheDocument();
   });
 });

@@ -44,13 +44,27 @@ Popup.show(
   {
     position: 'center',
     maskClassName: 'custom-mask',
-    afterClose: () => console.log('弹出层已关闭')
+    afterClose: () => console.log('弹出层已关闭'),
+    duration: 3000 // 3秒后自动关闭
   }
 );
 
 // 手动关闭
 const close = Popup.show('点击按钮关闭').close;
 close(); // 调用返回的函数关闭弹出层
+```
+
+### 自动关闭
+
+```tsx
+// 3秒后自动关闭
+<Popup
+  visible={visible}
+  duration={3000}
+  onClose={() => setVisible(false)}
+>
+  3秒后自动关闭
+</Popup>
 ```
 
 ### 全局配置
@@ -108,8 +122,10 @@ Popup.clear();
 | onClose | 关闭时触发 | `() => void` | - |
 | afterClose | 完全关闭后触发 | `() => void` | - |
 | destroyOnClose | 关闭时是否销毁内容 | `boolean` | `false` |
-| getContainer | 指定挂载的节点 | `HTMLElement \| (() => HTMLElement) \| null` | `document.body` |
+| getContainer | 指定挂载的节点,如果为 null 的话，会渲染到当前节点 | `HTMLElement \| (() => HTMLElement) \| null` | `document.body` |
 | disableBodyScroll | 是否在显示弹出层时禁用背景滚动 | `boolean` | `true` |
+| duration | 显示持续时间(毫秒)，设置为 0 则不会自动关闭 | `number` | `0` |
+| popupId | 弹出层的唯一标识符，一般不需要手动设置 | `string` | - |
 
 ## 注意事项
 
@@ -117,3 +133,5 @@ Popup.clear();
 2. 如果设置 `destroyOnClose`，弹出层关闭后会销毁其内容。
 3. 可以通过 `getContainer` 指定弹出层挂载的节点，如果为 `null` 则渲染在当前位置。
 4. 当 `disableBodyScroll` 为 `true` 时，弹出层显示期间会禁止背景内容滚动。
+5. 设置 `duration` 大于 0 时，弹出层会在指定时间后自动关闭。
+6. `popupId` 主要用于内部实现，一般情况下不需要手动设置。

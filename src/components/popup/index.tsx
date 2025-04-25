@@ -1,6 +1,6 @@
 import type { PopupProps, Position } from '@/components/popup/popup.tsx';
 import Popup from '@/components/popup/popup.tsx';
-import methods from './methods';
+import * as methods from './methods.tsx';
 
 export type { PopupProps, Position };
 
