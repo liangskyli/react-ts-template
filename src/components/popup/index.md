@@ -6,6 +6,8 @@
 
 ### 基础用法
 
+可以通过组件方式使用：
+
 ```tsx
 import { Popup } from '@/components';
 
@@ -26,6 +28,44 @@ export default () => {
     </>
   );
 };
+```
+
+也可以通过命令式方式调用：
+
+```tsx
+import { Popup } from '@/components';
+
+// 显示弹出层
+Popup.show('这是弹出层内容');
+
+// 使用配置选项
+Popup.show(
+  <div className="p-4">自定义内容</div>,
+  {
+    position: 'center',
+    maskClassName: 'custom-mask',
+    afterClose: () => console.log('弹出层已关闭')
+  }
+);
+
+// 手动关闭
+const close = Popup.show('点击按钮关闭').close;
+close(); // 调用返回的函数关闭弹出层
+```
+
+### 全局配置
+
+```tsx
+Popup.config({
+  position: 'bottom',
+  destroyOnClose: true,
+});
+```
+
+### 清除所有弹出层
+
+```tsx
+Popup.clear();
 ```
 
 ### 弹出位置

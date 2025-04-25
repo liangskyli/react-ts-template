@@ -22,6 +22,30 @@ const Index = () => {
       <title>overwrite title</title>
       <button
         className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+        onClick={() => {
+          const popup1 = Popup.show(
+            <div className="p-4">
+              <h3 className="mb-2 text-lg font-bold">标题</h3>
+              <p>这里是弹出层内容</p>
+              <button
+                className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
+                onClick={() => popup1.close()}
+              >
+                关闭
+              </button>
+            </div>,
+            {
+              position: 'center',
+              afterClose: () => console.log('弹出层已关闭'),
+              closeOnMaskClick: false,
+            },
+          );
+        }}
+      >
+        指令弹出层
+      </button>
+      <button
+        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
         onClick={() => setVisibleCenterPopup(true)}
       >
         显示中间弹出层
@@ -31,6 +55,9 @@ const Index = () => {
         onClose={() => setVisibleCenterPopup(false)}
         className="w-[300px]"
         position="center"
+        destroyOnClose
+        closeOnMaskClick={false}
+        afterClose={() => console.log('弹出层已关闭')}
       >
         <div className="p-4" onClick={() => console.log('content')}>
           <h3 className="mb-2 text-lg font-bold">标题</h3>

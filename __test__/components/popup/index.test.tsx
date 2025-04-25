@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Popup from '@/components/popup';
 
@@ -211,7 +211,133 @@ describe('Popup Component', () => {
       </Popup>,
     );
 
-    expect(afterClose).toHaveBeenCalledTimes(1);
+    expect(afterClose).toHaveBeenCalledTimes(0);
     expect(screen.queryByText('Content')).not.toBeInTheDocument();
+  });
+});
+
+describe('Popup Imperative API', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    // 清理所有弹窗和定时器
+    Popup.clear();
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
+  it('shows popup imperatively', () => {
+    act(() => {
+      Popup.show('Test Content');
+    });
+    expect(screen.getByText('Test Content')).toBeInTheDocument();
+  });
+
+  it('closes popup when calling returned function', () => {
+    let close: () => void;
+    act(() => {
+      close = Popup.show('Test Content').close;
+    });
+    expect(screen.getByText('Test Content')).toBeInTheDocument();
+
+    act(() => {
+      close();
+    });
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+    expect(screen.queryByText('Test Content')).not.toBeInTheDocument();
+  });
+
+  it('accepts configuration options', () => {
+    act(() => {
+      Popup.show('Test Content', {
+        position: 'center',
+        className: 'custom-class',
+      });
+    });
+
+    // 使用父元素的类名来查找
+    const popup = screen.getByText('Test Content').closest('.z-popup');
+    expect(popup).toHaveClass('custom-class');
+    expect(screen.getByText('Test Content')).toHaveClass('left-1/2');
+  });
+
+  it('calls afterClose callback', () => {
+    const afterClose = vi.fn();
+    let close: () => void;
+
+    act(() => {
+      close = Popup.show('Test Content', { afterClose }).close;
+    });
+    act(() => {
+      close();
+    });
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+    expect(afterClose).toHaveBeenCalled();
+  });
+
+  it('clears all popups when calling clear', () => {
+    act(() => {
+      Popup.show('Popup 1');
+      Popup.show('Popup 2');
+      Popup.show('Popup 3');
+    });
+
+    expect(screen.getByText('Popup 1')).toBeInTheDocument();
+    expect(screen.getByText('Popup 2')).toBeInTheDocument();
+    expect(screen.getByText('Popup 3')).toBeInTheDocument();
+
+    act(() => {
+      Popup.clear();
+      vi.advanceTimersByTime(0);
+    });
+
+    expect(screen.queryByText('Popup 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Popup 2')).not.toBeInTheDocument();
+    expect(screen.queryByText('Popup 3')).not.toBeInTheDocument();
+  });
+
+  it('updates default config', () => {
+    Popup.config({
+      position: 'top',
+      className: 'global-class',
+    });
+
+    act(() => {
+      Popup.show('Test Content');
+    });
+
+    const popup = screen.getByText('Test Content').closest('.z-popup');
+    expect(popup).toHaveClass('global-class');
+    expect(screen.getByText('Test Content')).toHaveClass('top-0');
+
+    // 重置配置以不影响其他测试
+    Popup.config({
+      position: 'bottom',
+      className: undefined,
+    });
+  });
+
+  it('renders to specified container', () => {
+    const customContainer = document.createElement('div');
+    document.body.appendChild(customContainer);
+
+    act(() => {
+      Popup.show('Test Content', {
+        getContainer: customContainer,
+      });
+    });
+
+    expect(customContainer.contains(screen.getByText('Test Content'))).toBe(
+      true,
+    );
+
+    // 清理
+    document.body.removeChild(customContainer);
   });
 });

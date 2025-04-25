@@ -224,3 +224,53 @@ describe('Toast Component', () => {
     expect(centerElement).toHaveClass('-translate-y-1/2');
   });
 });
+
+describe('Toast.config', () => {
+  afterEach(() => {
+    // 重置默认配置
+    Toast.config({
+      duration: 3000,
+      position: 'center',
+      maskClickable: false,
+      destroyOnClose: true,
+    });
+  });
+
+  it('should update default config', () => {
+    Toast.config({
+      duration: 5000,
+      position: 'top',
+      maskClickable: true,
+    });
+
+    const config = Toast.getConfig();
+    expect(config.duration).toBe(5000);
+    expect(config.position).toBe('top');
+    expect(config.maskClickable).toBe(true);
+  });
+
+  it('should apply default config when showing toast', () => {
+    Toast.config({
+      duration: 5000,
+      position: 'bottom',
+    });
+
+    act(() => {
+      Toast.show('Test Message');
+    });
+
+    expect(screen.getByTestId('bodyClassName')).toHaveClass('bottom-[20%]');
+  });
+
+  it('should allow overriding config per toast', () => {
+    Toast.config({
+      position: 'bottom',
+    });
+
+    act(() => {
+      Toast.show('Test Message', { position: 'top' });
+    });
+
+    expect(screen.getByTestId('bodyClassName')).toHaveClass('top-[20%]');
+  });
+});

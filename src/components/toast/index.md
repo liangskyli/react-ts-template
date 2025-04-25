@@ -19,6 +19,23 @@ Toast.show('提示消息', {
 });
 ```
 
+### 全局配置
+
+```tsx
+// 设置全局默认配置
+Toast.config({
+  duration: 2000,
+  position: 'top',
+  maskClickable: true,
+});
+
+// 使用默认配置显示
+Toast.show('使用默认配置');
+
+// 单次调用时可以覆盖默认配置
+Toast.show('覆盖配置', { position: 'bottom' });
+```
+
 ### 自定义持续时间
 
 ```tsx
@@ -91,6 +108,14 @@ Toast.show(
 
 ## API
 
+### Toast.config
+
+```ts
+Toast.config(options: ToastOptions)
+```
+
+全局配置 Toast 的默认属性。
+
 ### Toast.show
 
 ```ts
@@ -99,6 +124,14 @@ Toast.show(
   options?: ToastOptions
 ) => () => void
 ```
+
+### Toast.clear
+
+```ts
+Toast.clear()
+```
+
+清除所有显示中的轻提示。
 
 ### Options
 
@@ -114,14 +147,6 @@ Toast.show(
 | className      | 容器类名                     | `string`                             | -               |
 | bodyClassName  | 内容区域类名                   | `string`                             | -               |
 
-### Toast.clear
-
-```ts
-Toast.clear()
-```
-
-清除所有显示中的轻提示。
-
 ## 注意事项
 
 1. Toast 采用单例模式，同一时间只会显示一个 Toast。新的 Toast 会替换当前显示的 Toast。
@@ -130,4 +155,5 @@ Toast.clear()
 4. Toast 组件会自动创建一个新的 DOM 节点挂载到指定容器中（默认为 body）。
 5. 支持连续多次调用，但只会显示最后一次调用的内容。
 6. 当 `destroyOnClose` 为 `true` 时，Toast 关闭后会立即销毁其内容；为 `false` 时则会保留内容但隐藏。
-7. 调用Toast.clear会强制销毁所有Toast内容。
+7. 调用 Toast.clear 会强制销毁所有 Toast 内容。
+8. 通过 `Toast.config()` 设置的全局配置可以被单次调用的配置覆盖。
