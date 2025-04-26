@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import Icon from '@/components/icon';
-import Popup from '@/components/popup';
-import Toast from '@/components/toast';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
+import ButtonDemo from '@/pages/test/test1/components/ButtonDemo.tsx';
+import PopupDemo from '@/pages/test/test1/components/PopupDemo.tsx';
+import ToastDemo from '@/pages/test/test1/components/ToastDemo.tsx';
 import { cn } from '@/utils/styles.ts';
 import './index.less';
 import styles from './index.module.less';
@@ -15,130 +16,12 @@ const Index = () => {
   const { setABC, getAllData, setBCDF } = useOpticsStoreStore();
   const [count, setCount] = useState(1);
 
-  const [visibleCenterPopup, setVisibleCenterPopup] = useState(false);
-  const [visibleBottomPopup, setVisibleBottomPopup] = useState(false);
   return (
     <div className="mt-[10px] text-center">
       <title>overwrite title</title>
-      <button
-        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-        onClick={() => {
-          const popup1 = Popup.show(
-            <div className="p-4">
-              <h3 className="mb-2 text-lg font-bold">标题</h3>
-              <p>这里是弹出层内容</p>
-              <button
-                className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-                onClick={() => {
-                  Toast.show('dialog toast1', {
-                    afterClose: () => {
-                      console.log('afterClose dialog toast1');
-                    },
-                  });
-                }}
-              >
-                dialog toast1
-              </button>
-              <button
-                className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-                onClick={() => popup1.close()}
-              >
-                关闭
-              </button>
-            </div>,
-            {
-              position: 'center',
-              afterClose: () => console.log('弹出层已关闭'),
-              closeOnMaskClick: false,
-            },
-          );
-        }}
-      >
-        指令弹出层
-      </button>
-      <button
-        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-        onClick={() => setVisibleCenterPopup(true)}
-      >
-        显示中间弹出层
-      </button>
-      <Popup
-        visible={visibleCenterPopup}
-        onClose={() => setVisibleCenterPopup(false)}
-        bodyClassName="w-[300px]"
-        position="center"
-        destroyOnClose
-        closeOnMaskClick={false}
-        afterClose={() => console.log('弹出层已关闭')}
-      >
-        <div className="p-4" onClick={() => console.log('content')}>
-          <h3 className="mb-2 text-lg font-bold">标题</h3>
-          <p>这里是弹出层内容</p>
-          <button
-            className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-            onClick={() => {
-              Toast.show('dialog toast2', {
-                afterClose: () => {
-                  console.log('afterClose dialog toast2');
-                },
-              });
-            }}
-          >
-            dialog toast2
-          </button>
-          <button
-            className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-            onClick={() => setVisibleCenterPopup(false)}
-          >
-            关闭
-          </button>
-        </div>
-      </Popup>
-      <button
-        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-        onClick={() => setVisibleBottomPopup(true)}
-      >
-        显示底部弹出层
-      </button>
-      <Popup
-        visible={visibleBottomPopup}
-        onClose={() => setVisibleBottomPopup(false)}
-        position="bottom"
-      >
-        <div className="p-4">
-          这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容这里是底部弹出层内容
-        </div>
-      </Popup>
-      <button
-        className="mx-auto mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-        onClick={() => {
-          Toast.show('这是一条提示消息显示Toast1', {
-            duration: 3000,
-            maskClickable: true,
-            position: 'bottom',
-            afterClose: () => {
-              console.log('afterClose1');
-            },
-          });
-        }}
-      >
-        显示Toast1
-      </button>
-      <button
-        className="mx-auto mb-10 mt-4 block rounded bg-red px-4 py-2 text-sm text-white"
-        onClick={() => {
-          Toast.show('这是一条提示消息2222', {
-            duration: 3000,
-            maskClickable: true,
-            //getContainer: document.querySelector('#root')!,
-            afterClose: () => {
-              console.log('afterClose2');
-            },
-          });
-        }}
-      >
-        显示Toast2
-      </button>
+      <ButtonDemo />
+      <PopupDemo />
+      <ToastDemo />
       <button
         onClick={() => router.push('/index')}
         className={cn(styles.testButton, 'test-button-local')}
