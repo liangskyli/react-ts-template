@@ -4,6 +4,7 @@ import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
 import ButtonDemo from '@/pages/test/test1/components/ButtonDemo.tsx';
+import CheckboxDemo from '@/pages/test/test1/components/CheckboxDemo.tsx';
 import PopupDemo from '@/pages/test/test1/components/PopupDemo.tsx';
 import ToastDemo from '@/pages/test/test1/components/ToastDemo.tsx';
 import { cn } from '@/utils/styles.ts';
@@ -22,6 +23,7 @@ const Index = () => {
       <ButtonDemo />
       <PopupDemo />
       <ToastDemo />
+      <CheckboxDemo />
       <button
         onClick={() => router.push('/index')}
         className={cn(styles.testButton, 'test-button-local')}
