@@ -94,6 +94,26 @@ const CheckboxDemo = () => {
         >
           紫色圆点(半选状态)
         </Checkbox>
+        <Checkbox
+          className="m-1"
+          defaultChecked
+          boxClassName="rounded-full peer-checked:bg-white peer-checked:border-purple-600 peer-enabled:hover:border-purple-500"
+          checkedIcon={
+            <div className="h-[12px] w-[12px] rounded-full bg-purple-600" />
+          }
+        >
+          紫色圆点
+        </Checkbox>
+        <Checkbox
+          className="m-1"
+          indeterminate
+          boxClassName="rounded-full peer-checked:bg-white peer-checked:border-purple-600 peer-enabled:hover:border-purple-500"
+          indeterminateIcon={
+            <div className="h-[12px] w-[12px] rounded-full bg-purple-600" />
+          }
+        >
+          紫色圆点(半选状态)
+        </Checkbox>
       </div>
       {/* Checkbox.Group 示例 */}
       <div className="space-y-2">

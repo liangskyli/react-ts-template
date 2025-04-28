@@ -6,6 +6,7 @@ import requestApi from '@/services/api';
 import ButtonDemo from '@/pages/test/test1/components/ButtonDemo.tsx';
 import CheckboxDemo from '@/pages/test/test1/components/CheckboxDemo.tsx';
 import PopupDemo from '@/pages/test/test1/components/PopupDemo.tsx';
+import RadioGroupDemo from '@/pages/test/test1/components/RadioGroupDemo.tsx';
 import ToastDemo from '@/pages/test/test1/components/ToastDemo.tsx';
 import { cn } from '@/utils/styles.ts';
 import './index.less';
@@ -24,6 +25,7 @@ const Index = () => {
       <PopupDemo />
       <ToastDemo />
       <CheckboxDemo />
+      <RadioGroupDemo />
       <button
         onClick={() => router.push('/index')}
         className={cn(styles.testButton, 'test-button-local')}
