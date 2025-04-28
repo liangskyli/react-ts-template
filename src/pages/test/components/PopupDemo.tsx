@@ -7,15 +7,27 @@ const PopupDemo = () => {
   const [visibleCenterPopup, setVisibleCenterPopup] = useState(false);
   const [visibleBottomPopup, setVisibleBottomPopup] = useState(false);
   return (
-    <div className="mt-2 space-x-2">
+    <div className="space-x-2 px-2 pb-2">
       <Button
         onClick={() => {
           const popup1 = Popup.show(
-            <div className="p-4">
-              <h3 className="mb-2 text-lg font-bold">标题</h3>
-              <p>这里是弹出层内容</p>
-              <div className="flex flex-col space-y-2">
+            <>
+              <div className="px-4 pt-5">
+                <div className="mb-4 text-center text-lg font-medium">标题</div>
+                <div className="mb-5 text-center text-base text-gray-600">
+                  这里是弹出层内容
+                </div>
+              </div>
+              <div className="flex border-t border-gray-200">
                 <Button
+                  className="flex-1 rounded-none bg-white text-base font-normal text-gray-600 before:rounded-none hover:bg-gray-50"
+                  onClick={() => popup1.close()}
+                >
+                  取消
+                </Button>
+                <div className="relative z-10 w-[1px] bg-gray-200" />
+                <Button
+                  className="flex-1 rounded-none bg-white text-base font-normal text-red before:rounded-none hover:bg-gray-50"
                   onClick={() => {
                     Toast.show('dialog toast1', {
                       afterClose: () => {
@@ -24,13 +36,13 @@ const PopupDemo = () => {
                     });
                   }}
                 >
-                  dialog toast1
+                  确定
                 </Button>
-                <Button onClick={() => popup1.close()}>关闭</Button>
               </div>
-            </div>,
+            </>,
             {
               position: 'center',
+              bodyClassName: 'w-[280px] rounded-lg bg-white',
               afterClose: () => console.log('弹出层已关闭'),
               closeOnMaskClick: false,
             },

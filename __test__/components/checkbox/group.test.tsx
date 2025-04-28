@@ -108,6 +108,6 @@ describe('Checkbox.Group', () => {
     );
 
     const groupDiv = container.querySelector('.custom-group');
-    expect(groupDiv).toHaveClass('flex', 'flex-wrap', '-m-1', 'custom-group');
+    expect(groupDiv).toHaveClass('flex', 'flex-wrap', 'custom-group');
   });
 });

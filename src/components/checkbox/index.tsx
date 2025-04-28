@@ -81,7 +81,11 @@ const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
       checked={checked}
       onChange={handleChange}
       disabled={isDisabled}
-      className={cn('group relative flex items-center', className)}
+      className={cn(
+        'group relative flex items-center',
+        '[&:not(:last-child)]:mr-1.5',
+        className,
+      )}
       indeterminate={indeterminate}
       {...rest}
     >

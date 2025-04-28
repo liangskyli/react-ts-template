@@ -3,7 +3,7 @@ import Toast from '@/components/toast';
 
 const ToastDemo = () => {
   return (
-    <div className="my-2 space-x-2">
+    <div className="space-x-2 px-2 pb-2">
       <Button
         onClick={() => {
           Toast.show('这是一条提示消息显示Toast1', {

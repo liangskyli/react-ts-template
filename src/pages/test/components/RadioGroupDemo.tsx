@@ -9,7 +9,7 @@ const RadioGroupDemo = () => {
   const [numberValue, setNumberValue] = useState<number>(1);
 
   return (
-    <div className="ml-2 space-y-6">
+    <div className="space-y-6 px-2">
       {/* 字符串值示例 */}
       <div>
         <h3 className="mb-2 text-lg font-medium">水果选择</h3>

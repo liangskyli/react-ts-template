@@ -3,11 +3,6 @@ import Icon from '@/components/icon';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
-import ButtonDemo from '@/pages/test/test1/components/ButtonDemo.tsx';
-import CheckboxDemo from '@/pages/test/test1/components/CheckboxDemo.tsx';
-import PopupDemo from '@/pages/test/test1/components/PopupDemo.tsx';
-import RadioGroupDemo from '@/pages/test/test1/components/RadioGroupDemo.tsx';
-import ToastDemo from '@/pages/test/test1/components/ToastDemo.tsx';
 import { cn } from '@/utils/styles.ts';
 import './index.less';
 import styles from './index.module.less';
@@ -21,16 +16,11 @@ const Index = () => {
   return (
     <div className="mt-[10px] text-center">
       <title>overwrite title</title>
-      <ButtonDemo />
-      <PopupDemo />
-      <ToastDemo />
-      <CheckboxDemo />
-      <RadioGroupDemo />
       <button
-        onClick={() => router.push('/index')}
+        onClick={() => router.push('/test/ui')}
         className={cn(styles.testButton, 'test-button-local')}
       >
-        跳转测试页面
+        跳转UI页面
       </button>
       <button
         onClick={async () => {

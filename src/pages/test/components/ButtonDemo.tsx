@@ -3,7 +3,7 @@ import Icon from '@/components/icon';
 
 const ButtonDemo = () => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-2 pb-2">
       {/* 基础用法 */}
       <div className="space-x-2 space-y-2">
         <Button variant="primary">主要按钮</Button>
@@ -53,7 +53,9 @@ const ButtonDemo = () => {
       </div>
 
       {/* 块级按钮 */}
-      <Button block>块级按钮</Button>
+      <div>
+        <Button block>块级按钮</Button>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import { useState } from 'react';
 import { cn } from '@/utils/styles';
 import { CheckboxContext } from './context';
@@ -44,11 +43,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         onChange: handleChange,
       }}
     >
-      <div className={cn('-m-1 flex flex-wrap', className)}>
-        {React.Children.map(children, (child) => (
-          <div className="m-1">{child}</div>
-        ))}
-      </div>
+      <div className={cn('flex flex-wrap', className)}>{children}</div>
     </CheckboxContext.Provider>
   );
 };

@@ -22,10 +22,7 @@ const RadioGroup = <
   const { className, children, ...rest } = props;
 
   return (
-    <HeadlessRadioGroup
-      className={cn('-m-1 flex flex-wrap', className)}
-      {...rest}
-    >
+    <HeadlessRadioGroup className={cn('flex flex-wrap', className)} {...rest}>
       {children}
     </HeadlessRadioGroup>
   );
