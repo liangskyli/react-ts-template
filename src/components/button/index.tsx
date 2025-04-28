@@ -64,6 +64,8 @@ const Button = <T extends ElementType = 'button'>(props: ButtonProps<T>) => {
       )}
       {...rest}
     >
+      {/*添加一个占位的 span，保持相同宽度*/}
+      <span />
       {loading && loadingIcon}
       {children}
     </HeadlessButton>

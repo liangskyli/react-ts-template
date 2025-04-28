@@ -11,6 +11,7 @@ const ButtonDemo = () => {
         <Button variant="danger">危险按钮</Button>
         <Button variant="ghost">幽灵按钮</Button>
         <Button className="bg-teal-600 text-red hover:bg-teal-600 disabled:bg-teal-400">
+          <Icon className="-ml-1 mr-1 h-4 w-4" name="help" />
           自定义按钮
         </Button>
         <Button className="border border-red" as="div">
