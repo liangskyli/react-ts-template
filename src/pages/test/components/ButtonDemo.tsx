@@ -38,8 +38,13 @@ const ButtonDemo = () => {
         <Button loading variant="secondary">
           加载中
         </Button>
-        <Button variant="danger">
-          <Icon className="-ml-1 mr-2 h-4 w-4 animate-spin" name="loading" />
+        <Button
+          loading
+          variant="danger"
+          loadingIcon={
+            <Icon className="-ml-1 mr-2 h-4 w-4 animate-spin" name="loading" />
+          }
+        >
           加载中
         </Button>
       </div>

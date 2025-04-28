@@ -8,6 +8,7 @@
 |-------------|------------------|---------------------------------------------------|-------------|
 | `variant`   | 按钮样式变体           | `'primary' \| 'secondary' \| 'danger' \| 'ghost'` | `'primary'` |
 | `loading`   | 加载状态             | `boolean`                                         | `false`     |
+| `loadingIcon` | 自定义加载图标         | `ReactNode`                                       | `<LoadingSpinner />` |
 | `disabled`  | 禁用状态             | `boolean`                                         | `false`     |
 | `block`     | 是否为块级按钮（宽度100%）  | `boolean`                                         | `false`     |
 | `className` | 自定义 CSS 类名       | `string`                                          | -           |
@@ -45,7 +46,10 @@ export default () => (
 
 ```tsx
 export default () => (
-  <Button loading>加载中</Button>
+  <>
+    <Button loading>加载中</Button>
+    <Button loading loadingIcon={<CustomSpinner />}>自定义加载图标</Button>
+  </>
 )
 ```
 
