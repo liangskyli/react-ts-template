@@ -39,7 +39,7 @@ const Radio = <
     <HeadlessRadio
       value={value}
       className={cn(
-        'group relative flex items-center',
+        'group relative flex items-center focus:outline-none',
         '[&:not(:last-child)]:mr-1.5',
         className,
       )}
