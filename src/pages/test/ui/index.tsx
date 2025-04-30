@@ -2,6 +2,7 @@ import ButtonDemo from '@/pages/test/components/ButtonDemo.tsx';
 import CheckboxDemo from '@/pages/test/components/CheckboxDemo.tsx';
 import PopupDemo from '@/pages/test/components/PopupDemo.tsx';
 import RadioGroupDemo from '@/pages/test/components/RadioGroupDemo.tsx';
+import TextAreaDemo from '@/pages/test/components/TextAreaDemo.tsx';
 import ToastDemo from '@/pages/test/components/ToastDemo.tsx';
 
 const Index = () => {
@@ -13,6 +14,7 @@ const Index = () => {
       <ToastDemo />
       <CheckboxDemo />
       <RadioGroupDemo />
+      <TextAreaDemo />
     </div>
   );
 };
