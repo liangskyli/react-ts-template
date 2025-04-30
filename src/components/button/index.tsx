@@ -51,7 +51,7 @@ const Button = <T extends ElementType = 'button'>(props: ButtonProps<T>) => {
       disabled={disabled || loading}
       onClick={handleClick}
       className={cn(
-        'inline-flex items-center justify-center',
+        'inline-flex items-center justify-center focus:outline-none',
         'disabled:cursor-not-allowed disabled:before:hidden',
         'transition-colors duration-200',
         variantStyles[variant],
