@@ -3,6 +3,7 @@ import CheckboxDemo from '@/pages/test/components/CheckboxDemo.tsx';
 import InputDemo from '@/pages/test/components/InputDemo.tsx';
 import PopupDemo from '@/pages/test/components/PopupDemo.tsx';
 import RadioGroupDemo from '@/pages/test/components/RadioGroupDemo.tsx';
+import SwitchDemo from '@/pages/test/components/SwitchDemo.tsx';
 import TextAreaDemo from '@/pages/test/components/TextAreaDemo.tsx';
 import ToastDemo from '@/pages/test/components/ToastDemo.tsx';
 
@@ -17,6 +18,7 @@ const Index = () => {
       <CheckboxDemo />
       <RadioGroupDemo />
       <TextAreaDemo />
+      <SwitchDemo />
     </div>
   );
 };
