@@ -29,7 +29,7 @@ export type CheckboxProps<T extends ElementType = 'span'> = {
   checkedIcon?: ReactNode;
   /** 自定义半选图标 */
   indeterminateIcon?: ReactNode;
-} & Omit<HeadlessCheckboxProps<T>, 'className'>;
+} & Omit<HeadlessCheckboxProps<T>, 'className' | 'value'>;
 
 const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
   const {

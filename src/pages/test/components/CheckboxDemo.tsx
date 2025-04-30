@@ -89,10 +89,10 @@ const CheckboxDemo = () => {
       {/* Checkbox.Group 示例 */}
       <div className="space-y-2">
         <h3>非受控模式：</h3>
-        <Checkbox.Group defaultValue={['A', 'B']}>
-          <Checkbox value="A">选项A</Checkbox>
-          <Checkbox value="B">选项B</Checkbox>
-          <Checkbox value="C">选项C</Checkbox>
+        <Checkbox.Group defaultValue={[1, 2]}>
+          <Checkbox value={1}>选项1</Checkbox>
+          <Checkbox value={2}>选项2</Checkbox>
+          <Checkbox value={3}>选项3</Checkbox>
         </Checkbox.Group>
 
         <h3>受控模式：</h3>
