@@ -16,7 +16,7 @@ const InputDemo = () => {
         <h3 className="mb-2 text-lg font-medium">自定义样式</h3>
         <Input
           placeholder="请输入内容"
-          className="border-red-300 placeholder:text-red-400 focus:border-red-300 focus:ring-0"
+          className="border-red-300 text-red-600 placeholder:text-red-400 focus:border-red-300 focus:ring-0"
         />
       </div>
 

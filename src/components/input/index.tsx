@@ -125,13 +125,13 @@ const Input = (props: InputProps) => {
       min={min}
       max={max}
       className={cn(
-        'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900',
+        'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-700',
         'transition-colors duration-200',
         {
           'focus:border-blue-600 focus:ring-1 focus:ring-blue-600': !readOnly,
         },
         'read-only:bg-gray-50',
-        'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60',
+        'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-40',
         'placeholder:text-gray-400',
         'outline-none',
         className,

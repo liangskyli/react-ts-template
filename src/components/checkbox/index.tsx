@@ -84,6 +84,8 @@ const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
       className={cn(
         'group relative flex items-center focus:outline-none',
         '[&:not(:last-child)]:mr-1.5',
+        'active:opacity-80',
+        'data-[disabled]:opacity-40',
         className,
       )}
       indeterminate={indeterminate}
@@ -94,20 +96,13 @@ const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
           'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border transition-colors',
           'border-gray-300 bg-white',
           'group-data-[checked]:border-blue-600 group-data-[checked]:bg-blue-600',
-          'group-data-[disabled]:cursor-not-allowed group-data-[disabled]:opacity-40',
-          'group-data-[enabled]:hover:border-blue-500',
-          'active:opacity-80',
+          'group-data-[disabled]:cursor-not-allowed',
+          'group-data-[hover]:hover:border-blue-500',
           boxClassName,
         )}
       >
         {(checked || indeterminate) && (
-          <span
-            className={cn(
-              'absolute h-3 w-3 text-white',
-              'group-data-[disabled]:text-opacity-40',
-              checkClassName,
-            )}
-          >
+          <span className={cn('absolute h-3 w-3 text-white', checkClassName)}>
             {checked && indeterminate
               ? indeterminateIcon
               : checked && checkedIcon}
@@ -119,7 +114,7 @@ const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
           className={cn(
             'ml-2 cursor-pointer select-none',
             'text-gray-700',
-            'group-data-[disabled]:cursor-not-allowed group-data-[disabled]:text-gray-400',
+            'group-data-[disabled]:cursor-not-allowed',
             labelClassName,
           )}
         >

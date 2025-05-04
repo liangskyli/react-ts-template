@@ -57,7 +57,7 @@ const TextAreaDemo = () => {
         <h3 className="mb-2 text-lg font-medium">自定义样式</h3>
         <TextArea
           placeholder="自定义样式"
-          textareaClassName="border-green-500 focus:border-green-600 focus:ring-green-600"
+          textareaClassName="placeholder:text-green-400 text-green-600 border-green-500 focus:border-green-600 focus:ring-green-600"
           countClassName="text-green-600"
           showCount
           maxLength={50}

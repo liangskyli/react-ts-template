@@ -58,7 +58,7 @@ const RadioGroupDemo = () => {
         <RadioGroup defaultValue="B">
           <RadioGroup.Radio
             value="A"
-            boxClassName="group-data-[checked]:border-green-600 group-data-[enabled]:hover:border-green-500"
+            boxClassName="group-data-[checked]:border-green-600 group-data-[hover]:hover:border-green-500"
             dotClassName="bg-green-600"
             labelClassName="text-green-600"
           >
@@ -67,7 +67,7 @@ const RadioGroupDemo = () => {
           <RadioGroup.Radio
             disabled
             value="B"
-            boxClassName="group-data-[checked]:border-green-600 group-data-[enabled]:hover:border-green-500"
+            boxClassName="group-data-[checked]:border-green-600 group-data-[hover]:hover:border-green-500"
             dotClassName="bg-green-600"
             labelClassName="text-green-600"
           >
@@ -75,7 +75,7 @@ const RadioGroupDemo = () => {
           </RadioGroup.Radio>
           <RadioGroup.Radio
             value="C"
-            boxClassName="h-6 w-6 group-data-[checked]:border-green-600 group-data-[enabled]:hover:border-green-500"
+            boxClassName="h-6 w-6 group-data-[checked]:border-green-600 group-data-[hover]:hover:border-green-500"
             dotClassName="bg-green-600 h-3 w-3"
             labelClassName="text-[20px]"
           >
