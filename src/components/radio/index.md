@@ -106,7 +106,7 @@ export default () => (
   <RadioGroup defaultValue="A">
     <RadioGroup.Radio
       value="A"
-      boxClassName="group-data-[checked]:border-green-600 group-data-[enabled]:hover:border-green-500"
+      boxClassName="group-data-[checked]:border-green-600 group-data-[hover]:hover:border-green-500"
       dotClassName="bg-green-600"
       labelClassName="text-green-600"
     >

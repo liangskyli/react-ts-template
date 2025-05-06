@@ -41,6 +41,8 @@ const Radio = <
       className={cn(
         'group relative flex items-center focus:outline-none',
         '[&:not(:last-child)]:mr-1.5',
+        'active:opacity-80',
+        'data-[disabled]:opacity-40',
         className,
       )}
       {...rest}
@@ -54,9 +56,8 @@ const Radio = <
                 'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors',
                 'border-gray-300 bg-white',
                 'group-data-[checked]:border-blue-600',
-                'group-data-[disabled]:cursor-not-allowed group-data-[disabled]:opacity-40',
-                'group-data-[enabled]:hover:border-blue-500',
-                'active:opacity-80',
+                'group-data-[disabled]:cursor-not-allowed',
+                'group-data-[hover]:hover:border-blue-500',
                 boxClassName,
               )}
             >
@@ -64,7 +65,6 @@ const Radio = <
                 <span
                   className={cn(
                     'absolute h-2.5 w-2.5 rounded-full bg-blue-600',
-                    'group-data-[disabled]:opacity-40',
                     dotClassName,
                   )}
                 />
@@ -75,7 +75,7 @@ const Radio = <
                 className={cn(
                   'ml-2 cursor-pointer select-none',
                   'text-gray-700',
-                  'group-data-[disabled]:cursor-not-allowed group-data-[disabled]:text-gray-400',
+                  'group-data-[disabled]:cursor-not-allowed',
                   labelClassName,
                 )}
               >

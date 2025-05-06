@@ -36,7 +36,7 @@ const CheckboxDemo = () => {
         </Checkbox>
         <Checkbox
           defaultChecked
-          boxClassName="group-data-[checked]:bg-green-600 group-data-[checked]:border-green-600 group-data-[enabled]:hover:border-green-500"
+          boxClassName="group-data-[checked]:bg-green-600 group-data-[checked]:border-green-600 group-data-[hover]:hover:border-green-500"
           checkClassName="text-red-600"
           labelClassName="text-green-600"
         >
@@ -44,19 +44,19 @@ const CheckboxDemo = () => {
         </Checkbox>
         <Checkbox
           defaultChecked
-          boxClassName="group-data-[checked]:bg-red-600 group-data-[checked]:border-red-600 group-data-[enabled]:hover:border-red-500"
+          boxClassName="group-data-[checked]:bg-red-600 group-data-[checked]:border-red-600 group-data-[hover]:hover:border-red-500"
         >
           红色
         </Checkbox>
         <Checkbox
           defaultChecked
-          boxClassName="rounded-full group-data-[checked]:bg-purple-600 group-data-[checked]:border-purple-600 group-data-[enabled]:hover:border-purple-500"
+          boxClassName="rounded-full group-data-[checked]:bg-purple-600 group-data-[checked]:border-purple-600 group-data-[hover]:hover:border-purple-500"
         >
           紫色圆形
         </Checkbox>
         <Checkbox
           defaultChecked
-          boxClassName="rounded-full group-data-[checked]:bg-white group-data-[checked]:border-purple-600 group-data-[enabled]:hover:border-purple-500"
+          boxClassName="rounded-full group-data-[checked]:bg-white group-data-[checked]:border-purple-600 group-data-[hover]:hover:border-purple-500"
           checkClassName="w-[14px] h-[14px]"
           checkedIcon={
             <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full bg-purple-600">
@@ -68,7 +68,7 @@ const CheckboxDemo = () => {
         </Checkbox>
         <Checkbox
           defaultChecked
-          boxClassName="rounded-full group-data-[checked]:bg-white group-data-[checked]:border-purple-600 group-data-[enabled]:hover:border-purple-500"
+          boxClassName="rounded-full group-data-[checked]:bg-white group-data-[checked]:border-purple-600 group-data-[hover]:hover:border-purple-500"
           checkedIcon={
             <div className="h-[12px] w-[12px] rounded-full bg-purple-600" />
           }
@@ -78,7 +78,7 @@ const CheckboxDemo = () => {
         <Checkbox
           defaultChecked
           indeterminate
-          boxClassName="rounded-full group-data-[checked]:bg-white group-data-[checked]:border-purple-600 group-data-[enabled]:hover:border-purple-500"
+          boxClassName="rounded-full group-data-[checked]:bg-white group-data-[checked]:border-purple-600 group-data-[hover]:hover:border-purple-500"
           indeterminateIcon={
             <div className="h-[12px] w-[12px] rounded-full bg-purple-600" />
           }

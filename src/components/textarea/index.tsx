@@ -133,13 +133,13 @@ function TextArea(props: TextAreaProps) {
         onChange={handleChange}
         readOnly={readOnly}
         className={cn(
-          'w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-base',
-          'placeholder:text-gray-400',
+          'w-full resize-none rounded-md border border-gray-300 px-3 py-2',
+          'text-base text-gray-700 placeholder:text-gray-400',
           'focus:outline-none',
           {
             'focus:border-blue-600 focus:ring-1 focus:ring-blue-600': !readOnly,
           },
-          'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60',
+          'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-40',
           'read-only:bg-gray-50',
           textareaClassName,
         )}

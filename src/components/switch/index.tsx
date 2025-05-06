@@ -77,8 +77,8 @@ const Switch = <TTag extends ElementType = 'button'>(
         <div className="flex h-full w-full items-center justify-between">
           <span
             className={cn(
-              'mx-2 hidden text-[12px] text-white transition-opacity duration-200 group-data-[checked]:inline',
-              uncheckedTextClassName,
+              'mx-2 hidden text-xs text-white transition-opacity duration-200 group-data-[checked]:inline',
+              checkedTextClassName,
             )}
           >
             {checkedText}
@@ -100,8 +100,8 @@ const Switch = <TTag extends ElementType = 'button'>(
           </span>
           <span
             className={cn(
-              'mx-2 inline text-[12px] text-gray-600 transition-opacity duration-200 group-data-[checked]:hidden',
-              checkedTextClassName,
+              'mx-2 inline text-xs text-gray-700 transition-opacity duration-200 group-data-[checked]:hidden',
+              uncheckedTextClassName,
             )}
           >
             {uncheckedText}
