@@ -13,7 +13,7 @@ export type RadioGroupProps<
   children?: ReactNode;
 } & Omit<HeadlessRadioGroupProps<TTag, TType>, 'className'>;
 
-const RadioGroup = <
+const RadioGroupBase = <
   TType extends string | number = string | number,
   TTag extends ElementType = 'div',
 >(
@@ -27,6 +27,10 @@ const RadioGroup = <
     </HeadlessRadioGroup>
   );
 };
+type RadioGroupType = typeof RadioGroupBase & {
+  Radio: typeof Radio;
+};
+const RadioGroup = RadioGroupBase as RadioGroupType;
 RadioGroup.Radio = Radio;
 
 export default RadioGroup;

@@ -31,7 +31,9 @@ export type CheckboxProps<T extends ElementType = 'span'> = {
   indeterminateIcon?: ReactNode;
 } & Omit<HeadlessCheckboxProps<T>, 'className' | 'value'>;
 
-const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
+const CheckboxBase = <T extends ElementType = 'span'>(
+  props: CheckboxProps<T>,
+) => {
   const {
     value,
     checked: checkedProp,
@@ -125,6 +127,10 @@ const Checkbox = <T extends ElementType = 'span'>(props: CheckboxProps<T>) => {
   );
 };
 
+type CheckboxType = typeof CheckboxBase & {
+  Group: typeof CheckboxGroup;
+};
+const Checkbox = CheckboxBase as CheckboxType;
 Checkbox.Group = CheckboxGroup;
 
 export default Checkbox;
