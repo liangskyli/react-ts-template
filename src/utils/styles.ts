@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { extendTailwindMerge } from 'tailwind-merge';
 
 const twMerge = extendTailwindMerge({
+  prefix: '',
   extend: {
     classGroups: {
       z: [{ z: ['popup', 'mask', 'toast'] }],
