@@ -76,20 +76,6 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
         },
       },
     },
-    // 预构建的依赖项，优化开发（该优化器仅在开发环境中使用）
-    optimizeDeps: {
-      include: [
-        'react',
-        'react-dom',
-        'react-router',
-        'zustand',
-        'classnames',
-        'immer',
-        'axios',
-        'optics-ts',
-        '@headlessui/react',
-      ],
-    },
     server: {
       host: '0.0.0.0',
       port: Number(env.VITE_APP_PORT),
