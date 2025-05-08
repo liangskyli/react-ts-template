@@ -1,5 +1,11 @@
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import type { FieldValues, UseFormReturn } from 'react-hook-form';
+import type {
+  FieldPath,
+  FieldPathValue,
+  FieldValues,
+  UseFormReturn,
+} from 'react-hook-form';
 import Input from '@/components/input';
 
 type IFormFiled1<T extends FieldValues> = {
@@ -11,28 +17,59 @@ const FormFiled1 = <T extends FieldValues = FieldValues>(
 ) => {
   const { form, prefixName = '' } = props;
 
+  // 确保默认值被正确注册
+  useEffect(() => {
+    const fieldName = `${prefixName}name1` as FieldPath<T>;
+    const currentValue = form.getValues(fieldName);
+    if (currentValue === undefined) {
+      // useForm values 设置值，但name1不设置时，defaultValue无效的问题
+      form.setValue(fieldName, 'test' as FieldPathValue<T, FieldPath<T>>, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [form, prefixName]);
+
   return (
-    <div className="px-2">
+    <>
       <Controller
-        name={`${prefixName}name1` as never}
+        name={`${prefixName}name1` as FieldPath<T>}
         control={form.control}
-        defaultValue={'test' as never}
-        rules={{ required: 'name1 is required' }}
+        defaultValue={'test' as FieldPathValue<T, FieldPath<T>>}
+        rules={{
+          required: 'name1 is required',
+          validate: {
+            test: (value) => {
+              return value === 'test' || 'value must be test';
+            },
+          },
+        }}
         render={({ field, fieldState }) => (
           <>
-            <Input
-              className="mb-1"
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-            />
-            {fieldState.error && <div>{fieldState.error.message}</div>}
+            <div className="flex items-center">
+              <div className="mr-2 text-sm font-medium text-gray-700">
+                title1:
+              </div>
+              <Input
+                className="mb-1"
+                ref={field.ref}
+                value={field.value}
+                disabled={field.disabled}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            </div>
+            {fieldState.error && (
+              <div className="text-left text-red">
+                {fieldState.error.message}
+              </div>
+            )}
           </>
         )}
       />
 
       <Controller
-        name={`${prefixName}name2` as never}
+        name={`${prefixName}name2` as FieldPath<T>}
         control={form.control}
         rules={{
           required: 'name2 is required',
@@ -42,15 +79,21 @@ const FormFiled1 = <T extends FieldValues = FieldValues>(
           <>
             <Input
               className="mb-1"
+              ref={field.ref}
               value={field.value}
+              disabled={field.disabled}
               onChange={field.onChange}
               onBlur={field.onBlur}
             />
-            {fieldState.error && <div>{fieldState.error.message}</div>}
+            {fieldState.error && (
+              <div className="text-left text-red">
+                {fieldState.error.message}
+              </div>
+            )}
           </>
         )}
       />
-    </div>
+    </>
   );
 };
 
