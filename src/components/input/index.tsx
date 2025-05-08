@@ -21,6 +21,7 @@ export type InputProps<TTag extends ElementType = 'input'> = {
   min?: number;
   /** 最大值，小数位数不大于decimalPlaces位 */
   max?: number;
+  ref?: React.Ref<HTMLElement>;
 } & Omit<
   HeadlessInputProps<TTag>,
   'onChange' | 'className' | 'type' | 'value' | 'min' | 'max'
@@ -40,6 +41,7 @@ const Input = (props: InputProps) => {
     min = 0,
     max,
     onBlur,
+    ref,
     ...rest
   } = props;
 
@@ -115,6 +117,7 @@ const Input = (props: InputProps) => {
 
   return (
     <HeadlessInput
+      ref={ref}
       type={type}
       value={innerValue}
       readOnly={readOnly}
