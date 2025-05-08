@@ -13,7 +13,7 @@ type FormValues1 = {
     name1: string;
     name2: string;
   };
-  name3?: number;
+  name3?: string;
   name4?: string[];
   others?: {
     name3?: string;
@@ -33,6 +33,7 @@ const FormDemo = () => {
         name1: 'test',
         name2: 'test2',
       },
+      name3: '',
     },
   });
   const form2 = useForm<FormValues2>();
@@ -76,16 +77,16 @@ const FormDemo = () => {
           rules={{ required: 'name3 is required' }}
           render={({ field, fieldState }) => (
             <>
-              <RadioGroup<number>
+              <RadioGroup<string>
                 className="mb-1"
-                //ref={field.ref}
+                formRef={field.ref}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
               >
-                <RadioGroup.Radio value={1}>选项 1</RadioGroup.Radio>
-                <RadioGroup.Radio value={2}>选项 2</RadioGroup.Radio>
-                <RadioGroup.Radio value={3}>选项 3</RadioGroup.Radio>
+                <RadioGroup.Radio value="1">选项 1</RadioGroup.Radio>
+                <RadioGroup.Radio value="2">选项 2</RadioGroup.Radio>
+                <RadioGroup.Radio value="3">选项 3</RadioGroup.Radio>
               </RadioGroup>
               {fieldState.error && (
                 <div className="text-left text-red">
@@ -103,10 +104,9 @@ const FormDemo = () => {
             <>
               <Checkbox.Group
                 className="mb-1"
-                //ref={field.ref}
+                formRef={field.ref}
                 value={field.value}
                 onChange={field.onChange}
-                //onBlur={field.onBlur}
               >
                 <Checkbox value="1">选项1</Checkbox>
                 <Checkbox value="2">选项2</Checkbox>
