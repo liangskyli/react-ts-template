@@ -1,6 +1,7 @@
 import { Controller, useForm } from 'react-hook-form';
 import Button from '@/components/button';
-import Input from '@/components/input';
+import Checkbox from '@/components/checkbox';
+import RadioGroup from '@/components/radio';
 import FormFiled1 from '@/pages/test/components/form-field1.tsx';
 
 type FormValues1 = {
@@ -12,7 +13,8 @@ type FormValues1 = {
     name1: string;
     name2: string;
   };
-  name3?: string;
+  name3?: number;
+  name4?: string[];
   others?: {
     name3?: string;
   };
@@ -74,13 +76,42 @@ const FormDemo = () => {
           rules={{ required: 'name3 is required' }}
           render={({ field, fieldState }) => (
             <>
-              <Input
+              <RadioGroup<number>
                 className="mb-1"
-                ref={field.ref}
+                //ref={field.ref}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
-              />
+              >
+                <RadioGroup.Radio value={1}>选项 1</RadioGroup.Radio>
+                <RadioGroup.Radio value={2}>选项 2</RadioGroup.Radio>
+                <RadioGroup.Radio value={3}>选项 3</RadioGroup.Radio>
+              </RadioGroup>
+              {fieldState.error && (
+                <div className="text-left text-red">
+                  {fieldState.error.message}
+                </div>
+              )}
+            </>
+          )}
+        />
+        <Controller
+          name="name4"
+          control={form1.control}
+          rules={{ required: 'name4 is required' }}
+          render={({ field, fieldState }) => (
+            <>
+              <Checkbox.Group
+                className="mb-1"
+                //ref={field.ref}
+                value={field.value}
+                onChange={field.onChange}
+                //onBlur={field.onBlur}
+              >
+                <Checkbox value="1">选项1</Checkbox>
+                <Checkbox value="2">选项2</Checkbox>
+                <Checkbox value="3">选项3</Checkbox>
+              </Checkbox.Group>
               {fieldState.error && (
                 <div className="text-left text-red">
                   {fieldState.error.message}
