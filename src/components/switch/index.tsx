@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode, Ref } from 'react';
 import { Switch as HeadlessSwitch } from '@headlessui/react';
 import type { SwitchProps as HeadlessSwitchProps } from '@headlessui/react';
 import { DefaultLoadingIcon } from '@/components/switch/icons.tsx';
@@ -31,6 +31,8 @@ export type SwitchProps<TTag extends ElementType = 'button'> = {
   checkedTextClassName?: string;
   /** 非选中时的文本类名 */
   uncheckedTextClassName?: string;
+  /** ref引用 */
+  ref?: Ref<HTMLButtonElement>;
 } & Omit<HeadlessSwitchProps<TTag>, 'checked' | 'onChange' | 'className'>;
 
 const Switch = <TTag extends ElementType = 'button'>(

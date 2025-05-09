@@ -128,26 +128,27 @@ export default () => (
 
 ### RadioGroup Props
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `value` | 当前选中的值 | `string \| number` | - |
-| `defaultValue` | 默认选中的值 | `string \| number` | - |
-| `disabled` | 是否禁用所有单选框 | `boolean` | `false` |
-| `onChange` | 选项变化时的回调函数 | `(value: string \| number) => void` | - |
-| `className` | 自定义类名 | `string` | - |
-| `children` | 子元素 | `ReactNode` | - |
+| 属性             | 说明                  | 类型                       | 默认值     |
+|----------------|---------------------|--------------------------|---------|
+| `value`        | 当前选中的值              | `TType`                  | -       |
+| `defaultValue` | 默认选中的值              | `TType`                  | -       |
+| `disabled`     | 是否禁用所有单选框           | `boolean`                | `false` |
+| `onChange`     | 选项变化时的回调函数          | `(value: TType) => void` | -       |
+| `className`    | 自定义类名               | `string`                 | -       |
+| `children`     | 子元素                 | `ReactNode`              | -       |
+| `formRef`      | react-hook-form ref | `RefCallBack`            | -       |
 
 ### RadioGroup.Radio Props
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `value` | 单选框的值 | `string \| number` | - |
-| `disabled` | 是否禁用 | `boolean` | `false` |
-| `children` | 单选框右侧的内容 | `ReactNode` | - |
-| `className` | 自定义类名 | `string` | - |
-| `boxClassName` | 单选框框类名 | `string` | - |
-| `dotClassName` | 单选框选中点类名 | `string` | - |
-| `labelClassName` | 单选框文本类名 | `string` | - |
+| 属性               | 说明       | 类型          | 默认值     |
+|------------------|----------|-------------|---------|
+| `value`          | 单选框的值    | `TType`     | -       |
+| `disabled`       | 是否禁用     | `boolean`   | `false` |
+| `children`       | 单选框右侧的内容 | `ReactNode` | -       |
+| `className`      | 自定义类名    | `string`    | -       |
+| `boxClassName`   | 单选框框类名   | `string`    | -       |
+| `dotClassName`   | 单选框选中点类名 | `string`    | -       |
+| `labelClassName` | 单选框文本类名  | `string`    | -       |
 
 ## 样式定制
 

@@ -1,12 +1,9 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode, Ref } from 'react';
 import { Radio as HeadlessRadio } from '@headlessui/react';
 import type { RadioProps as HeadlessRadioProps } from '@headlessui/react';
 import { cn } from '@/utils/styles';
 
-export type RadioProps<
-  TType extends string | number = string | number,
-  TTag extends ElementType = 'span',
-> = {
+export type RadioProps<TType = string, TTag extends ElementType = 'span'> = {
   /** 单选框右侧的内容 */
   children?: ReactNode;
   /** 自定义类名 */
@@ -17,12 +14,11 @@ export type RadioProps<
   dotClassName?: string;
   /** 单选框文本类名 */
   labelClassName?: string;
+  /** ref引用 */
+  ref?: Ref<HTMLElement>;
 } & Omit<HeadlessRadioProps<TTag, TType>, 'className'>;
 
-const Radio = <
-  TType extends string | number = string | number,
-  TTag extends ElementType = 'span',
->(
+const Radio = <TType = string, TTag extends ElementType = 'span'>(
   props: RadioProps<TType, TTag>,
 ) => {
   const {

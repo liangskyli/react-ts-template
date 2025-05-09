@@ -1,5 +1,7 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
+import type { RefCallBack } from 'react-hook-form';
 import { cn } from '@/utils/styles';
 import { CheckboxContext } from './context';
 
@@ -15,6 +17,8 @@ export type CheckboxGroupProps = {
   /** 自定义类名 */
   className?: string;
   children?: ReactNode;
+  /** react-hook-form ref */
+  formRef?: RefCallBack;
 };
 
 const CheckboxGroup = (props: CheckboxGroupProps) => {
@@ -25,10 +29,30 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
     onChange,
     className,
     children,
+    formRef,
   } = props;
 
   const [valueState, setValueState] = useState(defaultValue);
   const value = valueProp ?? valueState;
+  const checkboxGroupRef: Ref<HTMLDivElement> | undefined = useRef(null);
+
+  useEffect(() => {
+    if (!formRef) return;
+
+    const refObject = {
+      ...formRef,
+      focus: () => {
+        // 聚焦到第一个 Checkbox 元素
+        const firstCheckbox =
+          checkboxGroupRef.current?.querySelector('[role="checkbox"]');
+        if (firstCheckbox) {
+          (firstCheckbox as HTMLElement).focus();
+        }
+      },
+    };
+
+    formRef(refObject);
+  }, [formRef]);
 
   const handleChange = (newValue: (string | number)[]) => {
     setValueState(newValue);
@@ -43,7 +67,9 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         onChange: handleChange,
       }}
     >
-      <div className={cn('flex flex-wrap', className)}>{children}</div>
+      <div ref={checkboxGroupRef} className={cn('flex flex-wrap', className)}>
+        {children}
+      </div>
     </CheckboxContext.Provider>
   );
 };

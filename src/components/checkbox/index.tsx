@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode, Ref } from 'react';
 import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
@@ -29,6 +29,8 @@ export type CheckboxProps<T extends ElementType = 'span'> = {
   checkedIcon?: ReactNode;
   /** 自定义半选图标 */
   indeterminateIcon?: ReactNode;
+  /** ref引用 */
+  ref?: Ref<HTMLElement>;
 } & Omit<HeadlessCheckboxProps<T>, 'className' | 'value'>;
 
 const CheckboxBase = <T extends ElementType = 'span'>(

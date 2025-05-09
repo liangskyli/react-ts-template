@@ -91,6 +91,7 @@ pnpm build:pro
 - **Immer**：简化不可变数据结构操作，尤其在多层次嵌套对象中处理更方便。
 - **[optics-ts](https://github.com/akheron/optics-ts)**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
 - **classnames**：动态类名管理工具，特别适合条件渲染样式。
+- **[react-hook-form](https://github.com/react-hook-form/react-hook-form)**：form表单管理和验证。
 - **[@liangskyli/axios-request](https://github.com/liangskyli/request/blob/main/packages/axios-request/README.md)**：封装 HTTP 请求库，更方便与后端接口对接。
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
 - **单元测试**：基于vitest实现代码的单元测试。
@@ -104,6 +105,7 @@ pnpm build:pro
 - Headless UI
 - Zustand (状态管理)
 - Axios (HTTP 请求)
+- react-hook-form
 
 ### 工具链
 - ESLint
@@ -159,6 +161,7 @@ pnpm build:pro
 │ ├── styles # 样式
 │ ├── types # TypeScript 类型定义
 │ └── utils # 工具函数
+├── .browserslistrc # browserslist 配置文件，用于 浏览器兼容性
 ├── .commitlintrc.js # Commitlint 配置文件，用于 Git 提交信息的风格检查
 ├── .editorconfig # 编辑器配置文件，用于统一不同编辑器的代码风格
 ├── .env # 基础环境配置文件
@@ -178,8 +181,10 @@ pnpm build:pro
 ├── mock.config.ts # mock服务配置文件
 ├── package.ts # 包配置文件
 ├── pnpm-lock.yaml # 安装包锁定文件
+├── postcss.config.js # postcss 配置文件
 ├── README.md
 ├── stylelint.config.js # Stylelint 配置文件，用于样式文件的风格和错误检查
+├── tailwind.config.js # tailwind 配置文件
 ├── tsconfig.json # TypeScript 配置文件
 ├── vite.config.ts # Vite 配置文件，用于定义 Vite 项目的构建和服务选项
 ├── vitest.config.ts # 单元测试配置文件
