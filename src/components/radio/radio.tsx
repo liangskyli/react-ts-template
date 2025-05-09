@@ -16,6 +16,8 @@ export type RadioProps<TType = string, TTag extends ElementType = 'span'> = {
   labelClassName?: string;
   /** ref引用 */
   ref?: Ref<HTMLElement>;
+  /** 是否允许取消选择 */
+  allowDeselect?: boolean;
 } & Omit<HeadlessRadioProps<TTag, TType>, 'className'>;
 
 const Radio = <TType = string, TTag extends ElementType = 'span'>(
@@ -28,6 +30,7 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
     boxClassName,
     dotClassName,
     labelClassName,
+    allowDeselect,
     ...rest
   } = props;
 
@@ -42,6 +45,35 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
         className,
       )}
       {...rest}
+      onClick={(e)=>{
+        if(allowDeselect) {
+          console.log('aa');
+        }
+        const radio = e.currentTarget;
+        if (e.currentTarget.getAttribute('data-headlessui-state')?.includes('checked')) {
+          e.preventDefault();
+        }
+        const radioGroup = radio.closest('[role="radiogroup"]');
+        const onChange = radioGroup.__HEADLESSUI_RADIO_GROUP_CONTEXT;//?.onChange;
+
+        //const radioContext = (radio as any).__HEADLESSUI_RADIO_CONTEXT;
+        console.log('radio:',radio,onChange);
+      }}
+      /*onClick11={allowDeselect ? (e) => {
+        // 获取当前 RadioGroup 的值
+        const radioGroup = e.currentTarget.closest('[role="radiogroup"]');
+        if (!radioGroup) return;
+
+        // 如果当前已选中，则阻止默认行为并触发 onChange 为 null
+        if (e.currentTarget.getAttribute('data-headlessui-state')?.includes('checked')) {
+          e.preventDefault();
+          // 查找 RadioGroup 的 onChange 处理函数并调用
+          const onChange = (radioGroup as any).__HEADLESSUI_RADIO_GROUP_CONTEXT?.onChange;
+          if (onChange) {
+            onChange(null);
+          }
+        }
+      } : undefined}*/
     >
       {(radioRenderProp) => {
         const { checked } = radioRenderProp;
