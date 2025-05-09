@@ -16,6 +16,7 @@ export type RadioGroupProps<
   children?: ReactNode;
   /** react-hook-form ref */
   formRef?: RefCallBack;
+  ref?: React.Ref<HTMLElement>;
 } & Omit<HeadlessRadioGroupProps<TTag, TType>, 'className'>;
 
 const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
