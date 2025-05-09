@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import RadioGroup from '@/components/radio';
 
-const RadioGroupDemo = () => {
+const RadioDemo = () => {
   // 字符串类型示例
   const [stringValue, setStringValue] = useState<string>('apple');
 
@@ -87,4 +87,4 @@ const RadioGroupDemo = () => {
   );
 };
 
-export default RadioGroupDemo;
+export default RadioDemo;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import TextArea from '@/components/textarea';
 
-const TextAreaDemo = () => {
+const TextareaDemo = () => {
   const [value, setValue] = useState('');
 
   return (
@@ -67,4 +67,4 @@ const TextAreaDemo = () => {
   );
 };
 
-export default TextAreaDemo;
+export default TextareaDemo;
