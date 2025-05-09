@@ -148,10 +148,12 @@ const FormDemo = () => {
             <>
               <TextArea
                 className="mb-1"
+                textareaClassName="data-[invalid]:border-pink-500 focus:data-[invalid]:border-pink-500 focus:data-[invalid]:ring-pink-500"
                 ref={field.ref}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
+                invalid={!!fieldState.error}
                 placeholder="请输入内容"
               />
               {fieldState.error && (
