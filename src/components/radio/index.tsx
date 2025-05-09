@@ -8,7 +8,7 @@ import Radio from '@/components/radio/radio.tsx';
 import { cn } from '@/utils/styles';
 
 export type RadioGroupProps<
-  TType extends string | number = string | number,
+  TType = string,
   TTag extends ElementType = 'div',
 > = {
   /** 自定义类名 */
@@ -18,10 +18,7 @@ export type RadioGroupProps<
   formRef?: RefCallBack;
 } & Omit<HeadlessRadioGroupProps<TTag, TType>, 'className'>;
 
-const RadioGroupBase = <
-  TType extends string | number = string | number,
-  TTag extends ElementType = 'div',
->(
+const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
   props: RadioGroupProps<TType, TTag>,
 ) => {
   const { className, children, formRef, value, ...rest } = props;

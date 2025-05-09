@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import type {
   FieldPath,
@@ -16,19 +15,6 @@ const FormFiled1 = <T extends FieldValues = FieldValues>(
   props: IFormFiled1<T>,
 ) => {
   const { form, prefixName = '' } = props;
-
-  // 确保默认值被正确注册
-  useEffect(() => {
-    const fieldName = `${prefixName}name1` as FieldPath<T>;
-    const currentValue = form.getValues(fieldName);
-    if (currentValue === undefined) {
-      // useForm values 设置值，但name1不设置时，defaultValue无效的问题
-      form.setValue(fieldName, 'test' as FieldPathValue<T, FieldPath<T>>, {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-    }
-  }, [form, prefixName]);
 
   return (
     <>
