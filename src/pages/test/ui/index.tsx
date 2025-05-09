@@ -7,6 +7,7 @@ import RadioGroupDemo from '@/pages/test/components/RadioGroupDemo.tsx';
 import SwitchDemo from '@/pages/test/components/SwitchDemo.tsx';
 import TextAreaDemo from '@/pages/test/components/TextAreaDemo.tsx';
 import ToastDemo from '@/pages/test/components/ToastDemo.tsx';
+import FormDemo from '@/pages/test/components/form-demo.tsx';
 
 const Index = () => {
   return (
@@ -21,6 +22,7 @@ const Index = () => {
       <TextAreaDemo />
       <SwitchDemo />
       <ListDemo />
+      <FormDemo />
     </div>
   );
 };
