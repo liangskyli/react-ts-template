@@ -2,6 +2,8 @@ import { Controller, useForm } from 'react-hook-form';
 import Button from '@/components/button';
 import Checkbox from '@/components/checkbox';
 import RadioGroup from '@/components/radio';
+import Switch from '@/components/switch';
+import TextArea from '@/components/textarea';
 import FormFiled1 from '@/pages/test/components/form-field1.tsx';
 
 type FormValues1 = {
@@ -15,6 +17,8 @@ type FormValues1 = {
   };
   name3: number | null;
   name4: number[];
+  name5: string;
+  name6: boolean;
 };
 
 type FormValues2 = {
@@ -37,6 +41,8 @@ const FormDemo = () => {
       },
       name3: null,
       name4: [],
+      name5: '',
+      name6: false,
     },
   });
   const form2 = useForm<FormValues2>();
@@ -88,7 +94,12 @@ const FormDemo = () => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
               >
-                <RadioGroup.Radio value={1}>选项 1</RadioGroup.Radio>
+                <RadioGroup.Radio
+                  /*ref={field.ref}*/
+                  value={1}
+                >
+                  选项 1
+                </RadioGroup.Radio>
                 <RadioGroup.Radio value={2}>选项 2</RadioGroup.Radio>
                 <RadioGroup.Radio value={3}>选项 3</RadioGroup.Radio>
               </RadioGroup>
@@ -112,7 +123,12 @@ const FormDemo = () => {
                 value={field.value}
                 onChange={field.onChange}
               >
-                <Checkbox value={1}>选项1</Checkbox>
+                <Checkbox
+                  /*ref={field.ref}*/
+                  value={1}
+                >
+                  选项1
+                </Checkbox>
                 <Checkbox value={2}>选项2</Checkbox>
                 <Checkbox value={3}>选项3</Checkbox>
               </Checkbox.Group>
@@ -124,10 +140,54 @@ const FormDemo = () => {
             </>
           )}
         />
+        <Controller
+          name="name5"
+          control={form1.control}
+          rules={{ required: 'name5 is required' }}
+          render={({ field, fieldState }) => (
+            <>
+              <TextArea
+                className="mb-1"
+                ref={field.ref}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="请输入内容"
+              />
+              {fieldState.error && (
+                <div className="text-left text-red">
+                  {fieldState.error.message}
+                </div>
+              )}
+            </>
+          )}
+        />
+        <Controller
+          name="name6"
+          control={form1.control}
+          rules={{ required: 'name5 is required' }}
+          render={({ field, fieldState }) => (
+            <>
+              <Switch
+                /** 移动端div,span元素才可滚动定位 */
+                as={'div'}
+                ref={field.ref}
+                checked={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+              {fieldState.error && (
+                <div className="text-left text-red">
+                  {fieldState.error.message}
+                </div>
+              )}
+            </>
+          )}
+        />
         <Button onClick={submitHandler1} loading={form1.formState.isSubmitting}>
           提交1
         </Button>
-        <div className="p-[300px]"></div>
+        <div className="py-[400px]"></div>
         <Button onClick={submitHandler1} loading={form1.formState.isSubmitting}>
           提交滚动定位
         </Button>

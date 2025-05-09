@@ -17,6 +17,7 @@ export type RadioProps<
   dotClassName?: string;
   /** 单选框文本类名 */
   labelClassName?: string;
+  ref?: React.Ref<HTMLElement>;
 } & Omit<HeadlessRadioProps<TTag, TType>, 'className'>;
 
 const Radio = <

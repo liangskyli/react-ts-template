@@ -31,6 +31,7 @@ export type SwitchProps<TTag extends ElementType = 'button'> = {
   checkedTextClassName?: string;
   /** 非选中时的文本类名 */
   uncheckedTextClassName?: string;
+  ref?: React.Ref<HTMLButtonElement>;
 } & Omit<HeadlessSwitchProps<TTag>, 'checked' | 'onChange' | 'className'>;
 
 const Switch = <TTag extends ElementType = 'button'>(
