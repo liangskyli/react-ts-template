@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode, Ref } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import type { RefCallBack } from 'react-hook-form';
@@ -16,7 +16,8 @@ export type RadioGroupProps<
   children?: ReactNode;
   /** react-hook-form ref */
   formRef?: RefCallBack;
-  ref?: React.Ref<HTMLElement>;
+  /** ref引用 */
+  ref?: Ref<HTMLElement>;
 } & Omit<HeadlessRadioGroupProps<TTag, TType>, 'className'>;
 
 const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(

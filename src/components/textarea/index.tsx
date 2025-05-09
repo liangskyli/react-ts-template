@@ -1,3 +1,4 @@
+import type { Ref } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Textarea as HeadlessTextarea } from '@headlessui/react';
 import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
@@ -21,7 +22,7 @@ export type TextAreaProps = {
   /** 值变化时的回调函数 */
   onChange?: (value: string) => void;
   /** ref引用 */
-  ref?: React.Ref<HTMLTextAreaElement>;
+  ref?: Ref<HTMLTextAreaElement>;
 } & Omit<HeadlessTextareaProps, 'onChange' | 'className'>;
 
 function TextArea(props: TextAreaProps) {

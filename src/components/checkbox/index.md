@@ -68,32 +68,33 @@ export default () => {
 
 ### Checkbox Props
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `value` | 复选框的值 | `string \| number` | - |
-| `checked` | 指定当前是否选中 | `boolean` | - |
-| `defaultChecked` | 初始是否选中 | `boolean` | `false` |
-| `disabled` | 禁用状态 | `boolean` | `false` |
-| `indeterminate` | 半选状态 | `boolean` | `false` |
-| `onChange` | 变化时的回调函数 | `(checked: boolean) => void` | - |
-| `children` | 复选框右侧的内容 | `ReactNode` | - |
-| `className` | 自定义类名 | `string` | - |
-| `boxClassName` | 复选框框类名 | `string` | - |
-| `checkClassName` | 复选框勾选图标类名 | `string` | - |
-| `labelClassName` | 复选框文本类名 | `string` | - |
-| `checkedIcon` | 自定义勾选图标 | `ReactNode` | `<DefaultCheckedIcon />` |
-| `indeterminateIcon` | 自定义半选图标 | `ReactNode` | `<DefaultIndeterminateIcon />` |
+| 属性                  | 说明        | 类型                           | 默认值                            |
+|---------------------|-----------|------------------------------|--------------------------------|
+| `value`             | 复选框的值     | `string \| number`           | -                              |
+| `checked`           | 指定当前是否选中  | `boolean`                    | -                              |
+| `defaultChecked`    | 初始是否选中    | `boolean`                    | `false`                        |
+| `disabled`          | 禁用状态      | `boolean`                    | `false`                        |
+| `indeterminate`     | 半选状态      | `boolean`                    | `false`                        |
+| `onChange`          | 变化时的回调函数  | `(checked: boolean) => void` | -                              |
+| `children`          | 复选框右侧的内容  | `ReactNode`                  | -                              |
+| `className`         | 自定义类名     | `string`                     | -                              |
+| `boxClassName`      | 复选框框类名    | `string`                     | -                              |
+| `checkClassName`    | 复选框勾选图标类名 | `string`                     | -                              |
+| `labelClassName`    | 复选框文本类名   | `string`                     | -                              |
+| `checkedIcon`       | 自定义勾选图标   | `ReactNode`                  | `<DefaultCheckedIcon />`       |
+| `indeterminateIcon` | 自定义半选图标   | `ReactNode`                  | `<DefaultIndeterminateIcon />` |
 
 ### Checkbox.Group Props
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `value` | 指定选中的选项 | `(string \| number)[]` | - |
-| `defaultValue` | 默认选中的选项 | `(string \| number)[]` | `[]` |
-| `disabled` | 整组禁用 | `boolean` | `false` |
-| `onChange` | 变化时的回调函数 | `(value: (string \| number)[]) => void` | - |
-| `children` | 复选框组的内容 | `ReactNode` | - |
-| `className` | 自定义类名 | `string` | - |
+| 属性             | 说明                  | 类型                                      | 默认值     |
+|----------------|---------------------|-----------------------------------------|---------|
+| `value`        | 指定选中的选项             | `(string \| number)[]`                  | -       |
+| `defaultValue` | 默认选中的选项             | `(string \| number)[]`                  | `[]`    |
+| `disabled`     | 整组禁用                | `boolean`                               | `false` |
+| `onChange`     | 变化时的回调函数            | `(value: (string \| number)[]) => void` | -       |
+| `children`     | 复选框组的内容             | `ReactNode`                             | -       |
+| `className`    | 自定义类名               | `string`                                | -       |
+| `formRef`      | react-hook-form ref | `RefCallBack`                           | -       |
 
 ## 样式定制
 
