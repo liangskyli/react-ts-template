@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   prefix: '',
@@ -21,5 +23,24 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // 添加自定义插件，只生成 pb-safe-bottom 类
+    plugin(function ({ addUtilities }) {
+      const newUtilities = {
+        '.pb-safe-area': {
+          'padding-bottom': 'env(safe-area-inset-bottom)',
+        },
+        '.pt-safe-area': {
+          'padding-top': 'env(safe-area-inset-top)',
+        },
+        '.pl-safe-area': {
+          'padding-left': 'env(safe-area-inset-left)',
+        },
+        '.pr-safe-area': {
+          'padding-right': 'env(safe-area-inset-right)',
+        },
+      };
+      addUtilities(newUtilities);
+    }),
+  ],
 };

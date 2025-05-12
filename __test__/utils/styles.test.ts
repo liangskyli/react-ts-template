@@ -5,6 +5,10 @@ describe('cn utility function', () => {
   it('should merge tailwind classes correctly', () => {
     expect(cn('px-2 py-1', 'px-4')).toBe('py-1 px-4');
     expect(cn('p-4', 'p-6')).toBe('p-6');
+    expect(cn('pb-safe-area', 'pb-6')).toBe('pb-6');
+    expect(cn('pt-safe-area', 'pt-6')).toBe('pt-6');
+    expect(cn('pl-safe-area', 'pl-6')).toBe('pl-6');
+    expect(cn('pr-safe-area', 'pr-6')).toBe('pr-6');
     expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
     expect(cn('z-1', 'z-mask')).toBe('z-mask');
     expect(cn('bg-main', 'bg-red-500', 'bg-red')).toBe('bg-red');

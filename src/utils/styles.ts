@@ -6,6 +6,10 @@ const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
       z: [{ z: ['popup', 'mask', 'toast'] }],
+      pb: [{ pb: ['safe-area'] }],
+      pt: [{ pt: ['safe-area'] }],
+      pl: [{ pl: ['safe-area'] }],
+      pr: [{ pr: ['safe-area'] }],
     },
   },
 });
