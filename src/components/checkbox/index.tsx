@@ -13,7 +13,9 @@ export type { CheckboxGroupProps };
 export type CheckboxProps<T extends ElementType = 'span'> = {
   /** 复选框的值 */
   value?: string | number;
-  /** 复选框右侧的内容 */
+  /** 是否全部自定义 */
+  isCustom?: boolean;
+  /** 复选框右侧的内容或全部自定义内容 */
   children?: ReactNode;
   /** 自定义类名 */
   className?: string;
@@ -38,6 +40,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
 ) => {
   const {
     value,
+    isCustom,
     checked: checkedProp,
     defaultChecked,
     disabled = false,
@@ -95,36 +98,46 @@ const CheckboxBase = <T extends ElementType = 'span'>(
       indeterminate={indeterminate}
       {...rest}
     >
-      <div
-        className={cn(
-          'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border transition-colors',
-          'border-gray-300 bg-white',
-          'group-data-[checked]:border-blue-600 group-data-[checked]:bg-blue-600',
-          'group-data-[disabled]:cursor-not-allowed',
-          'group-data-[hover]:hover:border-blue-500',
-          boxClassName,
+      <>
+        {isCustom ? (
+          <>{children}</>
+        ) : (
+          <>
+            <div
+              className={cn(
+                'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border transition-colors',
+                'border-gray-300 bg-white',
+                'group-data-[checked]:border-blue-600 group-data-[checked]:bg-blue-600',
+                'group-data-[disabled]:cursor-not-allowed',
+                'group-data-[hover]:hover:border-blue-500',
+                boxClassName,
+              )}
+            >
+              {(checked || indeterminate) && (
+                <span
+                  className={cn('absolute h-3 w-3 text-white', checkClassName)}
+                >
+                  {checked && indeterminate
+                    ? indeterminateIcon
+                    : checked && checkedIcon}
+                </span>
+              )}
+            </div>
+            {children && (
+              <span
+                className={cn(
+                  'ml-2 cursor-pointer select-none',
+                  'text-gray-700',
+                  'group-data-[disabled]:cursor-not-allowed',
+                  labelClassName,
+                )}
+              >
+                {children}
+              </span>
+            )}
+          </>
         )}
-      >
-        {(checked || indeterminate) && (
-          <span className={cn('absolute h-3 w-3 text-white', checkClassName)}>
-            {checked && indeterminate
-              ? indeterminateIcon
-              : checked && checkedIcon}
-          </span>
-        )}
-      </div>
-      {children && (
-        <span
-          className={cn(
-            'ml-2 cursor-pointer select-none',
-            'text-gray-700',
-            'group-data-[disabled]:cursor-not-allowed',
-            labelClassName,
-          )}
-        >
-          {children}
-        </span>
-      )}
+      </>
     </HeadlessCheckbox>
   );
 };

@@ -108,6 +108,25 @@ const CheckboxDemo = () => {
           <Checkbox value="Y">选项Y</Checkbox>
           <Checkbox value="Z">选项Z</Checkbox>
         </Checkbox.Group>
+
+        <h3>自定义样式：类似antd-mobile Selector</h3>
+        <Checkbox.Group value={groupValue} onChange={setGroupValue}>
+          <Checkbox value="1" isCustom>
+            <div className="cursor-pointer bg-gray-300 p-2 group-data-[checked]:bg-blue-300 group-data-[checked]:text-blue-600">
+              选项1
+            </div>
+          </Checkbox>
+          <Checkbox value="2" isCustom>
+            <div className="cursor-pointer bg-gray-300 p-2 group-data-[checked]:bg-blue-300 group-data-[checked]:text-blue-600">
+              选项2
+            </div>
+          </Checkbox>
+          <Checkbox value="3" isCustom>
+            <div className="cursor-pointer bg-gray-300 p-2 group-data-[checked]:bg-blue-300 group-data-[checked]:text-blue-600">
+              选项3
+            </div>
+          </Checkbox>
+        </Checkbox.Group>
       </div>
     </div>
   );

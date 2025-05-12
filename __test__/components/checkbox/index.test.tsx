@@ -162,4 +162,23 @@ describe('Checkbox', () => {
     fireEvent.click(checkbox as HTMLElement);
     expect(checkbox).not.toHaveAttribute('data-headlessui-state', 'checked');
   });
+
+  test('renders with custom content when isCustom is true', () => {
+    const { container } = render(
+      <Checkbox isCustom>
+        <div data-testid="custom-content">自定义内容</div>
+      </Checkbox>,
+    );
+
+    const checkbox = container.querySelector('[role="checkbox"]');
+    expect(checkbox).toBeInTheDocument();
+
+    // 验证自定义内容被渲染
+    expect(screen.getByTestId('custom-content')).toBeInTheDocument();
+    expect(screen.getByText('自定义内容')).toBeInTheDocument();
+
+    // 验证默认的 box 和 check 元素没有被渲染
+    const box = checkbox?.querySelector('div');
+    expect(box).not.toHaveClass('border-gray-300');
+  });
 });
