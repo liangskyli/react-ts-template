@@ -54,6 +54,28 @@ export default () => {
 };
 ```
 
+### 支持取消选择
+
+```tsx
+import { useState } from 'react';
+import RadioGroup from '@/components/radio';
+
+export default () => {
+  const [value, setValue] = useState('apple');
+  
+  return (
+    <>
+      <RadioGroup value={value} onChange={setValue} allowDeselect>
+        <RadioGroup.Radio value="apple">苹果</RadioGroup.Radio>
+        <RadioGroup.Radio value="banana">香蕉</RadioGroup.Radio>
+        <RadioGroup.Radio value="orange">橙子</RadioGroup.Radio>
+      </RadioGroup>
+      <div>当前选中: {value === null ? '无' : value}</div>
+    </>
+  );
+};
+```
+
 ### 禁用状态
 
 ```tsx
@@ -137,19 +159,20 @@ export default () => (
 | `className`    | 自定义类名               | `string`                 | -       |
 | `children`     | 子元素                 | `ReactNode`              | -       |
 | `formRef`      | react-hook-form ref | `RefCallBack`            | -       |
+| `allowDeselect`| 是否允许取消选择            | `boolean`                | `false` |
 
 ### RadioGroup.Radio Props
 
-| 属性               | 说明       | 类型          | 默认值     |
-|------------------|----------|-------------|---------|
-| `value`          | 单选框的值    | `TType`     | -       |
-| `disabled`       | 是否禁用     | `boolean`   | `false` |
-| `children`       | 单选框右侧的内容 | `ReactNode` | -       |
-| `className`      | 自定义类名    | `string`    | -       |
-| `boxClassName`   | 单选框框类名   | `string`    | -       |
-| `dotClassName`   | 单选框选中点类名 | `string`    | -       |
-| `labelClassName` | 单选框文本类名  | `string`    | -       |
-
+| 属性               | 说明               | 类型          | 默认值     |
+|------------------|------------------|-------------|---------|
+| `value`          | 单选框的值            | `TType`     | -       |
+| `disabled`       | 是否禁用             | `boolean`   | `false` |
+| `isCustom`       | 是否全部自定义          | `boolean`   | `false` |
+| `children`       | 单选框右侧的内容或全部自定义内容 | `ReactNode` | -       |
+| `className`      | 自定义类名            | `string`    | -       |
+| `boxClassName`   | 单选框框类名           | `string`    | -       |
+| `dotClassName`   | 单选框选中点类名         | `string`    | -       |
+| `labelClassName` | 单选框文本类名          | `string`    | -       |
 ## 样式定制
 
 RadioGroup 使用 Tailwind CSS 进行样式设置，支持以下预设样式：
@@ -161,9 +184,9 @@ RadioGroup 使用 Tailwind CSS 进行样式设置，支持以下预设样式：
 
 可以通过以下类名属性进行样式定制：
 - `className`: RadioGroup 容器样式
-- `boxClassName`: 单选框框样式
-- `dotClassName`: 单选框选中点样式
-- `labelClassName`: 单选框文本样式
+- `boxClassName`: 单选框框样式，仅isCustom为false有效
+- `dotClassName`: 单选框选中点样式，仅isCustom为false有效
+- `labelClassName`: 单选框文本样式，仅isCustom为false有效
 
 ## 无障碍
 

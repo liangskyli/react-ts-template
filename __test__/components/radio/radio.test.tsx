@@ -122,4 +122,75 @@ describe('Radio Component', () => {
     const label = radio?.querySelector('span:last-child');
     expect(label).not.toBeInTheDocument();
   });
+
+  test('处理单选按钮取消选择事件', () => {
+    const handleChange = vi.fn();
+    const { container } = render(
+      <RadioGroup value="1" onChange={handleChange} allowDeselect>
+        <RadioGroup.Radio value="1">选项 1</RadioGroup.Radio>
+      </RadioGroup>,
+    );
+
+    // 模拟 dispatchEvent 方法
+    const dispatchEventSpy = vi.spyOn(HTMLElement.prototype, 'dispatchEvent');
+
+    // 获取单选按钮并点击它（它已经是选中状态）
+    const radio = container.querySelector('[role="radio"]');
+    fireEvent.click(radio as HTMLElement);
+
+    // 验证自定义事件已被分发
+    expect(dispatchEventSpy).toHaveBeenCalled();
+
+    // 查找 radio-deselect 类型的事件
+    const radioDeselectEvent = dispatchEventSpy.mock.calls.find(
+      (call) => call[0].type === 'radio-deselect',
+    )?.[0];
+
+    expect(radioDeselectEvent).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((radioDeselectEvent as any)?.detail.value).toBe('1');
+
+    // 清理
+    dispatchEventSpy.mockRestore();
+  });
+
+  test('renders with custom content when isCustom is true', () => {
+    const { container } = render(
+      <RadioGroup>
+        <RadioGroup.Radio value="1" isCustom>
+          <div data-testid="custom-content">自定义内容</div>
+        </RadioGroup.Radio>
+      </RadioGroup>,
+    );
+
+    const radio = container.querySelector('[role="radio"]');
+    expect(radio).toBeInTheDocument();
+
+    // 验证自定义内容被渲染
+    expect(screen.getByTestId('custom-content')).toBeInTheDocument();
+    expect(screen.getByText('自定义内容')).toBeInTheDocument();
+
+    // 验证默认的 box 和 dot 元素没有被渲染
+    const box = radio?.querySelector('div');
+    expect(box).not.toHaveClass('border-gray-300');
+  });
+
+  test('支持取消选择功能', () => {
+    const handleChange = vi.fn();
+    const handleClick = vi.fn();
+    render(
+      <RadioGroup value="1" onChange={handleChange} allowDeselect>
+        <RadioGroup.Radio value="1" onClick={handleClick}>
+          选项 1
+        </RadioGroup.Radio>
+      </RadioGroup>,
+    );
+
+    // 点击已选中的单选按钮
+    fireEvent.click(screen.getByRole('radio'));
+
+    // 验证 onChange 被调用，且值为 null（表示取消选择）
+    expect(handleChange).toHaveBeenCalledWith(null);
+    expect(handleClick).toBeCalledTimes(1);
+  });
 });

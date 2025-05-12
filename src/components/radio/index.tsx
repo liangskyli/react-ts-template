@@ -1,6 +1,5 @@
 import type { ElementType, ReactNode, Ref } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
 import { RadioGroup as HeadlessRadioGroup } from '@headlessui/react';
 import type { RadioGroupProps as HeadlessRadioGroupProps } from '@headlessui/react';
@@ -18,12 +17,23 @@ export type RadioGroupProps<
   formRef?: RefCallBack;
   /** ref引用 */
   ref?: Ref<HTMLElement>;
+  /** 是否允许取消选择 */
+  allowDeselect?: boolean;
 } & Omit<HeadlessRadioGroupProps<TTag, TType>, 'className'>;
 
 const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
   props: RadioGroupProps<TType, TTag>,
 ) => {
-  const { className, children, formRef, value, ...rest } = props;
+  const {
+    className,
+    children,
+    formRef,
+    value,
+    onChange,
+    defaultValue,
+    allowDeselect,
+    ...rest
+  } = props;
   const radioGroupRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -44,11 +54,39 @@ const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
     formRef(refObject);
   }, [formRef]);
 
+  const [valueState, setValueState] = useState<TType | undefined>(defaultValue);
+  const innerValue = value ?? valueState;
+  const handleChange = useCallback(
+    (newValue: TType) => {
+      setValueState(newValue);
+      onChange?.(newValue);
+    },
+    [onChange],
+  );
+
+  useEffect(() => {
+    const handleDeselect: EventListener = () => {
+      if (allowDeselect) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        handleChange(null as any);
+      }
+    };
+
+    const element = radioGroupRef.current;
+    if (element) {
+      element.addEventListener('radio-deselect', handleDeselect);
+      return () => {
+        element.removeEventListener('radio-deselect', handleDeselect);
+      };
+    }
+  }, [allowDeselect, handleChange]);
+
   return (
     <HeadlessRadioGroup
       ref={radioGroupRef}
       className={cn('flex flex-wrap', className)}
-      value={value}
+      value={innerValue}
+      onChange={handleChange}
       {...rest}
     >
       {children}

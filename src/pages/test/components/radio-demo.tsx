@@ -54,7 +54,7 @@ const RadioDemo = () => {
 
       {/* 自定义样式 */}
       <div>
-        <h3 className="mb-2 text-lg font-medium">自定义样式</h3>
+        <h3 className="mb-2 text-lg font-medium">自定义样式1</h3>
         <RadioGroup defaultValue="B">
           <RadioGroup.Radio
             value="A"
@@ -80,6 +80,30 @@ const RadioDemo = () => {
             labelClassName="text-[20px]"
           >
             选项 C大尺寸
+          </RadioGroup.Radio>
+        </RadioGroup>
+      </div>
+
+      {/* 自定义样式 */}
+      <div>
+        <h3 className="mb-2 text-lg font-medium">
+          自定义样式2 类似antd-mobile Selector
+        </h3>
+        <RadioGroup defaultValue="B" allowDeselect>
+          <RadioGroup.Radio value="A" isCustom>
+            <div className="cursor-pointer bg-gray-300 p-2 group-data-[checked]:bg-blue-300 group-data-[checked]:text-blue-600">
+              选项 A
+            </div>
+          </RadioGroup.Radio>
+          <RadioGroup.Radio value="B" isCustom>
+            <div className="cursor-pointer bg-gray-300 p-2 group-data-[checked]:bg-blue-300 group-data-[checked]:text-blue-600">
+              选项 B
+            </div>
+          </RadioGroup.Radio>
+          <RadioGroup.Radio value="C" isCustom>
+            <div className="cursor-pointer bg-gray-300 p-2 group-data-[checked]:bg-blue-300 group-data-[checked]:text-blue-600">
+              选项 B
+            </div>
           </RadioGroup.Radio>
         </RadioGroup>
       </div>
