@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Button from '@/components/button';
+import Popover from '@/components/popover';
 import Popup from '@/components/popup';
 import Toast from '@/components/toast';
 
@@ -72,6 +73,19 @@ const PopupDemo = () => {
         <div className="p-4" onClick={() => console.log('content')}>
           <h3 className="mb-2 text-lg font-bold">标题</h3>
           <p>这里是弹出层内容</p>
+          <div className="mb-2">
+            <Popover
+              content={
+                <div className="w-[150px]">
+                  <h3 className="mb-2 font-medium">标题</h3>
+                  <p className="text-gray-600">这是一个自定义内容的 Popover</p>
+                </div>
+              }
+              placement="top"
+            >
+              <Button>顶部部弹出</Button>
+            </Popover>
+          </div>
           <div className="flex flex-col space-y-2">
             <Button
               onClick={() => {
@@ -112,7 +126,6 @@ const PopupDemo = () => {
         visible={visibleRightPopup}
         onClose={() => setVisibleRightPopup(false)}
         position="right"
-        bodyClassName="max-h-none"
       >
         <div className="relative">
           <div className="absolute left-0 right-0 top-[-30px] h-[30px] px-4">
