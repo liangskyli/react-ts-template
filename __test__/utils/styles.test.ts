@@ -10,7 +10,7 @@ describe('cn utility function', () => {
     expect(cn('pl-safe-area', 'pl-6')).toBe('pl-6');
     expect(cn('pr-safe-area', 'pr-6')).toBe('pr-6');
     expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
-    expect(cn('z-1', 'z-mask')).toBe('z-mask');
+    expect(cn('z-0', 'z-mask')).toBe('z-mask');
     expect(cn('bg-main', 'bg-red-500', 'bg-red')).toBe('bg-red');
   });
 

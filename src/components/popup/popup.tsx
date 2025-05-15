@@ -196,7 +196,7 @@ const Popup = (props: PopupProps) => {
       >
         <div
           className={cn(
-            'z-1 fixed overflow-auto bg-white',
+            'fixed z-0 overflow-auto bg-white',
             positionStyles[position],
             bodyClassName,
           )}
