@@ -1,7 +1,10 @@
 import Button from '@/components/button';
 import Icon from '@/components/icon';
+import { useRouter } from '@/hooks/use-router.ts';
 
 const ButtonDemo = () => {
+  const router = useRouter();
+
   return (
     <div className="space-y-4 px-2 pb-2">
       {/* 基础用法 */}
@@ -60,7 +63,9 @@ const ButtonDemo = () => {
 
       {/* 块级按钮 */}
       <div>
-        <Button block>块级按钮</Button>
+        <Button block onClick={() => router.push('/test/test1')}>
+          块级按钮
+        </Button>
       </div>
     </div>
   );
