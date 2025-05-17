@@ -17,6 +17,7 @@ export default defineConfig({
       enabled: true,
       include: [
         'src/components/**/*.{js,jsx,ts,tsx}',
+        'src/hooks/**/*.{js,jsx,ts,tsx}',
         'src/utils/**/*.{js,jsx,ts,tsx}',
       ],
       exclude: [
