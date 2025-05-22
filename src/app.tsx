@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router/dom';
-import AjaxLoading from '@/components/ajax-loading';
+import Loading from '@/components/loading';
 import { useAjaxLoadingStore } from '@/store';
 import router from './router';
 
@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <AjaxLoading visible={isLoading} />
+      <Loading visible={isLoading} />
     </>
   );
 }

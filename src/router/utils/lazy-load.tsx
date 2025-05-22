@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 import { Suspense } from 'react';
-import Loading from '@/router/utils/loading.tsx';
+import Loading from '@/components/loading';
 
 /**
  * 组件懒加载，结合Suspense实现
@@ -10,7 +10,7 @@ import Loading from '@/router/utils/loading.tsx';
 export const LazyLoad = (Component: FC): ReactNode => {
   return (
     // fallback的loading效果可自行修改为ui组件库的loading组件或骨架屏等等
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loading visible={true} />}>
       <Component />
     </Suspense>
   );

@@ -326,5 +326,13 @@ const twConfig = {
     },
     content: 'tw-fixed tw-inset-0 tw-z-mask tw-bg-mask',
   },
+  loading: {
+    mask: 'tw-bg-mask/0',
+    position:
+      'tw-absolute tw-left-1/2 tw-top-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2',
+    body: 'tw-flex tw-h-24 tw-w-24 tw-flex-col tw-items-center tw-justify-center tw-rounded-lg tw-bg-mask tw-text-white',
+    text: 'tw-mt-2 tw-text-sm',
+    loadingIcon: 'tw-h-10 tw-w-10 tw-animate-spin',
+  },
 };
 export { twConfig };

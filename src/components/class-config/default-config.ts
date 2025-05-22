@@ -323,5 +323,12 @@ const defaultConfig = {
     },
     content: 'fixed inset-0 z-mask bg-mask',
   },
+  loading: {
+    mask: 'bg-mask/0',
+    position: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+    body: 'flex h-24 w-24 flex-col items-center justify-center rounded-lg bg-mask text-white',
+    text: 'mt-2 text-sm',
+    loadingIcon: 'h-10 w-10 animate-spin',
+  },
 };
 export { defaultConfig };
