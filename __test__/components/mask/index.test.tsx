@@ -2,6 +2,29 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Mask from '@/components/mask';
 
+// Mock Transition
+vi.mock('@headlessui/react', () => ({
+  Transition: ({
+    show,
+    children,
+    afterLeave,
+    destroyOnClose,
+  }: {
+    show: boolean;
+    children: React.ReactNode;
+    afterLeave?: () => void;
+    destroyOnClose?: boolean;
+  }) => {
+    if (!show && destroyOnClose) {
+      return null;
+    }
+    if (!show && afterLeave) {
+      setTimeout(afterLeave, 0);
+    }
+    return show ? children : <div style={{ display: 'none' }}>{children}</div>;
+  },
+}));
+
 vi.mock('@/utils/use-lock-scroll', () => {
   return {
     useLockScroll: () => vi.fn(),

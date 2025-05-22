@@ -2,6 +2,7 @@ import type { ElementType, Ref } from 'react';
 import { useEffect, useState } from 'react';
 import { Input as HeadlessInput } from '@headlessui/react';
 import type { InputProps as HeadlessInputProps } from '@headlessui/react';
+import classConfig from '@/components/input/class-config.ts';
 import { cn } from '@/utils/styles';
 
 export type InputProps<TTag extends ElementType = 'input'> = {
@@ -126,18 +127,7 @@ const Input = (props: InputProps) => {
       inputMode={inputMode}
       min={min}
       max={max}
-      className={cn(
-        'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-700',
-        'transition-colors duration-200',
-        {
-          'focus:border-blue-600 focus:ring-1 focus:ring-blue-600': !readOnly,
-        },
-        'read-only:bg-gray-50',
-        'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-40',
-        'placeholder:text-gray-400',
-        'outline-none',
-        className,
-      )}
+      className={cn(classConfig.indexConfig({ readOnly }), className)}
       {...rest}
     />
   );

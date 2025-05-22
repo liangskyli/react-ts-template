@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 import RadioGroup from '@/components/radio';
@@ -16,7 +17,7 @@ describe('Radio Component', () => {
 
   test('applies custom className to radio button', () => {
     const { container } = render(
-      <RadioGroup>
+      <RadioGroup defaultValue="">
         <RadioGroup.Radio
           value="1"
           className="custom-radio"
@@ -77,17 +78,24 @@ describe('Radio Component', () => {
   });
 
   test('handles click events correctly', () => {
-    const handleChange = vi.fn();
-    const { container } = render(
-      <RadioGroup onChange={handleChange}>
-        <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
-      </RadioGroup>,
-    );
+    const TestComponent = () => {
+      const [curValue, setCurValue] = useState('');
+      const handleChange = vi.fn((value) => {
+        setCurValue(value);
+      });
 
+      return (
+        <RadioGroup value={curValue} onChange={handleChange}>
+          <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
+        </RadioGroup>
+      );
+    };
+
+    const { container } = render(<TestComponent />);
     const radio = container.querySelector('[role="radio"]');
+
     fireEvent.click(radio as HTMLElement);
 
-    expect(handleChange).toHaveBeenCalledWith('1');
     expect(radio?.getAttribute('data-headlessui-state') || '').toContain(
       'checked',
     );

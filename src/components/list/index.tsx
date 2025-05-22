@@ -7,6 +7,7 @@ import {
   List as VirtualizedList,
 } from 'react-virtualized';
 import type { CellMeasurerChildProps } from 'react-virtualized/dist/es/CellMeasurer';
+import classConfig from '@/components/list/class-config.ts';
 import { cn } from '@/utils/styles';
 
 export type ListProps = {
@@ -94,15 +95,7 @@ const ListBase = (props: ListProps) => {
   };
 
   return (
-    <div
-      className={cn(
-        'bg-white',
-        {
-          'h-[300px]': virtualScroll,
-        },
-        className,
-      )}
-    >
+    <div className={cn(classConfig.listConfig({ virtualScroll }), className)}>
       {virtualScroll ? (
         <AutoSizer>
           {(opts) => {
@@ -147,31 +140,30 @@ const ListItem = (props: ListItemProps) => {
 
   return (
     <div
-      className={cn(
-        'flex items-center border-b border-gray-100 px-4 py-3 last:border-b-0',
-        'data-[clickable]:cursor-pointer data-[clickable]:active:bg-gray-50',
-        'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40',
-        className,
-      )}
+      className={cn(classConfig.itemConfig, className)}
       data-clickable={clickable && !disabled ? true : undefined}
       data-disabled={disabled ? true : undefined}
       onClick={handleClick}
       {...rest}
     >
-      {prefix && <div className="mr-3">{prefix}</div>}
+      {prefix && <div className={classConfig.itemPrefixConfig}>{prefix}</div>}
 
-      <div className="flex-1">
+      <div className={classConfig.itemContentConfig.wrap}>
         {children || (
           <>
-            {title && <div className="text-base text-gray-900">{title}</div>}
+            {title && (
+              <div className={classConfig.itemContentConfig.title}>{title}</div>
+            )}
             {description && (
-              <div className="mt-1 text-sm text-gray-500">{description}</div>
+              <div className={classConfig.itemContentConfig.description}>
+                {description}
+              </div>
             )}
           </>
         )}
       </div>
 
-      {suffix && <div className="ml-3">{suffix}</div>}
+      {suffix && <div className={classConfig.itemSuffixConfig}>{suffix}</div>}
     </div>
   );
 };

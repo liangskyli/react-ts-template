@@ -10,6 +10,7 @@ import {
   shift as shiftMiddleware,
   useFloating,
 } from '@floating-ui/react';
+import classConfig from '@/components/popover/class-config.ts';
 import type { PopupProps } from '@/components/popup';
 import Popup from '@/components/popup';
 import { cn } from '@/utils/styles';
@@ -57,41 +58,6 @@ const getBaseDirection = (direction: Placement) => {
 };
 
 const getArrowStyles = (direction: Placement, bgColor: string) => {
-  const baseStyles = 'w-0 h-0 relative';
-
-  // 基本箭头样式，不包含颜色
-  const placementStyles: Record<Placement, string> = {
-    // 上方位置的箭头指向下方
-    top: 'mx-auto border-l-8 border-t-8 border-r-8 border-transparent mt-[-1px]',
-    'top-start':
-      'ml-4 border-l-8 border-t-8 border-r-8 border-transparent mt-[-1px]',
-    'top-end':
-      'mr-4 ml-auto border-l-8 border-t-8 border-r-8 border-transparent mt-[-1px]',
-
-    // 下方位置的箭头指向上方
-    bottom:
-      'mx-auto border-l-8 border-b-8 border-r-8 border-transparent mb-[-1px]',
-    'bottom-start':
-      'ml-4 border-l-8 border-b-8 border-r-8 border-transparent mb-[-1px]',
-    'bottom-end':
-      'mr-4 ml-auto border-l-8 border-b-8 border-r-8 border-transparent mb-[-1px]',
-
-    // 左侧位置的箭头指向右侧
-    left: 'my-auto border-t-8 border-l-8 border-b-8 border-transparent ml-[-1px]',
-    'left-start':
-      'mt-4 border-t-8 border-l-8 border-b-8 border-transparent ml-[-1px]',
-    'left-end':
-      'mb-4 mt-auto border-t-8 border-l-8 border-b-8 border-transparent ml-[-1px]',
-
-    // 右侧位置的箭头指向左侧
-    right:
-      'my-auto border-t-8 border-r-8 border-b-8 border-transparent mr-[-1px]',
-    'right-start':
-      'mt-4 border-t-8 border-r-8 border-b-8 border-transparent mr-[-1px]',
-    'right-end':
-      'mb-4 mt-auto border-t-8 border-r-8 border-b-8 border-transparent mr-[-1px]',
-  };
-
   // 获取基本方向
   const baseDirection = getBaseDirection(direction);
 
@@ -104,7 +70,7 @@ const getArrowStyles = (direction: Placement, bgColor: string) => {
   };
 
   return {
-    className: `${baseStyles} ${placementStyles[direction]}`,
+    className: classConfig.floatingArrowDirectionConfig({ direction }),
     style: arrowStyle,
     direction: baseDirection,
   };
@@ -207,43 +173,23 @@ const Popover = (props: PopoverProps) => {
           floatingRef.current = node;
         }
       }}
-      className={cn('z-0', bubbleClassName)}
+      className={cn(classConfig.floatingConfig.base, bubbleClassName)}
       style={floatingStyles}
     >
       <div
         className={cn(
-          'relative',
-          currentPlacement === 'top' && 'flex flex-col items-center',
-          currentPlacement === 'bottom' && 'flex flex-col-reverse items-center',
-          currentPlacement === 'left' && 'flex flex-row items-center',
-          currentPlacement === 'right' && 'flex flex-row-reverse items-center',
-          currentPlacement === 'top-start' && 'flex flex-col items-start',
-          currentPlacement === 'top-end' && 'flex flex-col items-end',
-          currentPlacement === 'bottom-start' &&
-            'flex flex-col-reverse items-start',
-          currentPlacement === 'bottom-end' &&
-            'flex flex-col-reverse items-end',
-          currentPlacement === 'left-start' && 'flex flex-row items-start',
-          currentPlacement === 'left-end' && 'flex flex-row items-end',
-          currentPlacement === 'right-start' &&
-            'flex flex-row-reverse items-start',
-          currentPlacement === 'right-end' && 'flex flex-row-reverse items-end',
+          classConfig.floatingWrapConfig({ direction: currentPlacement }),
         )}
       >
         <div
-          className={cn(
-            'rounded-lg p-3',
-            'shadow-[0_0_30px_0_rgba(0,0,0,.2)]',
-            'bg-white text-left',
-            contentClassName,
-          )}
+          className={cn(classConfig.floatingContentConfig, contentClassName)}
         >
           {typeof content === 'function' ? content(setOpen) : content}
         </div>
 
         <div
           className={cn(
-            'relative z-0',
+            classConfig.floatingArrowConfig,
             arrowStyles.className,
             arrow?.className,
           )}
@@ -259,7 +205,7 @@ const Popover = (props: PopoverProps) => {
   return (
     <>
       <div
-        className={cn('inline-block', className)}
+        className={cn(classConfig.popoverConfig, className)}
         ref={(node) => {
           // 同时设置两个 ref
           refs.setReference(node);
@@ -274,13 +220,9 @@ const Popover = (props: PopoverProps) => {
       <Popup
         visible={open}
         onClose={() => setOpen(false)}
-        maskClassName={cn(
-          'bg-mask/0',
-          { 'pointer-events-auto': !maskClickable },
-          { 'pointer-events-none': maskClickable },
-        )}
-        bodyClassName="bg-transparent static"
-        className="absolute"
+        maskClassName={cn(classConfig.popupMaskConfig({ maskClickable }))}
+        bodyClassName={classConfig.popupBodyConfig}
+        className={classConfig.popupConfig}
         getContainer={getContainer}
         position="none"
         destroyOnClose

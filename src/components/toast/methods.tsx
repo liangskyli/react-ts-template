@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { createImperative } from '@/components/popup/imperative.tsx';
 import Popup, { type PopupProps } from '@/components/popup/popup.tsx';
+import classConfig from '@/components/toast/class-config.ts';
 import type { GetContainer } from '@/utils/render-to-container.ts';
 import { cn } from '@/utils/styles.ts';
 
@@ -58,12 +59,6 @@ const imperativeToast = createImperative<
   type: 'toast',
 });
 
-const positionStyles = {
-  top: 'top-[20%]',
-  center: 'top-1/2 -translate-y-1/2',
-  bottom: 'bottom-[20%]',
-};
-
 const {
   show: showImperative,
   config,
@@ -92,10 +87,8 @@ const show = (
   // 单例模式
   clear(true);
   const newContent = (
-    <div className="mx-auto w-fit min-w-[120px] rounded-lg bg-mask px-4 py-3">
-      <div className="break-words text-center text-sm text-white">
-        {content}
-      </div>
+    <div className={classConfig.contentConfig.wrap}>
+      <div className={classConfig.contentConfig.text}>{content}</div>
     </div>
   );
   const { position: defaultConfigPosition } = getConfig();
@@ -109,16 +102,10 @@ const show = (
     position: 'none',
     // 强制关闭时销毁内容
     destroyOnClose: true,
-    maskClassName: cn(
-      'bg-mask/0',
-      { 'pointer-events-auto': !maskClickable },
-      { 'pointer-events-none': maskClickable },
-      maskClassName,
-    ),
-    className: cn('z-toast', className),
+    maskClassName: cn(classConfig.maskConfig({ maskClickable }), maskClassName),
+    className: cn(classConfig.toastConfig, className),
     bodyClassName: cn(
-      'bg-transparent left-1/2 -translate-x-1/2 w-[80vw] max-h-[80vh]',
-      positionStyles[toastPosition],
+      classConfig.bodyConfig({ position: toastPosition }),
       bodyClassName,
     ),
     getContainer,

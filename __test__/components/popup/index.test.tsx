@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Popup from '@/components/popup';
@@ -46,18 +47,21 @@ vi.mock('@headlessui/react', () => ({
     afterEnter?: () => void;
     beforeLeave?: () => void;
   }) => {
-    if (!show) {
-      beforeLeave?.();
-      setTimeout(() => {
-        afterLeave?.();
-      }, 0);
-      return null;
-    }
-    beforeEnter?.();
-    setTimeout(() => {
-      afterEnter?.();
-    }, 0);
-    return children;
+    useEffect(() => {
+      if (show) {
+        beforeEnter?.();
+        setTimeout(() => {
+          afterEnter?.();
+        }, 0);
+      } else {
+        beforeLeave?.();
+        setTimeout(() => {
+          afterLeave?.();
+        }, 0);
+      }
+    }, [afterEnter, afterLeave, beforeEnter, beforeLeave, show]);
+
+    return show ? children : null;
   },
 }));
 

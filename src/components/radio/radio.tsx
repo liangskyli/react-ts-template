@@ -1,6 +1,7 @@
 import type { ElementType, ReactNode, Ref } from 'react';
 import { Radio as HeadlessRadio } from '@headlessui/react';
 import type { RadioProps as HeadlessRadioProps } from '@headlessui/react';
+import classConfig from '@/components/radio/class-config.ts';
 import { cn } from '@/utils/styles';
 
 export type RadioProps<TType = string, TTag extends ElementType = 'span'> = {
@@ -57,13 +58,7 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
   return (
     <HeadlessRadio
       value={value}
-      className={cn(
-        'group relative flex items-center focus:outline-none',
-        '[&:not(:last-child)]:mr-1.5',
-        'active:opacity-80',
-        'data-[disabled]:opacity-40',
-        className,
-      )}
+      className={cn(classConfig.radioConfig, className)}
       onClick={handleClick}
       {...rest}
     >
@@ -75,33 +70,16 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
               <>{children}</>
             ) : (
               <>
-                <div
-                  className={cn(
-                    'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors',
-                    'border-gray-300 bg-white',
-                    'group-data-[checked]:border-blue-600',
-                    'group-data-[disabled]:cursor-not-allowed',
-                    'group-data-[hover]:hover:border-blue-500',
-                    boxClassName,
-                  )}
-                >
+                <div className={cn(classConfig.radioBoxConfig, boxClassName)}>
                   {checked && (
                     <span
-                      className={cn(
-                        'absolute h-2.5 w-2.5 rounded-full bg-blue-600',
-                        dotClassName,
-                      )}
+                      className={cn(classConfig.radioDotConfig, dotClassName)}
                     />
                   )}
                 </div>
                 {children && (
                   <span
-                    className={cn(
-                      'ml-2 cursor-pointer select-none',
-                      'text-gray-700',
-                      'group-data-[disabled]:cursor-not-allowed',
-                      labelClassName,
-                    )}
+                    className={cn(classConfig.radioLabelConfig, labelClassName)}
                   >
                     {children}
                   </span>

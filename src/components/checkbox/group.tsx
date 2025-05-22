@@ -2,6 +2,7 @@ import type { ReactNode, Ref } from 'react';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
+import classConfig from '@/components/checkbox/class-config.ts';
 import { cn } from '@/utils/styles';
 import { CheckboxContext } from './context';
 
@@ -67,7 +68,10 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         onChange: handleChange,
       }}
     >
-      <div ref={checkboxGroupRef} className={cn('flex flex-wrap', className)}>
+      <div
+        ref={checkboxGroupRef}
+        className={cn(classConfig.groupConfig, className)}
+      >
         {children}
       </div>
     </CheckboxContext.Provider>

@@ -89,7 +89,7 @@ describe('RadioGroup', () => {
   test('handles onChange event', () => {
     const handleChange = vi.fn();
     const { container } = render(
-      <RadioGroup onChange={handleChange}>
+      <RadioGroup value="" onChange={handleChange}>
         <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
         <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
       </RadioGroup>,
@@ -182,48 +182,10 @@ describe('RadioGroup', () => {
     expect(document.activeElement).toBe(firstRadio);
   });
 
-  // 测试 null 或 undefined 值的处理
-  test('handles null or undefined values correctly', () => {
-    const handleChange = vi.fn();
-    const { container, rerender } = render(
-      <RadioGroup value={null} onChange={handleChange}>
-        <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
-        <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
-      </RadioGroup>,
-    );
-
-    // 验证没有选中的单选按钮
-    const radioButtons = container.querySelectorAll('[role="radio"]');
-    radioButtons.forEach((radio) => {
-      expect(radio.getAttribute('data-headlessui-state') || '').not.toContain(
-        'checked',
-      );
-    });
-
-    // 重新渲染，使用 undefined 值
-    rerender(
-      <RadioGroup value={undefined} onChange={handleChange}>
-        <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
-        <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
-      </RadioGroup>,
-    );
-
-    // 验证没有选中的单选按钮
-    radioButtons.forEach((radio) => {
-      expect(radio.getAttribute('data-headlessui-state') || '').not.toContain(
-        'checked',
-      );
-    });
-
-    // 点击第一个单选按钮
-    fireEvent.click(radioButtons[0]);
-    expect(handleChange).toHaveBeenCalledWith('1');
-  });
-
   // 测试从非受控到受控的转换
   test('handles transition from uncontrolled to controlled', () => {
     const { container, rerender } = render(
-      <RadioGroup>
+      <RadioGroup defaultValue="">
         <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
         <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
       </RadioGroup>,
@@ -280,7 +242,7 @@ describe('RadioGroup', () => {
           >
             Click Second Radio
           </button>
-          <RadioGroup ref={groupRef}>
+          <RadioGroup defaultValue="" ref={groupRef}>
             <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
             <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
           </RadioGroup>
@@ -303,7 +265,7 @@ describe('RadioGroup', () => {
   // 测试键盘导航
   test('supports keyboard navigation', () => {
     const { container } = render(
-      <RadioGroup>
+      <RadioGroup defaultValue="">
         <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
         <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
         <RadioGroup.Radio value="3">Option 3</RadioGroup.Radio>

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
 import { RadioGroup as HeadlessRadioGroup } from '@headlessui/react';
 import type { RadioGroupProps as HeadlessRadioGroupProps } from '@headlessui/react';
+import classConfig from '@/components/radio/class-config.ts';
 import Radio from '@/components/radio/radio.tsx';
 import { cn } from '@/utils/styles';
 
@@ -84,7 +85,7 @@ const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
   return (
     <HeadlessRadioGroup
       ref={radioGroupRef}
-      className={cn('flex flex-wrap', className)}
+      className={cn(classConfig.groupConfig, className)}
       value={innerValue}
       onChange={handleChange}
       {...rest}

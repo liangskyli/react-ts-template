@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Fragment, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import Mask from '@/components/mask';
+import classConfig from '@/components/popup/class-config.ts';
 import { generateTimeoutFunction } from '@/components/popup/imperative.tsx';
 import type { GetContainer } from '@/utils/render-to-container.ts';
 import { renderToContainer } from '@/utils/render-to-container.ts';
@@ -41,16 +42,6 @@ export type PopupProps = {
   popupId?: string;
 };
 
-const positionStyles: Record<Position, string> = {
-  bottom: 'bottom-0 left-0 right-0 max-h-[80vh]',
-  top: 'top-0 left-0 right-0 max-h-[80vh]',
-  left: 'left-0 top-0 bottom-0 max-w-[80vw]',
-  right: 'right-0 top-0 bottom-0 max-w-[80vw]',
-  center:
-    'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] max-h-[80vh]',
-  none: '', // 不添加任何位置相关的样式
-};
-
 const transitionStyles: Record<
   Position,
   {
@@ -61,56 +52,7 @@ const transitionStyles: Record<
     leaveFrom: string;
     leaveTo: string;
   }
-> = {
-  bottom: {
-    enter: 'transform transition ease-out duration-300',
-    enterFrom: 'translate-y-full',
-    enterTo: 'translate-y-0',
-    leave: 'transform transition ease-in duration-200',
-    leaveFrom: 'translate-y-0',
-    leaveTo: 'translate-y-full',
-  },
-  top: {
-    enter: 'transform transition ease-out duration-300',
-    enterFrom: '-translate-y-full',
-    enterTo: 'translate-y-0',
-    leave: 'transform transition ease-in duration-200',
-    leaveFrom: 'translate-y-0',
-    leaveTo: '-translate-y-full',
-  },
-  left: {
-    enter: 'transform transition ease-out duration-300',
-    enterFrom: '-translate-x-full',
-    enterTo: 'translate-x-0',
-    leave: 'transform transition ease-in duration-200',
-    leaveFrom: 'translate-x-0',
-    leaveTo: '-translate-x-full',
-  },
-  right: {
-    enter: 'transform transition ease-out duration-300',
-    enterFrom: 'translate-x-full',
-    enterTo: 'translate-x-0',
-    leave: 'transform transition ease-in duration-200',
-    leaveFrom: 'translate-x-0',
-    leaveTo: 'translate-x-full',
-  },
-  center: {
-    enter: 'transform transition ease-out duration-300',
-    enterFrom: 'opacity-0 scale-75',
-    enterTo: 'opacity-100 scale-100',
-    leave: 'transform transition ease-in duration-200',
-    leaveFrom: 'opacity-100 scale-100',
-    leaveTo: 'opacity-0 scale-75',
-  },
-  none: {
-    enter: 'transition-opacity duration-300',
-    enterFrom: 'opacity-0',
-    enterTo: 'opacity-100',
-    leave: 'transition-opacity duration-200',
-    leaveFrom: 'opacity-100',
-    leaveTo: 'opacity-0',
-  },
-};
+> = classConfig.transitionConfig;
 
 const Popup = (props: PopupProps) => {
   const {
@@ -166,9 +108,12 @@ const Popup = (props: PopupProps) => {
   const transition = transitionStyles[position];
 
   const node = (
-    <div className={cn('fixed z-popup', className)} data-popup-id={popupId}>
+    <div
+      className={cn(classConfig.popupConfig, className)}
+      data-popup-id={popupId}
+    >
       <Mask
-        className={cn('z-0', maskClassName)}
+        className={cn(classConfig.maskConfig, maskClassName)}
         visible={visible}
         onMaskClick={closeOnMaskClick ? onClose : undefined}
         disableBodyScroll={disableBodyScroll}
@@ -195,11 +140,7 @@ const Popup = (props: PopupProps) => {
         }}
       >
         <div
-          className={cn(
-            'fixed z-0 overflow-auto bg-white',
-            positionStyles[position],
-            bodyClassName,
-          )}
+          className={cn(classConfig.bodyConfig({ position }), bodyClassName)}
           style={{
             pointerEvents: isContentTransitionFinish ? 'auto' : 'none',
           }}

@@ -1,13 +1,9 @@
+import classConfig from '@/components/switch/class-config.ts';
 import { cn } from '@/utils/styles';
 
 export const DefaultLoadingIcon = ({ className }: { className?: string }) => (
   <svg
-    className={cn(
-      'animate-spin',
-      'h-[14px] w-[14px]',
-      'text-gray-400 group-data-[checked]:text-blue-600',
-      className,
-    )}
+    className={cn(classConfig.iconsConfig, className)}
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"

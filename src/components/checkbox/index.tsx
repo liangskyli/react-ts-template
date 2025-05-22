@@ -2,6 +2,7 @@ import type { ElementType, ReactNode, Ref } from 'react';
 import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
+import classConfig from '@/components/checkbox/class-config.ts';
 import { cn } from '@/utils/styles';
 import { CheckboxContext } from './context';
 import CheckboxGroup from './group';
@@ -88,13 +89,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
       checked={checked}
       onChange={handleChange}
       disabled={isDisabled}
-      className={cn(
-        'group relative flex items-center focus:outline-none',
-        '[&:not(:last-child)]:mr-1.5',
-        'active:opacity-80',
-        'data-[disabled]:opacity-40',
-        className,
-      )}
+      className={cn(classConfig.checkboxConfig, className)}
       indeterminate={indeterminate}
       {...rest}
     >
@@ -103,20 +98,9 @@ const CheckboxBase = <T extends ElementType = 'span'>(
           <>{children}</>
         ) : (
           <>
-            <div
-              className={cn(
-                'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border transition-colors',
-                'border-gray-300 bg-white',
-                'group-data-[checked]:border-blue-600 group-data-[checked]:bg-blue-600',
-                'group-data-[disabled]:cursor-not-allowed',
-                'group-data-[hover]:hover:border-blue-500',
-                boxClassName,
-              )}
-            >
+            <div className={cn(classConfig.boxConfig, boxClassName)}>
               {(checked || indeterminate) && (
-                <span
-                  className={cn('absolute h-3 w-3 text-white', checkClassName)}
-                >
+                <span className={cn(classConfig.checkedConfig, checkClassName)}>
                   {checked && indeterminate
                     ? indeterminateIcon
                     : checked && checkedIcon}
@@ -124,14 +108,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
               )}
             </div>
             {children && (
-              <span
-                className={cn(
-                  'ml-2 cursor-pointer select-none',
-                  'text-gray-700',
-                  'group-data-[disabled]:cursor-not-allowed',
-                  labelClassName,
-                )}
-              >
+              <span className={cn(classConfig.labelConfig, labelClassName)}>
                 {children}
               </span>
             )}

@@ -1,6 +1,7 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { Fragment, useRef } from 'react';
 import { Transition } from '@headlessui/react';
+import classConfig from '@/components/mask/class-config.ts';
 import {
   type GetContainer,
   renderToContainer,
@@ -48,7 +49,7 @@ const Mask = (props: MaskProps) => {
   const maskContent = (
     <div
       ref={ref}
-      className={cn('fixed inset-0 z-mask bg-mask', className)}
+      className={cn(classConfig.contentConfig, className)}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onMaskClick?.(e);
@@ -63,12 +64,12 @@ const Mask = (props: MaskProps) => {
     <Transition
       show={visible}
       as={Fragment}
-      enter="transition-opacity duration-300"
-      enterFrom="opacity-0"
-      enterTo="opacity-100"
-      leave="transition-opacity duration-200"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
+      enter={classConfig.transitionConfig.enter}
+      enterFrom={classConfig.transitionConfig.enterFrom}
+      enterTo={classConfig.transitionConfig.enterTo}
+      leave={classConfig.transitionConfig.leave}
+      leaveFrom={classConfig.transitionConfig.leaveFrom}
+      leaveTo={classConfig.transitionConfig.leaveTo}
       unmount={destroyOnClose}
       afterLeave={afterClose}
     >

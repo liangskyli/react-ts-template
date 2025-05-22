@@ -1,10 +1,11 @@
+import classConfig from '@/components/checkbox/class-config.ts';
 import { cn } from '@/utils/styles';
 
 export const DefaultCheckedIcon = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
-    className={cn('h-3 w-3', className)}
+    className={cn(classConfig.iconConfig, className)}
     stroke="currentColor"
     strokeWidth="4"
   >
@@ -20,7 +21,7 @@ export const DefaultIndeterminateIcon = ({
   <svg
     viewBox="0 0 24 24"
     fill="none"
-    className={cn('h-3 w-3', className)}
+    className={cn(classConfig.iconConfig, className)}
     stroke="currentColor"
     strokeWidth="4"
   >
