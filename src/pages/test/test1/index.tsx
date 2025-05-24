@@ -1,9 +1,9 @@
 import { useState } from 'react';
+import { cn } from '@/components/class-config';
 import Icon from '@/components/icon';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
-import { cn } from '@/utils/styles.ts';
 import './index.less';
 import styles from './index.module.less';
 import './index.scss';

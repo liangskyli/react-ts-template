@@ -2,8 +2,8 @@ import type { ElementType, Ref } from 'react';
 import { useEffect, useState } from 'react';
 import { Input as HeadlessInput } from '@headlessui/react';
 import type { InputProps as HeadlessInputProps } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/input/class-config.ts';
-import { cn } from '@/utils/styles';
 
 export type InputProps<TTag extends ElementType = 'input'> = {
   /** 输入框的值 */

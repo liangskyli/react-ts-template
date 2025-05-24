@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
 import { RadioGroup as HeadlessRadioGroup } from '@headlessui/react';
 import type { RadioGroupProps as HeadlessRadioGroupProps } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/radio/class-config.ts';
 import Radio from '@/components/radio/radio.tsx';
-import { cn } from '@/utils/styles';
 
 export type RadioGroupProps<
   TType = string,
@@ -56,7 +56,7 @@ const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
   }, [formRef]);
 
   const [valueState, setValueState] = useState<TType | undefined>(defaultValue);
-  const innerValue = value ?? valueState;
+  const innerValue = value !== undefined ? value : valueState;
   const handleChange = useCallback(
     (newValue: TType) => {
       setValueState(newValue);

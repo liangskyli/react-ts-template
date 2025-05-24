@@ -7,8 +7,8 @@ import {
   List as VirtualizedList,
 } from 'react-virtualized';
 import type { CellMeasurerChildProps } from 'react-virtualized/dist/es/CellMeasurer';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/list/class-config.ts';
-import { cn } from '@/utils/styles';
 
 export type ListProps = {
   /** 是否启用虚拟滚动 */

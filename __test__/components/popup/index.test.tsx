@@ -239,16 +239,10 @@ describe('Popup Component', () => {
 
   it('generates unique popup id when not provided', () => {
     const { rerender } = render(<Popup visible>Content</Popup>);
-    const firstId = screen
-      .getByText('Content')
-      .closest('.z-popup')
-      ?.getAttribute('data-popup-id');
+    const firstId = screen.getByTestId('popup').getAttribute('data-popup-id');
 
     rerender(<Popup visible>Content</Popup>);
-    const secondId = screen
-      .getByText('Content')
-      .closest('.z-popup')
-      ?.getAttribute('data-popup-id');
+    const secondId = screen.getByTestId('popup').getAttribute('data-popup-id');
 
     expect(firstId).toBeTruthy();
     expect(secondId).toBeTruthy();
@@ -263,7 +257,7 @@ describe('Popup Component', () => {
       </Popup>,
     );
 
-    const popup = screen.getByText('Content').closest('.z-popup');
+    const popup = screen.getByTestId('popup');
     expect(popup).toHaveAttribute('data-popup-id', customId);
   });
 });
@@ -312,7 +306,7 @@ describe('Popup Imperative API', () => {
     });
 
     // 使用父元素的类名来查找
-    const popup = screen.getByText('Test Content').closest('.z-popup');
+    const popup = screen.getByTestId('popup');
     expect(popup).toHaveClass('custom-class');
     expect(screen.getByText('Test Content')).toHaveClass('left-1/2');
   });
@@ -364,7 +358,7 @@ describe('Popup Imperative API', () => {
       Popup.show('Test Content');
     });
 
-    const popup = screen.getByText('Test Content').closest('.z-popup');
+    const popup = screen.getByText('Test Content').closest('.global-class');
     expect(popup).toHaveClass('global-class');
     expect(screen.getByText('Test Content')).toHaveClass('top-0');
 

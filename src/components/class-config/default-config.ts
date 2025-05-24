@@ -43,7 +43,7 @@ const defaultConfig = {
   },
   popup: {
     popup: {
-      base: 'fixed z-popup',
+      base: 'fixed z-[1000]',
     },
     mask: 'z-0',
     body: {
@@ -110,9 +110,9 @@ const defaultConfig = {
     },
   },
   toast: {
-    toast: 'z-toast',
+    toast: 'z-[5000]',
     mask: {
-      base: 'bg-mask/0',
+      base: 'bg-black/0',
       maskClickable: 'pointer-events-none',
       noMaskClickable: 'pointer-events-auto',
     },
@@ -125,7 +125,7 @@ const defaultConfig = {
       },
     },
     content: {
-      wrap: 'mx-auto w-fit min-w-[120px] rounded-lg bg-mask px-4 py-3',
+      wrap: 'mx-auto w-fit min-w-[120px] rounded-lg bg-black/70 px-4 py-3',
       text: 'break-words text-center text-sm text-white',
     },
   },
@@ -135,7 +135,7 @@ const defaultConfig = {
       popup: {
         base: 'absolute',
         mask: {
-          base: 'bg-mask/0',
+          base: 'bg-black/0',
           maskClickable: 'pointer-events-none',
           noMaskClickable: 'pointer-events-auto',
         },
@@ -321,12 +321,12 @@ const defaultConfig = {
       leaveFrom: 'opacity-100',
       leaveTo: 'opacity-0',
     },
-    content: 'fixed inset-0 z-mask bg-mask',
+    content: 'fixed inset-0 z-[1000] bg-black/70',
   },
   loading: {
-    mask: 'bg-mask/0',
+    mask: 'bg-black/0',
     position: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
-    body: 'flex h-24 w-24 flex-col items-center justify-center rounded-lg bg-mask text-white',
+    body: 'flex h-24 w-24 flex-col items-center justify-center rounded-lg bg-black/70 text-white',
     text: 'mt-2 text-sm',
     loadingIcon: 'h-10 w-10 animate-spin',
   },

@@ -10,10 +10,10 @@ import {
   shift as shiftMiddleware,
   useFloating,
 } from '@floating-ui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/popover/class-config.ts';
 import type { PopupProps } from '@/components/popup';
 import Popup from '@/components/popup';
-import { cn } from '@/utils/styles';
 
 export type PopoverProps = {
   className?: string;

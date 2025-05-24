@@ -1,5 +1,5 @@
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/switch/class-config.ts';
-import { cn } from '@/utils/styles';
 
 export const DefaultLoadingIcon = ({ className }: { className?: string }) => (
   <svg

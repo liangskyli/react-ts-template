@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
 import classConfig from '@/components/checkbox/class-config.ts';
-import { cn } from '@/utils/styles';
+import { cn } from '@/components/class-config';
 import { CheckboxContext } from './context';
 
 export type CheckboxGroupProps = {

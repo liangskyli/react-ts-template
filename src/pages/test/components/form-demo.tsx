@@ -83,7 +83,6 @@ const FormDemo = () => {
         <Controller
           name="name3"
           control={form1.control}
-          defaultValue={null}
           rules={{ required: 'name3 is required' }}
           render={({ field, fieldState }) => (
             <>

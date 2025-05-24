@@ -1,6 +1,6 @@
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/loading/class-config.ts';
 import Mask from '@/components/mask';
-import { cn } from '@/utils/styles.ts';
 import { DefaultLoadingIcon } from './icons.tsx';
 
 export type Props = {

@@ -24,7 +24,7 @@ import { Mask } from '@/components';
 export default () => (
   <Mask 
     visible={true} 
-    className="custom-mask bg-black/50"
+    className="bg-black/50"
     onMaskClick={() => console.log('mask clicked')}
   >
     <div>自定义背景色的遮罩层</div>

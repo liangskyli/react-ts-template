@@ -1,5 +1,5 @@
 import classConfig from '@/components/checkbox/class-config.ts';
-import { cn } from '@/utils/styles';
+import { cn } from '@/components/class-config';
 
 export const DefaultCheckedIcon = ({ className }: { className?: string }) => (
   <svg

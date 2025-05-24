@@ -1,8 +1,8 @@
 import type { ElementType, ReactNode, Ref } from 'react';
 import { Radio as HeadlessRadio } from '@headlessui/react';
 import type { RadioProps as HeadlessRadioProps } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/radio/class-config.ts';
-import { cn } from '@/utils/styles';
 
 export type RadioProps<TType = string, TTag extends ElementType = 'span'> = {
   /** 是否全部自定义 */

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
+import { cn } from '@/components/class-config';
 import { createImperative } from '@/components/popup/imperative.tsx';
 import Popup, { type PopupProps } from '@/components/popup/popup.tsx';
 import classConfig from '@/components/toast/class-config.ts';
 import type { GetContainer } from '@/utils/render-to-container.ts';
-import { cn } from '@/utils/styles.ts';
 
 // Toast的位置类型
 type ToastPosition = 'top' | 'bottom' | 'center';

@@ -1,5 +1,5 @@
 import classConfig from '@/components/button/class-config.ts';
-import { cn } from '@/utils/styles';
+import { cn } from '@/components/class-config';
 
 export const DefaultLoadingIcon = ({ className }: { className?: string }) => (
   <svg

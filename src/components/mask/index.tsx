@@ -1,12 +1,12 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { Fragment, useRef } from 'react';
 import { Transition } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/mask/class-config.ts';
 import {
   type GetContainer,
   renderToContainer,
 } from '@/utils/render-to-container.ts';
-import { cn } from '@/utils/styles.ts';
 import { useLockScroll } from '@/utils/use-lock-scroll.ts';
 
 export type MaskProps = {

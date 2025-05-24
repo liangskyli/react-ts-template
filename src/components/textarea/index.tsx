@@ -2,8 +2,8 @@ import type { Ref } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Textarea as HeadlessTextarea } from '@headlessui/react';
 import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/textarea/class-config.ts';
-import { cn } from '@/utils/styles';
 
 export type TextAreaProps = {
   /** 输入框的值 */

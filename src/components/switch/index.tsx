@@ -1,9 +1,9 @@
 import type { ElementType, ReactNode, Ref } from 'react';
 import { Switch as HeadlessSwitch } from '@headlessui/react';
 import type { SwitchProps as HeadlessSwitchProps } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import classConfig from '@/components/switch/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/switch/icons.tsx';
-import { cn } from '@/utils/styles';
 
 export type SwitchProps<TTag extends ElementType = 'button'> = {
   /** 开关是否选中 */

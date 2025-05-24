@@ -1,8 +1,12 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, it, test, vi } from 'vitest';
 import {
+  cn,
+  cx,
+  defaultTwMerge,
   getComponentClassConfig,
   twConfig,
   updateClassConfig,
+  updateTwMergeFunction,
 } from '@/components/class-config';
 import { defaultConfig } from '@/components/class-config/default-config';
 
@@ -116,6 +120,68 @@ describe('Class Configuration Utilities', () => {
         leaveFrom: expect.any(String),
         leaveTo: expect.any(String),
       });
+    });
+  });
+
+  describe('updateTwMergeFunction', () => {
+    it('should update twMerge function correctly', () => {
+      // Create a mock function
+      const mockTwMerge = vi.fn(
+        (className: string) => `processed-${className}`,
+      );
+
+      // Update the twMerge function
+      updateTwMergeFunction(mockTwMerge);
+
+      // Test the cn function to verify if it uses the new twMerge function
+      const result = cn('test-class');
+
+      // Verify mockTwMerge was called with correct arguments
+      expect(mockTwMerge).toHaveBeenCalledWith(cx(['test-class']));
+      expect(result).toBe('processed-' + cx(['test-class']));
+      updateTwMergeFunction(defaultTwMerge);
+    });
+  });
+
+  describe('cn function', () => {
+    it('should merge class names correctly', () => {
+      // Test with a single class
+      expect(cn('btn')).toBeTruthy();
+
+      // Test with multiple classes
+      const result = cn('btn', 'btn-primary', { 'btn-large': true });
+      expect(result).toBeTruthy();
+
+      // Test with conditional classes
+      const isActive = true;
+      const result2 = cn('btn', { 'btn-active': isActive });
+      expect(result2).toBeTruthy();
+
+      // Test with an array of classes
+      const result3 = cn(['btn', 'btn-primary']);
+      expect(result3).toBeTruthy();
+
+      // Test with falsy values
+      const result4 = cn('btn', undefined, null, false, '');
+      expect(result4).toBeTruthy();
+    });
+
+    it('should handle complex class combinations', () => {
+      const result = cn(
+        'fixed',
+        'inset-x-0',
+        'top-0',
+        {
+          'bg-white': true,
+          'dark:bg-gray-800': true,
+        },
+        ['border-b', 'border-gray-200', 'dark:border-gray-700'],
+      );
+
+      expect(result).toBeTruthy();
+      expect(result).toBe(
+        'fixed inset-x-0 top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700',
+      );
     });
   });
 });

@@ -182,6 +182,25 @@ describe('RadioGroup', () => {
     expect(document.activeElement).toBe(firstRadio);
   });
 
+  // 测试 null 值的处理
+  test('handles null values correctly', () => {
+    const handleChange = vi.fn();
+    const { container } = render(
+      <RadioGroup value={null} onChange={handleChange}>
+        <RadioGroup.Radio value="1">Option 1</RadioGroup.Radio>
+        <RadioGroup.Radio value="2">Option 2</RadioGroup.Radio>
+      </RadioGroup>,
+    );
+
+    // 验证没有选中的单选按钮
+    const radioButtons = container.querySelectorAll('[role="radio"]');
+    radioButtons.forEach((radio) => {
+      expect(radio.getAttribute('data-headlessui-state') || '').not.toContain(
+        'checked',
+      );
+    });
+  });
+
   // 测试从非受控到受控的转换
   test('handles transition from uncontrolled to controlled', () => {
     const { container, rerender } = render(

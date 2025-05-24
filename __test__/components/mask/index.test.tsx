@@ -66,7 +66,12 @@ describe('Mask Component', () => {
     const { container } = render(<Mask visible={true} />);
     const maskElement = container.firstChild as HTMLElement;
     expect(maskElement).toBeInTheDocument();
-    expect(maskElement).toHaveClass('fixed', 'inset-0', 'z-mask', 'bg-mask');
+    expect(maskElement).toHaveClass(
+      'fixed',
+      'inset-0',
+      'z-[1000]',
+      'bg-black/70',
+    );
     expect(maskElement.style.display).not.toBe('none');
   });
 

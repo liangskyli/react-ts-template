@@ -3,7 +3,7 @@ import type { ButtonProps as HeadlessButtonProps } from '@headlessui/react';
 import { Button as HeadlessButton } from '@headlessui/react';
 import classConfig from '@/components/button/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/button/icons.tsx';
-import { cn } from '@/utils/styles';
+import { cn } from '@/components/class-config';
 
 export type ButtonProps<T extends ElementType = 'button'> = {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';

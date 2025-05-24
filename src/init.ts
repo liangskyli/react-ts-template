@@ -1,6 +1,12 @@
-import { twConfig, updateClassConfig } from '@/components/class-config';
+import {
+  twConfig,
+  updateClassConfig,
+  updateTwMergeFunction,
+} from '@/components/class-config';
+import { twMerge } from '@/utils/styles.ts';
 
 window.tailwindPrefix = '';
+updateTwMergeFunction(twMerge);
 if (window.tailwindPrefix) {
   updateClassConfig(twConfig);
   console.log('init: tailwindPrefix set');

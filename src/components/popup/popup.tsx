@@ -2,12 +2,12 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { Fragment, useState } from 'react';
 import { Transition } from '@headlessui/react';
+import { cn } from '@/components/class-config';
 import Mask from '@/components/mask';
 import classConfig from '@/components/popup/class-config.ts';
 import { generateTimeoutFunction } from '@/components/popup/imperative.tsx';
 import type { GetContainer } from '@/utils/render-to-container.ts';
 import { renderToContainer } from '@/utils/render-to-container.ts';
-import { cn } from '@/utils/styles.ts';
 
 export type Position = 'bottom' | 'top' | 'left' | 'right' | 'center' | 'none';
 
@@ -109,6 +109,7 @@ const Popup = (props: PopupProps) => {
 
   const node = (
     <div
+      data-testid="popup"
       className={cn(classConfig.popupConfig, className)}
       data-popup-id={popupId}
     >

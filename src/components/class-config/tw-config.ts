@@ -44,7 +44,7 @@ const twConfig = {
   },
   popup: {
     popup: {
-      base: 'tw-fixed tw-z-popup',
+      base: 'tw-fixed tw-z-[1000]',
     },
     mask: 'tw-z-0',
     body: {
@@ -111,9 +111,9 @@ const twConfig = {
     },
   },
   toast: {
-    toast: 'tw-z-toast',
+    toast: 'tw-z-[5000]',
     mask: {
-      base: 'tw-bg-mask/0',
+      base: 'tw-bg-black/0',
       maskClickable: 'tw-pointer-events-none',
       noMaskClickable: 'tw-pointer-events-auto',
     },
@@ -126,7 +126,7 @@ const twConfig = {
       },
     },
     content: {
-      wrap: 'tw-mx-auto tw-w-fit tw-min-w-[120px] tw-rounded-lg tw-bg-mask tw-px-4 tw-py-3',
+      wrap: 'tw-mx-auto tw-w-fit tw-min-w-[120px] tw-rounded-lg tw-bg-black/70 tw-px-4 tw-py-3',
       text: 'tw-break-words tw-text-center tw-text-sm tw-text-white',
     },
   },
@@ -136,7 +136,7 @@ const twConfig = {
       popup: {
         base: 'tw-absolute',
         mask: {
-          base: 'tw-bg-mask/0',
+          base: 'tw-bg-black/0',
           maskClickable: 'tw-pointer-events-none',
           noMaskClickable: 'tw-pointer-events-auto',
         },
@@ -324,13 +324,13 @@ const twConfig = {
       leaveFrom: 'tw-opacity-100',
       leaveTo: 'tw-opacity-0',
     },
-    content: 'tw-fixed tw-inset-0 tw-z-mask tw-bg-mask',
+    content: 'tw-fixed tw-inset-0 tw-z-[1000] tw-bg-black/70',
   },
   loading: {
-    mask: 'tw-bg-mask/0',
+    mask: 'tw-bg-black/0',
     position:
       'tw-absolute tw-left-1/2 tw-top-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2',
-    body: 'tw-flex tw-h-24 tw-w-24 tw-flex-col tw-items-center tw-justify-center tw-rounded-lg tw-bg-mask tw-text-white',
+    body: 'tw-flex tw-h-24 tw-w-24 tw-flex-col tw-items-center tw-justify-center tw-rounded-lg tw-bg-black/70 tw-text-white',
     text: 'tw-mt-2 tw-text-sm',
     loadingIcon: 'tw-h-10 tw-w-10 tw-animate-spin',
   },

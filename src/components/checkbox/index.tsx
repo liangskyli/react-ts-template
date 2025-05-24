@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
 import classConfig from '@/components/checkbox/class-config.ts';
-import { cn } from '@/utils/styles';
+import { cn } from '@/components/class-config';
 import { CheckboxContext } from './context';
 import CheckboxGroup from './group';
 import type { CheckboxGroupProps } from './group';
