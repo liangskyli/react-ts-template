@@ -119,37 +119,121 @@ export default () => {
 };
 ```
 
+### 无限滚动
+
+列表滚动到底部时自动加载更多数据。
+
+```tsx
+import { List } from '@/components';
+import { useState } from 'react';
+
+// 模拟异步请求
+const mockRequest = async () => {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return Array(10).fill(null).map((_, index) => ({
+    title: `新项目 ${index}`,
+    description: `这是新加载的第 ${index} 项描述`
+  }));
+};
+
+export default () => {
+  const [data, setData] = useState(() => 
+    Array(20).fill(null).map((_, index) => ({
+      title: `项目 ${index}`,
+      description: `这是第 ${index} 项的描述`
+    }))
+  );
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMore = async (isRetry: boolean) => {
+    // 模拟加载更多数据
+    const newItems = await mockRequest();
+    
+    // 模拟数据加载完毕的情况
+    if (data.length >= 50) {
+      setHasMore(false);
+      return;
+    }
+    
+    setData(prev => [...prev, ...newItems]);
+  };
+
+  return (
+    <List
+      className="h-[300px] overflow-auto"
+      infiniteScroll={{
+        loadMore,
+        hasMore,
+        threshold: 50,
+        // 可选：自定义底部内容
+        children: (hasMore, failed, retry) => (
+          <div className="py-4 text-center">
+            {failed ? (
+              <span className="cursor-pointer text-blue-500" onClick={retry}>
+                加载失败，点击重试
+              </span>
+            ) : hasMore ? (
+              '加载中...'
+            ) : (
+              '没有更多了'
+            )}
+          </div>
+        )
+      }}
+    >
+      {data.map((item, index) => (
+        <List.Item
+          key={index}
+          title={item.title}
+          description={item.description}
+        />
+      ))}
+    </List>
+  );
+};
+```
+
 ## API
 
 ### List
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `virtualScroll` | 是否启用虚拟滚动 | `boolean` | `false` |
-| `virtualConfig` | 虚拟滚动配置 | `VirtualConfig` | - |
-| `className` | 自定义类名 | `string` | - |
-| `children` | 列表内容 | `ReactNode` | - |
+| 参数               | 说明          | 类型               | 默认值     |
+|------------------|-------------|------------------|---------|
+| `className`      | 自定义类名       | `string`         | -       |
+| `children`       | 列表内容        | `ReactNode`      | -       |
+| `virtualScroll`  | 是否启用虚拟滚动    | `boolean`        | `false` |
+| `virtualConfig`  | 虚拟滚动配置      | `VirtualConfig`  | -       |
+| `infiniteScroll` | 无限滚动,分页加载数据 | `InfiniteScroll` | -       |
 
 #### VirtualConfig
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `defaultHeight` | 每项默认高度 | `number` | `60` |
-| `minHeight` | 每项最小高度 | `number` | `60` |
+| 参数              | 说明     | 类型                                                       | 默认值 |
+|-----------------|--------|----------------------------------------------------------|-----|
+| `defaultHeight` | 每项默认高度 | `number`                                                 | -   |
+| `minHeight`     | 每项最小高度 | `number`                                                 | -   |
+
+#### InfiniteScroll
+
+| 参数          | 说明                    | 类型                                                                        | 默认值   |
+|-------------|-----------------------|---------------------------------------------------------------------------|-------|
+| `loadMore`  | 加载更多的回调函数             | `(isRetry: boolean) => Promise<void>`                                     | -     |
+| `hasMore`   | 是否还有更多内容              | `boolean`                                                                 | -     |
+| `threshold` | 触发加载事件的滚动触底距离阈值，单位为像素 | `number`                                                                  | `100` |
+| `children`  | 渲染自定义指引内容             | `(hasMore: boolean,failed: boolean,retry: () => void) => React.ReactNode` | -     |
 
 ### List.Item
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| `title` | 列表项标题 | `ReactNode` | - |
-| `description` | 列表项描述 | `ReactNode` | - |
-| `prefix` | 列表项前缀 | `ReactNode` | - |
-| `suffix` | 列表项后缀 | `ReactNode` | - |
-| `clickable` | 是否可点击 | `boolean` | `false` |
-| `disabled` | 是否禁用 | `boolean` | `false` |
-| `className` | 自定义类名 | `string` | - |
-| `onClick` | 点击事件 | `(e: React.MouseEvent) => void` | - |
-| `children` | 列表项内容 | `ReactNode` | - |
+| 参数            | 说明    | 类型                              | 默认值     |
+|---------------|-------|---------------------------------|---------|
+| `title`       | 列表项标题 | `ReactNode`                     | -       |
+| `description` | 列表项描述 | `ReactNode`                     | -       |
+| `prefix`      | 列表项前缀 | `ReactNode`                     | -       |
+| `suffix`      | 列表项后缀 | `ReactNode`                     | -       |
+| `clickable`   | 是否可点击 | `boolean`                       | `false` |
+| `disabled`    | 是否禁用  | `boolean`                       | `false` |
+| `className`   | 自定义类名 | `string`                        | -       |
+| `onClick`     | 点击事件  | `(e: React.MouseEvent) => void` | -       |
+| `children`    | 列表项内容 | `ReactNode`                     | -       |
 
 ## 样式定制
 

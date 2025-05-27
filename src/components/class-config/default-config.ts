@@ -297,7 +297,7 @@ const defaultConfig = {
   list: {
     list: {
       base: 'bg-white',
-      virtualScroll: 'h-[300px]',
+      isScroll: 'h-[300px]',
     },
     item: [
       'flex items-center border-b border-gray-100 px-4 py-3 last:border-b-0',
@@ -310,6 +310,10 @@ const defaultConfig = {
       wrap: 'flex-1',
       title: 'text-base text-gray-900',
       description: 'mt-1 text-sm text-gray-500',
+    },
+    infiniteScrollContent: {
+      wrap: 'h-[30px] text-center text-sm leading-[30px] text-gray-500',
+      retry: 'text-blue-500 ml-2 cursor-pointer',
     },
   },
   mask: {

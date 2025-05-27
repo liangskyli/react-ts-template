@@ -1,57 +1,34 @@
-import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import List from '@/components/list';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // 模拟 react-virtualized
 vi.mock('react-virtualized', () => {
-  const AutoSizer = ({
-    children,
-  }: {
-    children: (size: { width: number; height: number }) => React.ReactNode;
-  }) => children({ width: 400, height: 300 });
-
-  const CellMeasurer = ({
-    children,
-  }: {
-    children: (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { registerChild }: any,
-    ) => React.ReactNode;
-  }) => children({ registerChild: (ref: never) => ref });
-
-  const CellMeasurerCache = vi.fn().mockImplementation(() => ({
-    rowHeight: () => 50,
-    clear: vi.fn(),
-  }));
-
-  const List = ({
-    rowRenderer,
-    rowCount,
-  }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rowRenderer: any;
-    rowCount: number;
-  }) => {
-    const rows = [];
-    for (let i = 0; i < rowCount; i++) {
-      rows.push(
-        rowRenderer({
-          key: `row-${i}`,
-          index: i,
-          style: { height: 50 },
-          parent: {},
-        }),
-      );
-    }
-    return <div data-testid="virtualized-list">{rows}</div>;
-  };
-
   return {
-    AutoSizer,
-    CellMeasurer,
-    CellMeasurerCache,
-    List,
+    AutoSizer: ({ children }: any) => children({ width: 400, height: 400 }),
+    List: ({ onScroll, rowRenderer, rowCount }: any) => {
+      // 存储 onScroll 回调，以便测试可以直接调用
+      (global as any).__listOnScroll = onScroll;
+
+      return (
+        <div role="grid" data-testid="virtualized-list">
+          {Array.from({ length: rowCount }).map((_, index) =>
+            rowRenderer({ index, key: index, style: {} }),
+          )}
+        </div>
+      );
+    },
+    CellMeasurer: ({ children }: any) =>
+      children({ registerChild: (ref: unknown) => ref }),
+    CellMeasurerCache: class {
+      clearAll() {}
+      clear() {}
+      rowHeight() {
+        return 50;
+      }
+    },
   };
 });
 
@@ -235,5 +212,326 @@ describe('List Component', () => {
     fireEvent.click(screen.getByTestId('second-clickable'));
     expect(handleClick1).toHaveBeenCalledTimes(1);
     expect(handleClick2).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('List InfiniteScroll', () => {
+  it('should call loadMore when scrolling near bottom', async () => {
+    const loadMore = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+          threshold: 100,
+        }}
+      >
+        {Array.from({ length: 20 }, (_, i) => (
+          <List.Item key={i} title={`Item ${i}`} />
+        ))}
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+    });
+
+    expect(loadMore).toHaveBeenCalledWith(false);
+  });
+
+  // 添加测试以验证加载状态
+  it('should show loading state during loadMore', async () => {
+    const loadMore = vi
+      .fn()
+      .mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
+      );
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+          threshold: 100,
+        }}
+      >
+        <List.Item title="Item 1" />
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+    });
+
+    // 验证加载状态
+    expect(screen.getByText('加载中...')).toBeInTheDocument();
+  });
+
+  it('should show no more state during loadMore', async () => {
+    const loadMore = vi
+      .fn()
+      .mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
+      );
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: false,
+          threshold: 100,
+        }}
+      >
+        <List.Item title="Item 1" />
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+    });
+
+    expect(screen.getByText('没有更多数据了')).toBeInTheDocument();
+  });
+
+  // 验证边界情况
+  it('should respect threshold value', async () => {
+    const loadMore = vi.fn().mockResolvedValue(undefined);
+    const threshold = 50;
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+          threshold,
+        }}
+      >
+        <List.Item title="Item 1" />
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    // 不应该触发加载（距离底部还很远）
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 500, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+    });
+
+    expect(loadMore).not.toHaveBeenCalled();
+
+    // 应该触发加载（达到阈值）
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+    });
+
+    expect(loadMore).toHaveBeenCalledWith(false);
+  });
+
+  it('handles retry after failure', async () => {
+    const loadMore = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('Failed to load'))
+      .mockResolvedValueOnce(undefined);
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+        }}
+      >
+        <List.Item title="Item 1" />
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    // 触发滚动事件
+    await act(async () => {
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+
+      fireEvent.scroll(list);
+    });
+
+    // 查找并点击重试按钮
+    const retryButton = await screen.findByText('重新加载');
+    expect(retryButton).toBeInTheDocument();
+
+    // 点击重试按钮
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    // 验证调用
+    expect(loadMore).toHaveBeenCalledTimes(2);
+    expect(loadMore.mock.calls).toEqual([
+      [false], // 初始加载
+      [true], // 重试
+    ]);
+
+    vi.restoreAllMocks();
+  });
+
+  it('clears cache after successful load more', async () => {
+    const loadMore = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <List
+        virtualScroll
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+          threshold: 100,
+        }}
+      >
+        <List.Item title="Item 1" />
+      </List>,
+    );
+
+    // 直接调用存储的 onScroll 回调
+    await act(async () => {
+      (global as any).__listOnScroll({
+        clientHeight: 400,
+        scrollHeight: 1000,
+        scrollTop: 500,
+        clientWidth: 400,
+        scrollWidth: 1000,
+        scrollLeft: 0,
+      });
+    });
+
+    expect(loadMore).toHaveBeenCalledWith(false);
+  });
+
+  it('renders custom infinite scroll content', () => {
+    const customContent = vi.fn().mockReturnValue(<div>Custom Loading</div>);
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore: vi.fn(),
+          hasMore: true,
+          children: customContent,
+        }}
+      >
+        <List.Item title="Item 1" />
+      </List>,
+    );
+
+    expect(screen.getByText('Custom Loading')).toBeInTheDocument();
+    expect(customContent).toHaveBeenCalledWith(
+      true,
+      false,
+      expect.any(Function),
+    );
+  });
+
+  it('does not trigger loadMore when already loading', async () => {
+    const loadMore = vi
+      .fn()
+      .mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
+      );
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+        }}
+      >
+        <>
+          <List.Item title="Item 1" />
+        </>
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    // 触发多次滚动
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+      list.dispatchEvent(scrollEvent);
+      list.dispatchEvent(scrollEvent);
+    });
+    expect(loadMore).toHaveBeenCalledTimes(1);
+  });
+
+  it('no children', async () => {
+    const loadMore = vi
+      .fn()
+      .mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
+      );
+
+    render(
+      <List
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+        }}
+      ></List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
+      });
+      list.dispatchEvent(scrollEvent);
+    });
+    expect(loadMore).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('加载中...')).toBeInTheDocument();
   });
 });

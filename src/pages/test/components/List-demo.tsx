@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import List from '@/components/list';
 
+let count = 0;
+const sleep = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));
+const mockRequest = async () => {
+  if (count >= 5) {
+    return [];
+  }
+  await sleep(2000);
+  count++;
+  return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+};
+
 const ListDemo = () => {
   const [activeTab, setActiveTab] = useState('basic');
 
@@ -10,13 +22,54 @@ const ListDemo = () => {
     title: `项目 ${index + 1}`,
     description: `这是第 ${index + 1} 个列表项的详细描述 ${index === 4 ? '更多数据更多数据更多数据更多数据更多数据更多数据更多数据更多数据更多数据更多数据更多数据更多数据更多数据' : ''}`,
   }));
+  const virtualItem = {
+    title: 'Novalee Spicer',
+    description: 'Deserunt dolor ea eaque eos',
+  };
+  const [virtualPageData, setVirtualPageData] = useState(
+    Array(20).fill(virtualItem),
+  );
+  const [hasVirtualPageMore, setHasVirtualPageMore] = useState(true);
+
+  const virtualPageLoadMore = async () => {
+    const append = await mockRequest();
+    if (Math.random() > 0.5) {
+      throw new Error('mock request failed');
+    }
+    setVirtualPageData((val) => [
+      ...val,
+      ...Array(append.length).fill(virtualItem),
+    ]);
+    setHasVirtualPageMore(append.length > 0);
+  };
+
+  const [listPageData, setListPageData] = useState(Array(20).fill(virtualItem));
+  const [hasListPageMore, setHasListPageMore] = useState(true);
+  const listPageLoadMore = async () => {
+    const append = await mockRequest();
+    if (Math.random() > 0.5) {
+      throw new Error('mock request failed');
+    }
+    setListPageData((val) => [
+      ...val,
+      ...Array(append.length).fill(virtualItem),
+    ]);
+    setHasListPageMore(append.length > 0);
+  };
 
   return (
     <div className="space-y-4 px-2 py-4">
       <h2 className="text-xl font-bold">List 列表组件</h2>
 
       <div className="flex space-x-2 border-b border-gray-200">
-        {['basic', 'card', 'clickable', 'virtual'].map((tab) => (
+        {[
+          'basic',
+          'card',
+          'clickable',
+          'virtual',
+          'virtual-page',
+          'list-page',
+        ].map((tab) => (
           <button
             key={tab}
             className={`px-4 py-2 ${
@@ -30,6 +83,8 @@ const ListDemo = () => {
             {tab === 'card' && '卡片列表'}
             {tab === 'clickable' && '可点击列表'}
             {tab === 'virtual' && '虚拟滚动'}
+            {tab === 'virtual-page' && '虚拟滚动分页'}
+            {tab === 'list-page' && '列表滚动分页'}
           </button>
         ))}
       </div>
@@ -133,6 +188,55 @@ const ListDemo = () => {
                 description={item.description}
                 clickable
                 suffix={<span className="text-gray-400">›</span>}
+              />
+            ))}
+          </List>
+        </div>
+      )}
+
+      {activeTab === 'virtual-page' && (
+        <div>
+          <h3 className="mb-2 text-lg font-medium">虚拟滚动分页列表</h3>
+          <p className="mb-2 text-sm text-gray-500">
+            分页列表，但只渲染可见区域的项目
+          </p>
+          <List
+            className="h-[216px] text-left"
+            virtualScroll
+            infiniteScroll={{
+              loadMore: virtualPageLoadMore,
+              hasMore: hasVirtualPageMore,
+            }}
+          >
+            {virtualPageData.map((item, index) => (
+              <List.Item
+                key={index}
+                title={item.title + index}
+                description={item.description}
+                clickable
+                suffix={<span className="text-gray-400">›</span>}
+              />
+            ))}
+          </List>
+        </div>
+      )}
+
+      {activeTab === 'list-page' && (
+        <div>
+          <h3 className="mb-2 text-lg font-medium">列表滚动分页列表</h3>
+          <p className="mb-2 text-sm text-gray-500">分页列表</p>
+          <List
+            className="h-[216px] overflow-y-auto text-left"
+            infiniteScroll={{
+              loadMore: listPageLoadMore,
+              hasMore: hasListPageMore,
+            }}
+          >
+            {listPageData.map((item, index) => (
+              <List.Item
+                key={index}
+                title={item.title + index}
+                description={item.description}
               />
             ))}
           </List>

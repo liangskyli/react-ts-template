@@ -300,7 +300,7 @@ const twConfig = {
   list: {
     list: {
       base: 'tw-bg-white',
-      virtualScroll: 'tw-h-[300px]',
+      isScroll: 'tw-h-[300px]',
     },
     item: [
       'tw-flex tw-items-center tw-border-b tw-border-gray-100 tw-px-4 tw-py-3 last:tw-border-b-0',
@@ -313,6 +313,10 @@ const twConfig = {
       wrap: 'tw-flex-1',
       title: 'tw-text-base tw-text-gray-900',
       description: 'tw-mt-1 tw-text-sm tw-text-gray-500',
+    },
+    infiniteScrollContent: {
+      wrap: 'tw-h-[30px] tw-text-center tw-text-sm tw-leading-[30px] tw-text-gray-500',
+      retry: 'tw-text-blue-500 tw-ml-2 tw-cursor-pointer',
     },
   },
   mask: {
