@@ -334,5 +334,8 @@ const defaultConfig = {
     text: 'mt-2 text-sm',
     loadingIcon: 'h-10 w-10 animate-spin',
   },
+  useLockScroll: {
+    bodyLockClass: 'overflow-hidden',
+  },
 };
 export { defaultConfig };

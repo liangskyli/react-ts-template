@@ -338,5 +338,8 @@ const twConfig = {
     text: 'tw-mt-2 tw-text-sm',
     loadingIcon: 'tw-h-10 tw-w-10 tw-animate-spin',
   },
+  useLockScroll: {
+    bodyLockClass: 'tw-overflow-hidden',
+  },
 };
 export { twConfig };
