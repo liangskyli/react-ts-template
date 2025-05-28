@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import TextArea from '@/components/textarea';
+import TextArea from '@/components/core/components/textarea';
 
 const TextareaDemo = () => {
   const [value, setValue] = useState('');

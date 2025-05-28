@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
-import Popup from '@/components/popup';
-import Toast from '@/components/toast';
+import Popup from '@/components/core/components/popup';
+import Toast from '@/components/core/components/toast';
 
 export function RouteListener() {
   const location = useLocation();

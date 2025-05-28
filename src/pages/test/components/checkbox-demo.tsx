@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import Checkbox, { DefaultCheckedIcon } from '@/components/checkbox';
+import Checkbox, {
+  DefaultCheckedIcon,
+} from '@/components/core/components/checkbox';
 
 const CheckboxDemo = () => {
   const [checked, setChecked] = useState(false);

@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 import { Suspense } from 'react';
-import Loading from '@/components/loading';
+import Loading from '@/components/core/components/loading';
 
 /**
  * 组件懒加载，结合Suspense实现

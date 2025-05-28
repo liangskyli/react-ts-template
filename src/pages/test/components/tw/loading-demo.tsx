@@ -1,4 +1,4 @@
-import { DefaultLoadingIcon } from '@/components/loading';
+import { DefaultLoadingIcon } from '@/components/core/components/loading';
 
 const LoadingDemo = () => {
   return (

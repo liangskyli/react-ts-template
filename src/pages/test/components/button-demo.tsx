@@ -1,5 +1,5 @@
-import Button from '@/components/button';
-import Icon from '@/components/icon';
+import Button from '@/components/core/components/button';
+import Icon from '@/components/core/components/icon';
 import { useRouter } from '@/hooks/use-router.ts';
 
 const ButtonDemo = () => {

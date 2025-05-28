@@ -2,7 +2,7 @@ import {
   twConfig,
   updateClassConfig,
   updateTwMergeFunction,
-} from '@/components/class-config';
+} from '@/components/core/class-config';
 import { twMerge } from '@/utils/styles.ts';
 
 window.tailwindPrefix = '';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import List from '@/components/list';
+import List from '@/components/core/components/list';
 
 let count = 0;
 const sleep = (time: number) =>

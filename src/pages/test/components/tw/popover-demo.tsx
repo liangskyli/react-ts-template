@@ -1,5 +1,5 @@
-import Button from '@/components/button';
-import Popover from '@/components/popover/index.tsx';
+import Button from '@/components/core/components/button';
+import Popover from '@/components/core/components/popover/index.tsx';
 
 const PopoverDemo = () => {
   return (

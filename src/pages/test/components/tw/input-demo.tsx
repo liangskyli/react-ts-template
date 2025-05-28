@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Input from '@/components/input';
+import Input from '@/components/core/components/input';
 
 const InputDemo = () => {
   const [value, setValue] = useState('');

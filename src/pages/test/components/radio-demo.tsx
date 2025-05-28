@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import RadioGroup from '@/components/radio';
+import RadioGroup from '@/components/core/components/radio';
 
 const RadioDemo = () => {
   // 字符串类型示例

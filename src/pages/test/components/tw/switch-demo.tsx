@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Switch from '@/components/switch';
+import Switch from '@/components/core/components/switch';
 
 const SwitchDemo = () => {
   const [checked, setChecked] = useState(false);

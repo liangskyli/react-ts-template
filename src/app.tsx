@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router/dom';
-import Loading from '@/components/loading';
+import Loading from '@/components/core/components/loading';
 import { useAjaxLoadingStore } from '@/store';
 import router from './router';
 

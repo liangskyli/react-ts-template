@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { cn } from '@/components/class-config';
-import Icon from '@/components/icon';
+import { cn } from '@/components/core/class-config';
+import Icon from '@/components/core/components/icon';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';

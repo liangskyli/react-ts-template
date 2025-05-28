@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import Button from '@/components/button';
-import Popover from '@/components/popover';
-import Popup from '@/components/popup';
-import Toast from '@/components/toast';
+import Button from '@/components/core/components/button';
+import Popover from '@/components/core/components/popover';
+import Popup from '@/components/core/components/popup';
+import Toast from '@/components/core/components/toast';
 
 const PopupDemo = () => {
   const [visibleCenterPopup, setVisibleCenterPopup] = useState(false);

@@ -5,7 +5,7 @@ import type {
   FieldValues,
   UseFormReturn,
 } from 'react-hook-form';
-import Input from '@/components/input';
+import Input from '@/components/core/components/input';
 
 type IFormFiled1<T extends FieldValues> = {
   form: UseFormReturn<T>;

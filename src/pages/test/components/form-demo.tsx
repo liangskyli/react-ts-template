@@ -1,9 +1,9 @@
 import { Controller, useForm } from 'react-hook-form';
-import Button from '@/components/button';
-import Checkbox from '@/components/checkbox';
-import RadioGroup from '@/components/radio';
-import Switch from '@/components/switch';
-import TextArea from '@/components/textarea';
+import Button from '@/components/core/components/button';
+import Checkbox from '@/components/core/components/checkbox';
+import RadioGroup from '@/components/core/components/radio';
+import Switch from '@/components/core/components/switch';
+import TextArea from '@/components/core/components/textarea';
 import FormGroupFiled from '@/pages/test/components/form-group-field.tsx';
 
 type FormValues1 = {
