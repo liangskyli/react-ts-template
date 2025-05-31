@@ -107,9 +107,9 @@
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.1.4"
   },
-  "packageManager": "pnpm@9.15.5",
+  "packageManager": "pnpm@10.11.0",
   "engines": {
     "node": "^18.20.0 || ^20.0.0 || >=22.0.0",
-    "pnpm": ">=9"
+    "pnpm": "^10"
   }
 }
