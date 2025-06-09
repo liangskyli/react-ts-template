@@ -51,6 +51,7 @@
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
     "immer": "^10.1.1",
+    "lru-cache": "^10.4.3",
     "optics-ts": "^2.4.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

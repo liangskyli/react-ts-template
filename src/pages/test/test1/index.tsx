@@ -23,6 +23,18 @@ const Index = () => {
         跳转UI页面
       </button>
       <button
+        onClick={() => router.push('/test/cache')}
+        className={cn(styles.testButton, 'test-button-local')}
+      >
+        cache页面
+      </button>
+      <button
+        onClick={() => (window.location.href = '/sub/test/cache')}
+        className={cn(styles.testButton, 'test-button-local')}
+      >
+        cache页面2
+      </button>
+      <button
         onClick={async () => {
           const data = await requestApi.getList({ params: { id: 'id' } });
           console.log(data);

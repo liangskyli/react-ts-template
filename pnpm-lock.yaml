@@ -29,6 +29,9 @@ importers:
       immer:
         specifier: ^10.1.1
         version: 10.1.1
+      lru-cache:
+        specifier: ^10.4.3
+        version: 10.4.3
       optics-ts:
         specifier: ^2.4.1
         version: 2.4.1
