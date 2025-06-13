@@ -1,30 +1,114 @@
+import { createRef, useImperativeHandle } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import type { ListRef } from '@/components/core/components/list';
 import List from '@/components/core/components/list';
+import * as getScrollParentModule from '@/components/core/utils/get-scroll-parent.ts';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+// 模拟 VirtualScrollList
+vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
+  return {
+    default: function MockVirtualScrollList({
+      cacheRef,
+      childrenArray,
+      virtualScrollToIndex,
+      ref,
+      getPositionCache,
+    }: any) {
+      // 创建一个 mock cache 实例
+      const mockCache = {
+        clearAll: vi.fn(),
+        clear: vi.fn((rowIndex: number, columnIndex: number) => {
+          (global as any).__lastClearCall = { rowIndex, columnIndex };
+        }),
+        rowHeight: vi.fn(() => 50),
+      };
+
+      // 使用 useImperativeHandle 来设置 cacheRef.current
+      useImperativeHandle(cacheRef, () => mockCache, []);
+
+      // 创建一个模拟的 scrollToPosition 方法
+      const mockScrollToPosition = vi.fn();
+      (global as any).__virtualizedListScrollToPosition = mockScrollToPosition;
+
+      // 使用 useImperativeHandle 来设置 ref
+      useImperativeHandle(
+        ref,
+        () => ({
+          scrollToPosition: mockScrollToPosition,
+        }),
+        [],
+      );
+
+      // 模拟滚动事件处理
+      const handleScroll = (scrollTop: number) => {
+        if (getPositionCache) {
+          getPositionCache({
+            scrollTop,
+            startIndex: 0,
+            stopIndex: childrenArray.length - 1,
+          });
+        }
+      };
+
+      // 存储滚动处理函数供测试使用
+      (global as any).__virtualScrollOnScroll = handleScroll;
+
+      return (
+        <div data-testid="virtual-scroll-list">
+          <div data-testid="virtualScrollToIndex">{virtualScrollToIndex}</div>
+          {childrenArray.map((child: any, index: number) => (
+            <div key={index}>{child}</div>
+          ))}
+        </div>
+      );
+    },
+  };
+});
 
 // 模拟 react-virtualized
 vi.mock('react-virtualized', () => {
   return {
     AutoSizer: ({ children }: any) => children({ width: 400, height: 400 }),
-    List: ({ onScroll, rowRenderer, rowCount }: any) => {
-      // 存储 onScroll 回调，以便测试可以直接调用
-      (global as any).__listOnScroll = onScroll;
+    List: function MockList({
+      rowRenderer,
+      rowCount,
+      ref,
+      scrollToIndex,
+    }: any) {
+      // 创建一个模拟的 scrollToPosition 方法
+      (global as any).__virtualizedListScrollToPosition = vi.fn();
+
+      // 使用 useImperativeHandle 来模拟 ref 的行为
+      useImperativeHandle(
+        ref,
+        () => ({
+          scrollToPosition: (global as any).__virtualizedListScrollToPosition,
+        }),
+        [],
+      );
 
       return (
         <div role="grid" data-testid="virtualized-list">
-          {Array.from({ length: rowCount }).map((_, index) =>
-            rowRenderer({ index, key: index, style: {} }),
-          )}
+          <>
+            <div data-testid="virtualScrollToIndex">{scrollToIndex}</div>
+            {Array.from({ length: rowCount }).map((_, index) =>
+              rowRenderer({ index, key: index, style: {} }),
+            )}
+          </>
         </div>
       );
     },
     CellMeasurer: ({ children }: any) =>
       children({ registerChild: (ref: unknown) => ref }),
-    CellMeasurerCache: class {
+    CellMeasurerCache: class MockCellMeasurerCache {
       clearAll() {}
-      clear() {}
+      clear(rowIndex: number, columnIndex: number) {
+        // 模拟 clear 方法，可以在这里添加断言或记录调用
+        (global as any).__lastClearCall = { rowIndex, columnIndex };
+      }
       rowHeight() {
         return 50;
       }
@@ -139,17 +223,44 @@ describe('List Component', () => {
     render(
       <List virtualScroll>
         {items.map((item) => (
-          <List.Item
-            key={item.id}
-            title={item.title}
-            description={item.description}
-          />
+          <>
+            <List.Item
+              key={item.id}
+              title={item.title}
+              description={item.description}
+            />
+          </>
         ))}
       </List>,
     );
 
-    // 验证虚拟列表被渲染
-    expect(screen.getByTestId('virtualized-list')).toBeInTheDocument();
+    // 验证虚拟滚动列表被渲染
+    expect(screen.getByTestId('virtual-scroll-list')).toBeInTheDocument();
+  });
+
+  it('renders virtualized list with infinite scroll correctly', () => {
+    const loadMore = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <List
+        virtualScroll
+        infiniteScroll={{
+          loadMore,
+          hasMore: true,
+        }}
+        list={['Item 1', 'Item 2']}
+      >
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
+      </List>,
+    );
+
+    // 验证虚拟滚动列表被渲染
+    expect(screen.getByTestId('virtual-scroll-list')).toBeInTheDocument();
+    // 验证列表项被渲染
+    expect(screen.getByText('Item 1')).toBeInTheDocument();
+    expect(screen.getByText('Item 2')).toBeInTheDocument();
   });
 
   it('applies correct styles to list items', () => {
@@ -167,19 +278,6 @@ describe('List Component', () => {
     expect(item).toHaveClass('custom-item-class');
     expect(item).toHaveClass('flex');
     expect(item).toHaveClass('items-center');
-    expect(item).toHaveClass('border-b');
-  });
-
-  it('renders the last item without bottom border', () => {
-    render(
-      <List>
-        <List.Item title="First Item" data-testid="first-item" />
-        <List.Item title="Last Item" data-testid="last-item" />
-      </List>,
-    );
-
-    const lastItem = screen.getByTestId('last-item');
-    expect(lastItem).toHaveClass('last:border-b-0');
   });
 
   it('correctly handles item click events', () => {
@@ -216,38 +314,6 @@ describe('List Component', () => {
 });
 
 describe('List InfiniteScroll', () => {
-  it('should call loadMore when scrolling near bottom', async () => {
-    const loadMore = vi.fn().mockResolvedValue(undefined);
-
-    render(
-      <List
-        infiniteScroll={{
-          loadMore,
-          hasMore: true,
-          threshold: 100,
-        }}
-      >
-        {Array.from({ length: 20 }, (_, i) => (
-          <List.Item key={i} title={`Item ${i}`} />
-        ))}
-      </List>,
-    );
-
-    const list = screen.getByRole('list');
-
-    await act(async () => {
-      const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
-        clientHeight: { value: 200, configurable: true },
-        scrollHeight: { value: 1000, configurable: true },
-        scrollTop: { value: 750, configurable: true },
-      });
-      list.dispatchEvent(scrollEvent);
-    });
-
-    expect(loadMore).toHaveBeenCalledWith(false);
-  });
-
   // 添加测试以验证加载状态
   it('should show loading state during loadMore', async () => {
     const loadMore = vi
@@ -256,6 +322,19 @@ describe('List InfiniteScroll', () => {
         () => new Promise((resolve) => setTimeout(resolve, 100)),
       );
 
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
+
     render(
       <List
         infiniteScroll={{
@@ -263,21 +342,23 @@ describe('List InfiniteScroll', () => {
           hasMore: true,
           threshold: 100,
         }}
+        list={['Item 1']}
       >
-        <List.Item title="Item 1" />
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
 
-    const list = screen.getByRole('list');
-
+    // 触发滚动事件
     await act(async () => {
       const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 750, configurable: true },
       });
-      list.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
 
     // 验证加载状态
@@ -291,6 +372,19 @@ describe('List InfiniteScroll', () => {
         () => new Promise((resolve) => setTimeout(resolve, 100)),
       );
 
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
+
     render(
       <List
         infiniteScroll={{
@@ -298,21 +392,23 @@ describe('List InfiniteScroll', () => {
           hasMore: false,
           threshold: 100,
         }}
+        list={['Item 1']}
       >
-        <List.Item title="Item 1" />
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
 
-    const list = screen.getByRole('list');
-
+    // 触发滚动事件
     await act(async () => {
       const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 750, configurable: true },
       });
-      list.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
 
     expect(screen.getByText('没有更多数据了')).toBeInTheDocument();
@@ -323,6 +419,18 @@ describe('List InfiniteScroll', () => {
     const loadMore = vi.fn().mockResolvedValue(undefined);
     const threshold = 50;
 
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
+
     render(
       <List
         infiniteScroll={{
@@ -330,22 +438,23 @@ describe('List InfiniteScroll', () => {
           hasMore: true,
           threshold,
         }}
+        list={['Item 1']}
       >
-        <List.Item title="Item 1" />
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
-
-    const list = screen.getByRole('list');
 
     // 不应该触发加载（距离底部还很远）
     await act(async () => {
       const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 500, configurable: true },
       });
-      list.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
 
     expect(loadMore).not.toHaveBeenCalled();
@@ -353,12 +462,12 @@ describe('List InfiniteScroll', () => {
     // 应该触发加载（达到阈值）
     await act(async () => {
       const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 750, configurable: true },
       });
-      list.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
 
     expect(loadMore).toHaveBeenCalledWith(false);
@@ -370,28 +479,42 @@ describe('List InfiniteScroll', () => {
       .mockRejectedValueOnce(new Error('Failed to load'))
       .mockResolvedValueOnce(undefined);
 
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
+
     render(
       <List
         infiniteScroll={{
           loadMore,
           hasMore: true,
         }}
+        list={['Item 1']}
       >
-        <List.Item title="Item 1" />
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
 
-    const list = screen.getByRole('list');
-
     // 触发滚动事件
     await act(async () => {
-      Object.defineProperties(list, {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 750, configurable: true },
       });
-
-      fireEvent.scroll(list);
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
 
     // 查找并点击重试按钮
@@ -409,12 +532,23 @@ describe('List InfiniteScroll', () => {
       [false], // 初始加载
       [true], // 重试
     ]);
-
-    vi.restoreAllMocks();
   });
 
   it('clears cache after successful load more', async () => {
     const loadMore = vi.fn().mockResolvedValue(undefined);
+
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
 
     render(
       <List
@@ -424,24 +558,37 @@ describe('List InfiniteScroll', () => {
           hasMore: true,
           threshold: 100,
         }}
+        list={['Item 1']}
       >
-        <List.Item title="Item 1" />
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
 
-    // 直接调用存储的 onScroll 回调
+    // 触发滚动事件
     await act(async () => {
-      (global as any).__listOnScroll({
-        clientHeight: 400,
-        scrollHeight: 1000,
-        scrollTop: 500,
-        clientWidth: 400,
-        scrollWidth: 1000,
-        scrollLeft: 0,
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(mockScrollContainer, {
+        clientHeight: { value: 200, configurable: true },
+        scrollHeight: { value: 1000, configurable: true },
+        scrollTop: { value: 750, configurable: true },
       });
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
 
     expect(loadMore).toHaveBeenCalledWith(false);
+
+    // 等待 loadMore 完成，这样 loadMoreFinally 才会被调用
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    // 验证 cache clear 是否被调用
+    expect((global as any).__lastClearCall).toEqual({
+      rowIndex: 1, // childrenArray.length - 1 = 2 - 1 = 1
+      columnIndex: 0,
+    });
   });
 
   it('renders custom infinite scroll content', () => {
@@ -454,17 +601,20 @@ describe('List InfiniteScroll', () => {
           hasMore: true,
           children: customContent,
         }}
+        list={['Item 1']}
       >
-        <List.Item title="Item 1" />
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
 
     expect(screen.getByText('Custom Loading')).toBeInTheDocument();
-    expect(customContent).toHaveBeenCalledWith(
-      true,
-      false,
-      expect.any(Function),
-    );
+    expect(customContent).toHaveBeenCalledWith({
+      hasMore: true,
+      failed: false,
+      retry: expect.any(Function),
+    });
   });
 
   it('does not trigger loadMore when already loading', async () => {
@@ -474,32 +624,44 @@ describe('List InfiniteScroll', () => {
         () => new Promise((resolve) => setTimeout(resolve, 100)),
       );
 
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
+
     render(
       <List
         infiniteScroll={{
           loadMore,
           hasMore: true,
         }}
+        list={['Item 1']}
       >
-        <>
-          <List.Item title="Item 1" />
-        </>
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
       </List>,
     );
-
-    const list = screen.getByRole('list');
 
     // 触发多次滚动
     await act(async () => {
       const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 750, configurable: true },
       });
-      list.dispatchEvent(scrollEvent);
-      list.dispatchEvent(scrollEvent);
-      list.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
+      mockScrollContainer.dispatchEvent(scrollEvent);
     });
     expect(loadMore).toHaveBeenCalledTimes(1);
   });
@@ -511,7 +673,21 @@ describe('List InfiniteScroll', () => {
         () => new Promise((resolve) => setTimeout(resolve, 100)),
       );
 
+    // 创建一个模拟的滚动容器
+    const mockScrollContainer = document.createElement('div');
+    Object.defineProperties(mockScrollContainer, {
+      clientHeight: { value: 200, configurable: true },
+      scrollHeight: { value: 1000, configurable: true },
+      scrollTop: { value: 0, configurable: true },
+    });
+
+    // 在渲染前就模拟 getScrollParent 函数
+    vi.spyOn(getScrollParentModule, 'getScrollParent').mockReturnValue(
+      mockScrollContainer,
+    );
+
     render(
+      // @ts-expect-error test
       <List
         infiniteScroll={{
           loadMore,
@@ -520,18 +696,163 @@ describe('List InfiniteScroll', () => {
       ></List>,
     );
 
-    const list = screen.getByRole('list');
-
+    // 触发滚动事件
     await act(async () => {
       const scrollEvent = new Event('scroll');
-      Object.defineProperties(list, {
+      Object.defineProperties(mockScrollContainer, {
         clientHeight: { value: 200, configurable: true },
         scrollHeight: { value: 1000, configurable: true },
         scrollTop: { value: 750, configurable: true },
       });
+      mockScrollContainer.dispatchEvent(scrollEvent);
+    });
+    expect(loadMore).toHaveBeenCalledTimes(0);
+    expect(screen.queryByText('加载中...')).not.toBeInTheDocument();
+  });
+});
+
+describe('List ref methods', () => {
+  it('scrollToPosition works with virtualScroll enabled', async () => {
+    const ref = createRef<ListRef>();
+
+    render(
+      <List ref={ref} virtualScroll={true} list={['Item 1', 'Item 2']}>
+        {(listData) =>
+          listData.map((item) => <List.Item key={item} title={item} />)
+        }
+      </List>,
+    );
+
+    // Call the ref method
+    ref.current?.scrollToPosition(100);
+
+    // Verify the virtual list's scrollToPosition was called
+    expect(
+      (global as any).__virtualizedListScrollToPosition,
+    ).toHaveBeenLastCalledWith(100);
+  });
+
+  it('scrollToPosition works with virtualScroll disabled', async () => {
+    const ref = createRef<ListRef>();
+
+    render(
+      <List ref={ref} virtualScroll={false} list={['Item 1', 'Item 2']}>
+        {(listData) =>
+          listData.map((item) => <List.Item key={item} title={item} />)
+        }
+      </List>,
+    );
+
+    // Call the ref method
+    ref.current?.scrollToPosition(100);
+
+    // 等待 setTimeout 执行完成
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    // Verify scrollTop was set
+    expect(screen.getByRole('list').scrollTop).toBe(100);
+  });
+
+  it('virtualScrollToIndex works with virtualScroll enabled', async () => {
+    const ref = createRef<ListRef>();
+
+    render(
+      <List ref={ref} virtualScroll={{}} list={['Item 1', 'Item 2']}>
+        {(listData) =>
+          listData.map((item) => <List.Item key={item} title={item} />)
+        }
+      </List>,
+    );
+
+    // Call the ref method
+    await act(async () => {
+      ref.current?.virtualScrollToIndex(5);
+    });
+
+    expect(screen.getByTestId('virtualScrollToIndex').textContent).toBe('5');
+  });
+
+  it('virtualScrollToIndex does nothing with virtualScroll disabled', async () => {
+    const ref = createRef<ListRef>();
+
+    render(
+      <List ref={ref} virtualScroll={false} list={['Item 1', 'Item 2']}>
+        {(listData) =>
+          listData.map((item) => <List.Item key={item} title={item} />)
+        }
+      </List>,
+    );
+
+    // Call the ref method
+    await act(async () => {
+      ref.current?.virtualScrollToIndex(5);
+    });
+
+    expect(
+      screen.queryByTestId('virtualScrollToIndex'),
+    ).not.toBeInTheDocument();
+  });
+});
+describe('getPositionCache methods', () => {
+  it('calls getPositionCache in virtual scroll mode', async () => {
+    const getPositionCache = vi.fn();
+
+    render(
+      <List
+        virtualScroll
+        getPositionCache={getPositionCache}
+        list={['Item 1', 'Item 2', 'Item 3']}
+      >
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
+      </List>,
+    );
+
+    // 模拟虚拟滚动的滚动事件
+    await act(async () => {
+      (global as any).__virtualScrollOnScroll(500);
+    });
+
+    // 验证 getPositionCache 被调用
+    expect(getPositionCache).toHaveBeenCalledWith({
+      scrollTop: 500,
+      startIndex: 0,
+      stopIndex: 2, // childrenArray.length - 1 = 3 - 1 = 2
+    });
+  });
+
+  it('calls getPositionCache in non-virtual scroll mode', async () => {
+    const getPositionCache = vi.fn();
+
+    render(
+      <List
+        virtualScroll={false}
+        getPositionCache={getPositionCache}
+        list={['Item 1', 'Item 2']}
+      >
+        {(listData) => {
+          return listData.map((i) => <List.Item key={i} title={i} />);
+        }}
+      </List>,
+    );
+
+    const list = screen.getByRole('list');
+
+    // 触发滚动事件
+    await act(async () => {
+      const scrollEvent = new Event('scroll');
+      Object.defineProperties(list, {
+        scrollTop: { value: 300, configurable: true },
+      });
       list.dispatchEvent(scrollEvent);
     });
-    expect(loadMore).toHaveBeenCalledTimes(1);
-    expect(screen.getByText('加载中...')).toBeInTheDocument();
+
+    // 验证 getPositionCache 被调用
+    expect(getPositionCache).toHaveBeenCalledWith({
+      scrollTop: 300,
+    });
   });
 });

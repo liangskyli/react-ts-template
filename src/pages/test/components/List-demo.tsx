@@ -141,8 +141,9 @@ const ListDemo = () => {
               clickable
               onClick={() => console.log('点击了列表项')}
               suffix={<span className="text-gray-400">›</span>}
+              className="border-b border-gray-100"
             />
-            <List.Item clickable>
+            <List.Item clickable className="border-b border-gray-100">
               <div className="flex">
                 <div className="flex-1 text-base text-red-600">
                   自定义列表项内容
@@ -162,6 +163,7 @@ const ListDemo = () => {
                 </div>
               }
               suffix={<span className="text-gray-400">›</span>}
+              className="border-b border-gray-100"
             />
             <List.Item
               title="禁用状态"
@@ -180,16 +182,18 @@ const ListDemo = () => {
           <p className="mb-2 text-sm text-gray-500">
             包含1000个列表项，但只渲染可见区域的项目
           </p>
-          <List className="h-[216px]" virtualScroll>
-            {virtualItems.map((item) => (
-              <List.Item
-                key={item.id}
-                title={item.title}
-                description={item.description}
-                clickable
-                suffix={<span className="text-gray-400">›</span>}
-              />
-            ))}
+          <List className="h-[216px]" virtualScroll list={virtualItems}>
+            {(listData) => {
+              return listData.map((item) => (
+                <List.Item
+                  key={item.id}
+                  title={item.title}
+                  description={item.description}
+                  clickable
+                  suffix={<span className="text-gray-400">›</span>}
+                />
+              ));
+            }}
           </List>
         </div>
       )}
@@ -207,16 +211,19 @@ const ListDemo = () => {
               loadMore: virtualPageLoadMore,
               hasMore: hasVirtualPageMore,
             }}
+            list={virtualPageData}
           >
-            {virtualPageData.map((item, index) => (
-              <List.Item
-                key={index}
-                title={item.title + index}
-                description={item.description}
-                clickable
-                suffix={<span className="text-gray-400">›</span>}
-              />
-            ))}
+            {(listData) => {
+              return listData.map((item, index) => (
+                <List.Item
+                  key={index}
+                  title={item.title + index}
+                  description={item.description}
+                  clickable
+                  suffix={<span className="text-gray-400">›</span>}
+                />
+              ));
+            }}
           </List>
         </div>
       )}
@@ -226,19 +233,22 @@ const ListDemo = () => {
           <h3 className="mb-2 text-lg font-medium">列表滚动分页列表</h3>
           <p className="mb-2 text-sm text-gray-500">分页列表</p>
           <List
-            className="h-[216px] overflow-y-auto text-left"
+            className="h-[216px] text-left"
             infiniteScroll={{
               loadMore: listPageLoadMore,
               hasMore: hasListPageMore,
             }}
+            list={listPageData}
           >
-            {listPageData.map((item, index) => (
-              <List.Item
-                key={index}
-                title={item.title + index}
-                description={item.description}
-              />
-            ))}
+            {(listData) => {
+              return listData.map((item, index) => (
+                <List.Item
+                  key={index}
+                  title={item.title + index}
+                  description={item.description}
+                />
+              ));
+            }}
           </List>
         </div>
       )}

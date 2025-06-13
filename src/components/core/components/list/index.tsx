@@ -1,259 +1,135 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import type {
-  ListRowRenderer,
-  ListProps as VirtualizedListProps,
-} from 'react-virtualized';
-import {
-  AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
-  List as VirtualizedList,
-} from 'react-virtualized';
-import type { CellMeasurerChildProps } from 'react-virtualized/dist/es/CellMeasurer';
+import React, { Fragment, useImperativeHandle, useRef, useState } from 'react';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/list/class-config.ts';
-import InfiniteScrollContent from '@/components/core/components/list/infinite-scroll-content.tsx';
+import type { InfiniteScrollProps } from '@/components/core/components/list/infinite-scroll.tsx';
+import InfiniteScroll from '@/components/core/components/list/infinite-scroll.tsx';
+import { ListItem } from '@/components/core/components/list/item.tsx';
+import { flattenChildren } from '@/components/core/components/list/util.ts';
+import type {
+  CellMeasurerCache,
+  VirtualScrollListProps,
+  VirtualizedList,
+} from '@/components/core/components/list/virtual-scroll.tsx';
+import VirtualScrollList from '@/components/core/components/list/virtual-scroll.tsx';
 
-export type ListProps = {
-  /** 是否启用虚拟滚动 */
-  virtualScroll?: boolean;
-  /** 虚拟滚动配置 */
-  virtualConfig?: {
-    /** 每项默认高度 */
-    defaultHeight?: number;
-    /** 每项最小高度 */
-    minHeight?: number;
-  };
-  /** 无限滚动,分页加载数据 */
-  infiniteScroll?: {
-    /** 加载更多的回调函数 */
-    loadMore: (isRetry: boolean) => Promise<void>;
-    /** 是否还有更多内容 */
-    hasMore: boolean;
-    /** 触发加载事件的滚动触底距离阈值，单位为像素 */
-    threshold?: number;
-    /** 渲染自定义指引内容 */
-    children?: (
-      hasMore: boolean,
-      failed: boolean,
-      retry: () => void,
-    ) => React.ReactNode;
-  };
+export type ListRef = {
+  /** 滚动到指定位置 */
+  scrollToPosition: (scrollTop: number) => void;
+  /** 滚动到指定索引,虚拟滚动模式下可用 */
+  virtualScrollToIndex: (index: number) => void;
+};
+export type ListProps<T = unknown> = {
+  /** 是否启用虚拟滚动,或虚拟滚动配置 */
+  virtualScroll?: boolean | VirtualScrollListProps['virtualConfig'];
+  /** 无限滚动,分页加载数据,仅list属性配置后有效 */
+  infiniteScroll?: Omit<InfiniteScrollProps, 'loadMoreFinally' | 'ref'>;
   /** 自定义类名 */
   className?: string;
-  /** 列表内容 */
-  children?: React.ReactNode;
-};
+  /** 列表内容,函数方式需要配置list属性, ReactNode方式不支持无限滚动 */
+  children: ((listData: T[]) => React.ReactNode) | React.ReactNode;
+  /** 滚动列表的ref */
+  ref?: React.Ref<ListRef>;
+  /** 列表数据,仅函数方式需要配置 */
+  list?: T[];
+} & Pick<VirtualScrollListProps, 'getPositionCache'>;
 
-export type ListItemProps = {
-  /** 列表项标题 */
-  title?: React.ReactNode;
-  /** 列表项描述 */
-  description?: React.ReactNode;
-  /** 列表项前缀 */
-  prefix?: React.ReactNode;
-  /** 列表项后缀 */
-  suffix?: React.ReactNode;
-  /** 是否可点击 */
-  clickable?: boolean;
-  /** 是否禁用 */
-  disabled?: boolean;
-  /** 自定义类名 */
-  className?: string;
-  /** 点击事件 */
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  /** 列表项内容 */
-  children?: React.ReactNode;
-};
-
-const flattenChildren = (children: React.ReactNode): React.ReactNode[] => {
-  const result: React.ReactNode[] = [];
-
-  const flatten = (child: React.ReactNode) => {
-    if (child == null) return;
-
-    if (Array.isArray(child)) {
-      child.forEach(flatten);
-    } else if (
-      typeof child === 'object' &&
-      'type' in child &&
-      child.type === React.Fragment
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      flatten((child as any).props.children);
-    } else {
-      result.push(child);
-    }
-  };
-
-  flatten(children);
-  return result;
-};
-
-const ListBase = (props: ListProps) => {
+const List = <T = unknown,>(props: ListProps<T>) => {
   const {
     virtualScroll = false,
-    virtualConfig = {},
     className,
     children,
     infiniteScroll,
+    getPositionCache,
+    ref,
+    list,
   } = props;
 
-  const { defaultHeight, minHeight } = virtualConfig;
+  const listRef = useRef<HTMLDivElement>(null);
+  const virtualizedListRef = useRef<VirtualizedList>(null);
+  const cacheRef = useRef<CellMeasurerCache>(null);
+  const [virtualScrollToIndex, setVirtualScrollToIndex] = useState<number>();
 
-  // 将children转换为数组，以便在rowRenderer中使用
-  const childrenArray = flattenChildren(children);
-  const [cache] = useState(
-    new CellMeasurerCache({
-      defaultHeight: defaultHeight,
-      minHeight: minHeight,
-      fixedWidth: true,
-    }),
-  );
-
-  const [failed, setFailed] = useState(false);
-  const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
-  const lockRef = useRef(false);
-  const doLoadMore = useCallback(
-    async (isRetry: boolean) => {
-      if (infiniteScroll?.hasMore && !isLoadMoreLoading && !failed) {
-        if (lockRef.current) return;
-        lockRef.current = true;
-        const rowIndex = childrenArray.length;
-        setIsLoadMoreLoading(true);
-
-        try {
-          await props.infiniteScroll?.loadMore(isRetry);
-        } catch {
-          setFailed(true);
-        } finally {
-          setIsLoadMoreLoading(false);
+  useImperativeHandle<ListRef, ListRef>(ref, () => {
+    return {
+      scrollToPosition: (scrollTop: number) => {
+        if (virtualScroll) {
+          virtualizedListRef.current?.scrollToPosition(scrollTop);
+        } else {
+          // use setTimeout to make sure data is rendered
+          setTimeout(() => {
+            listRef.current!.scrollTop = scrollTop;
+          }, 0);
         }
-        cache.clear?.(rowIndex - 1, 0);
-        lockRef.current = false;
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      infiniteScroll?.hasMore,
-      isLoadMoreLoading,
-      failed,
-      childrenArray.length,
-      props.infiniteScroll,
-    ],
-  );
-  const [isClickRetry, setIsClickRetry] = useState(false);
-  const retry = async () => {
-    setIsClickRetry(true);
-    setFailed(false);
-  };
-  useEffect(() => {
-    if (isClickRetry) {
-      setIsClickRetry(false);
-      if (!failed) {
-        doLoadMore(true);
+      },
+      virtualScrollToIndex: (index: number) => {
+        if (virtualScroll) {
+          setVirtualScrollToIndex(index);
+        }
+      },
+    };
+  }, [virtualScroll]);
+
+  let childrenArray: React.ReactNode[] = [];
+  if (typeof children === 'function') {
+    if (list) {
+      const childrenNode = children(list);
+      // 将children转换为数组，以便在rowRenderer中使用
+      childrenArray = flattenChildren(childrenNode);
+      if (infiniteScroll && list.length > 0) {
+        const { children: infiniteScrollChildren, ...otherProps } =
+          infiniteScroll;
+        childrenArray.push(
+          <InfiniteScroll
+            {...otherProps}
+            loadMoreFinally={() => {
+              cacheRef.current?.clear(childrenArray.length - 1, 0);
+            }}
+          >
+            {infiniteScrollChildren}
+          </InfiniteScroll>,
+        );
       }
     }
-  }, [doLoadMore, failed, isClickRetry]);
-
-  if (infiniteScroll) {
-    const {
-      hasMore,
-      children = (hasMore, failed, retry) =>
-        (
-          <InfiniteScrollContent
-            hasMore={hasMore}
-            failed={failed}
-            retry={retry}
-          />
-        ) as React.ReactNode,
-    } = infiniteScroll;
-    childrenArray.push(children(hasMore, failed, retry) as never);
+  } else {
+    childrenArray = flattenChildren(children);
   }
 
-  const rowRenderer: ListRowRenderer = (props) => {
-    // eslint-disable-next-line react/prop-types
-    const { key, index, style, parent } = props;
-    const child = childrenArray[index];
-    const itemRender = (opts: {
-      registerChild: CellMeasurerChildProps['registerChild'];
-    }) => {
-      const { registerChild } = opts;
-      return (
-        <div ref={registerChild} style={style}>
-          {child}
-        </div>
-      );
-    };
-    return (
-      <CellMeasurer
-        cache={cache}
-        columnIndex={0}
-        key={key}
-        parent={parent}
-        rowIndex={index}
-      >
-        {({ registerChild }) => itemRender({ registerChild })}
-      </CellMeasurer>
-    );
-  };
-
-  const onScroll: VirtualizedListProps['onScroll'] = async (params) => {
-    const { clientHeight, scrollHeight, scrollTop } = params;
-    if (infiniteScroll) {
-      const { threshold = 100 } = infiniteScroll;
-      if (scrollHeight <= clientHeight + scrollTop + threshold) {
-        await doLoadMore(false);
-      }
-    }
-  };
-
-  const onDivInfiniteScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    if (!virtualScroll && !!infiniteScroll) {
-      const { clientHeight, scrollHeight, scrollTop } =
-        e.target as HTMLDivElement;
-      onScroll({
-        clientHeight,
-        scrollHeight,
-        scrollTop,
-        clientWidth: 0,
-        scrollLeft: 0,
-        scrollWidth: 0,
-      });
+  const onDivListScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop } = e.target as HTMLDivElement;
+    if (!virtualScroll) {
+      getPositionCache?.({ scrollTop: scrollTop });
     }
   };
 
   return (
     <div
       className={cn(
-        classConfig.listConfig({ isScroll: virtualScroll || !!infiniteScroll }),
+        classConfig.listConfig({
+          defaultScrollHeight: Boolean(virtualScroll) || !!infiniteScroll,
+          isScroll: !virtualScroll && !!infiniteScroll,
+        }),
         className,
       )}
-      onScroll={onDivInfiniteScroll}
+      onScroll={onDivListScroll}
       role="list"
+      ref={listRef}
     >
       {virtualScroll ? (
-        <AutoSizer>
-          {(opts) => {
-            const { width, height } = opts;
-            return (
-              <VirtualizedList
-                width={width}
-                height={height}
-                rowCount={childrenArray.length}
-                deferredMeasurementCache={cache}
-                rowHeight={cache.rowHeight}
-                rowRenderer={rowRenderer}
-                onScroll={onScroll}
-              />
-            );
-          }}
-        </AutoSizer>
+        <VirtualScrollList
+          ref={virtualizedListRef}
+          cacheRef={cacheRef}
+          virtualConfig={virtualScroll === true ? undefined : virtualScroll}
+          childrenArray={childrenArray}
+          virtualScrollToIndex={virtualScrollToIndex}
+          getPositionCache={getPositionCache}
+        />
       ) : (
         <>
           {childrenArray.map((child, index) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return <div key={(child as any).key ?? index}>{child}</div>;
+            return (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <Fragment key={(child as any).key ?? index}>{child}</Fragment>
+            );
           })}
         </>
       )}
@@ -261,60 +137,5 @@ const ListBase = (props: ListProps) => {
   );
 };
 
-const ListItem = (props: ListItemProps) => {
-  const {
-    title,
-    description,
-    prefix,
-    suffix,
-    clickable = false,
-    disabled = false,
-    className,
-    onClick,
-    children,
-    ...rest
-  } = props;
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (disabled) return;
-    onClick?.(e);
-  };
-
-  return (
-    <div
-      className={cn(classConfig.itemConfig, className)}
-      data-clickable={clickable && !disabled ? true : undefined}
-      data-disabled={disabled ? true : undefined}
-      onClick={handleClick}
-      {...rest}
-    >
-      {prefix && <div className={classConfig.itemPrefixConfig}>{prefix}</div>}
-
-      <div className={classConfig.itemContentConfig.wrap}>
-        {children || (
-          <>
-            {title && (
-              <div className={classConfig.itemContentConfig.title}>{title}</div>
-            )}
-            {description && (
-              <div className={classConfig.itemContentConfig.description}>
-                {description}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {suffix && <div className={classConfig.itemSuffixConfig}>{suffix}</div>}
-    </div>
-  );
-};
-
-type ListType = typeof ListBase & {
-  Item: typeof ListItem;
-};
-
-const List = ListBase as ListType;
 List.Item = ListItem;
-
 export default List;

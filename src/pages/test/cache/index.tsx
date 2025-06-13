@@ -4,6 +4,7 @@ import Button from '@/components/core/components/button';
 import { useCreateLRUCache } from '@/components/core/components/cache';
 import Checkbox from '@/components/core/components/checkbox';
 import { useRouter } from '@/hooks/use-router.ts';
+import ListDemo from '@/pages/test/cache/components/list-demo.tsx';
 
 const Index = () => {
   const router = useRouter();
@@ -61,6 +62,23 @@ const Index = () => {
         <Checkbox value="3">选项3</Checkbox>
       </Checkbox.Group>
       <Button onClick={onClickGet}>获取缓存</Button>
+      <Button
+        onClick={() => {
+          router.push('/test/ui');
+        }}
+      >
+        前进
+      </Button>
+      <Button
+        onClick={() => {
+          window.location.href = '/sub/test/ui';
+        }}
+      >
+        前进2
+      </Button>
+      <div>
+        <ListDemo />
+      </div>
       <Button
         onClick={() => {
           router.push('/test/ui');

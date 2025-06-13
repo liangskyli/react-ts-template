@@ -8,6 +8,9 @@ const currentConfig = getComponentClassConfig(
 
 const listConfig = cva(currentConfig.list.base, {
   variants: {
+    defaultScrollHeight: {
+      true: currentConfig.list.defaultScrollHeight,
+    },
     isScroll: {
       true: currentConfig.list.isScroll,
     },
@@ -20,7 +23,8 @@ const classConfig = {
   itemPrefixConfig: currentConfig.itemPrefix,
   itemSuffixConfig: currentConfig.itemSuffix,
   itemContentConfig: currentConfig.itemContent,
-  infiniteScrollContentConfig: currentConfig.infiniteScrollContent,
+  defaultInfiniteScrollContentConfig:
+    currentConfig.defaultInfiniteScrollContentConfig,
 };
 
 export default classConfig;

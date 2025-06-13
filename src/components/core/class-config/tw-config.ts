@@ -300,10 +300,11 @@ const twConfig = {
   list: {
     list: {
       base: 'tw-bg-white',
-      isScroll: 'tw-h-[300px]',
+      defaultScrollHeight: 'tw-h-[300px]',
+      isScroll: 'tw-overflow-y-auto',
     },
     item: [
-      'tw-flex tw-items-center tw-border-b tw-border-gray-100 tw-px-4 tw-py-3 last:tw-border-b-0',
+      'tw-flex tw-items-center tw-px-4 tw-py-3',
       'data-[clickable]:tw-cursor-pointer data-[clickable]:active:tw-bg-gray-50',
       'data-[disabled]:tw-cursor-not-allowed data-[disabled]:tw-opacity-40',
     ],
@@ -314,7 +315,7 @@ const twConfig = {
       title: 'tw-text-base tw-text-gray-900',
       description: 'tw-mt-1 tw-text-sm tw-text-gray-500',
     },
-    infiniteScrollContent: {
+    defaultInfiniteScrollContentConfig: {
       wrap: 'tw-h-[30px] tw-text-center tw-text-sm tw-leading-[30px] tw-text-gray-500',
       retry: 'tw-text-blue-500 tw-ml-2 tw-cursor-pointer',
     },
