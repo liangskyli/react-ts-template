@@ -342,5 +342,16 @@ const twConfig = {
   useLockScroll: {
     bodyLockClass: 'tw-overflow-hidden',
   },
+  skeleton: {
+    skeleton: {
+      base: ['tw-bg-gray-200', 'tw-rounded tw-w-full tw-h-5'],
+      animation: 'tw-animate-pulse',
+    },
+    paragraph: {
+      list: 'tw-space-y-2',
+      item: 'last:tw-w-[60%]',
+    },
+    circular: 'tw-rounded-full tw-size-[40px]',
+  },
 };
 export { twConfig };

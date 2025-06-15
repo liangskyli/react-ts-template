@@ -338,5 +338,16 @@ const defaultConfig = {
   useLockScroll: {
     bodyLockClass: 'overflow-hidden',
   },
+  skeleton: {
+    skeleton: {
+      base: ['bg-gray-200', 'rounded w-full h-5'],
+      animation: 'animate-pulse',
+    },
+    paragraph: {
+      list: 'space-y-2',
+      item: 'last:w-[60%]',
+    },
+    circular: 'rounded-full size-[40px]',
+  },
 };
 export { defaultConfig };
