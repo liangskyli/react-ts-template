@@ -353,5 +353,19 @@ const twConfig = {
     },
     circular: 'tw-rounded-full tw-size-[40px]',
   },
+  badge: {
+    index: {
+      wrap: 'tw-relative tw-inline-block',
+      base: [
+        'tw-inline-flex tw-items-center tw-justify-center',
+        'tw-font-medium tw-px-[4.5px] tw-py-[1px]',
+        'tw-rounded-full',
+        'tw-bg-red-500 tw-text-white',
+        'tw-absolute -tw-right-1 -tw-top-1 tw-text-[8px]',
+      ],
+      dot: 'tw-size-3 tw-p-0',
+      onlyBadge: 'tw-static',
+    },
+  },
 };
 export { twConfig };

@@ -349,5 +349,19 @@ const defaultConfig = {
     },
     circular: 'rounded-full size-[40px]',
   },
+  badge: {
+    index: {
+      wrap: 'relative inline-block',
+      base: [
+        'inline-flex items-center justify-center',
+        'font-medium px-[4.5px] py-[1px]',
+        'rounded-full',
+        'bg-red-500 text-white',
+        'absolute -right-1 -top-1 text-[8px]',
+      ],
+      dot: 'size-3 p-0',
+      onlyBadge: 'static',
+    },
+  },
 };
 export { defaultConfig };

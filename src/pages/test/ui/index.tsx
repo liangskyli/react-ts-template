@@ -1,4 +1,5 @@
 import ListDemo from '@/pages/test/components/List-demo.tsx';
+import BadgeDemo from '@/pages/test/components/badge-demo.tsx';
 import ButtonDemo from '@/pages/test/components/button-demo.tsx';
 import CheckboxDemo from '@/pages/test/components/checkbox-demo.tsx';
 import FormDemo from '@/pages/test/components/form-demo.tsx';
@@ -16,6 +17,7 @@ const Index = () => {
   return (
     <div className="mt-[10px] text-center">
       <title>UI</title>
+      <BadgeDemo />
       <SkeletonDemo />
       <LoadingDemo />
       <ButtonDemo />
