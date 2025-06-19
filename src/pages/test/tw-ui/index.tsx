@@ -9,6 +9,7 @@ import PopoverDemo from '@/pages/test/components/tw/popover-demo.tsx';
 import PopupDemo from '@/pages/test/components/tw/popup-demo.tsx';
 import RadioDemo from '@/pages/test/components/tw/radio-demo.tsx';
 import SkeletonDemo from '@/pages/test/components/tw/skeleton-demo.tsx';
+import StepsDemo from '@/pages/test/components/tw/steps-demo.tsx';
 import SwitchDemo from '@/pages/test/components/tw/switch-demo.tsx';
 import TextareaDemo from '@/pages/test/components/tw/textarea-demo.tsx';
 import ToastDemo from '@/pages/test/components/tw/toast-demo.tsx';
@@ -17,6 +18,7 @@ const Index = () => {
   return (
     <div className="tw-mt-[10px] tw-text-center">
       <title>UI</title>
+      <StepsDemo />
       <BadgeDemo />
       <SkeletonDemo />
       <LoadingDemo />

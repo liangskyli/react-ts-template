@@ -363,5 +363,90 @@ const defaultConfig = {
       onlyBadge: 'static',
     },
   },
+  steps: {
+    container: {
+      base: 'flex',
+      direction: {
+        horizontal: 'flex-row items-start',
+        vertical: 'flex-col',
+      },
+    },
+    item: {
+      base: 'group flex',
+      direction: {
+        horizontal: 'flex-1 items-center',
+        vertical: '',
+      },
+    },
+    itemInner: [
+      'flex',
+      'group-data-[is-clickable=true]:cursor-pointer',
+      'group-data-[disabled=true]:cursor-not-allowed',
+      'group-data-[direction=horizontal]:w-full',
+      'group-data-[direction=horizontal]:flex-col',
+      'group-data-[direction=vertical]:flex-grow',
+    ],
+    indicatorContainer: {
+      horizontal: {
+        base: 'relative flex h-6 w-full items-center justify-center',
+        leftLine: [
+          'absolute left-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2',
+          'transition-colors duration-200',
+          'bg-gray-300',
+          'group-data-[previous-status=finish]:bg-blue-500',
+        ],
+        rightLine: [
+          'absolute right-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2',
+          'transition-colors duration-200',
+          'bg-gray-300',
+          'group-data-[status=finish]:bg-blue-500',
+        ],
+      },
+      vertical: {
+        base: 'flex flex-col items-center',
+        line: [
+          'w-0.5 flex-1 transition-colors duration-200',
+          'bg-gray-300',
+          'group-data-[status=finish]:bg-blue-500',
+        ],
+      },
+    },
+    icon: {
+      base: [
+        'flex items-center justify-center',
+        'transition-all duration-200',
+        'z-[1]',
+      ],
+      defaultIcon: [
+        'size-3 rounded-full',
+        'group-data-[status=wait]:bg-gray-300',
+        'group-data-[status=process]:bg-blue-500',
+        'group-data-[status=finish]:bg-blue-500',
+        'group-data-[status=error]:bg-red-500',
+      ],
+    },
+    content: [
+      'group-data-[direction=horizontal]:mt-2 ',
+      'group-data-[direction=vertical]:ml-3',
+      'group-data-[direction=vertical]:flex-1',
+      'group-data-[direction=vertical]:pb-6',
+      'group-data-[direction=vertical]:text-left',
+      'group-data-[disabled=true]:opacity-50',
+    ],
+    title: [
+      'text-sm font-medium transition-colors duration-200',
+      'group-data-[status=wait]:text-gray-400',
+      'group-data-[status=process]:text-blue-600',
+      'group-data-[status=finish]:text-gray-600',
+      'group-data-[status=error]:text-red-600',
+    ],
+    description: [
+      'text-xs mt-1 transition-colors duration-200',
+      'group-data-[status=wait]:text-gray-400',
+      'group-data-[status=process]:text-gray-600',
+      'group-data-[status=finish]:text-gray-600',
+      'group-data-[status=error]:text-red-600',
+    ],
+  },
 };
 export { defaultConfig };

@@ -367,5 +367,90 @@ const twConfig = {
       onlyBadge: 'tw-static',
     },
   },
+  steps: {
+    container: {
+      base: 'tw-flex',
+      direction: {
+        horizontal: 'tw-flex-row tw-items-start',
+        vertical: 'tw-flex-col',
+      },
+    },
+    item: {
+      base: 'tw-group tw-flex',
+      direction: {
+        horizontal: 'tw-flex-1 tw-items-center',
+        vertical: '',
+      },
+    },
+    itemInner: [
+      'tw-flex',
+      'group-data-[is-clickable=true]:tw-cursor-pointer',
+      'group-data-[disabled=true]:tw-cursor-not-allowed',
+      'group-data-[direction=horizontal]:tw-w-full',
+      'group-data-[direction=horizontal]:tw-flex-col',
+      'group-data-[direction=vertical]:tw-flex-grow',
+    ],
+    indicatorContainer: {
+      horizontal: {
+        base: 'tw-relative tw-flex tw-h-6 tw-w-full tw-items-center tw-justify-center',
+        leftLine: [
+          'tw-absolute tw-left-0 tw-top-1/2 tw-h-0.5 tw-w-1/2 -tw-translate-y-1/2',
+          'tw-transition-colors tw-duration-200',
+          'tw-bg-gray-300',
+          'group-data-[previous-status=finish]:tw-bg-blue-500',
+        ],
+        rightLine: [
+          'tw-absolute tw-right-0 tw-top-1/2 tw-h-0.5 tw-w-1/2 -tw-translate-y-1/2',
+          'tw-transition-colors tw-duration-200',
+          'tw-bg-gray-300',
+          'group-data-[status=finish]:tw-bg-blue-500',
+        ],
+      },
+      vertical: {
+        base: 'tw-flex tw-flex-col tw-items-center',
+        line: [
+          'tw-w-0.5 tw-flex-1 tw-transition-colors tw-duration-200',
+          'tw-bg-gray-300',
+          'group-data-[status=finish]:tw-bg-blue-500',
+        ],
+      },
+    },
+    icon: {
+      base: [
+        'tw-flex tw-items-center tw-justify-center',
+        'tw-transition-all tw-duration-200',
+        'tw-z-[1]',
+      ],
+      defaultIcon: [
+        'tw-size-3 tw-rounded-full',
+        'group-data-[status=wait]:tw-bg-gray-300',
+        'group-data-[status=process]:tw-bg-blue-500',
+        'group-data-[status=finish]:tw-bg-blue-500',
+        'group-data-[status=error]:tw-bg-red-500',
+      ],
+    },
+    content: [
+      'group-data-[direction=horizontal]:tw-mt-2 ',
+      'group-data-[direction=vertical]:tw-ml-3',
+      'group-data-[direction=vertical]:tw-flex-1',
+      'group-data-[direction=vertical]:tw-pb-6',
+      'group-data-[direction=vertical]:tw-text-left',
+      'group-data-[disabled=true]:tw-opacity-50',
+    ],
+    title: [
+      'tw-text-sm tw-font-medium tw-transition-colors tw-duration-200',
+      'group-data-[status=wait]:tw-text-gray-400',
+      'group-data-[status=process]:tw-text-blue-600',
+      'group-data-[status=finish]:tw-text-gray-600',
+      'group-data-[status=error]:tw-text-red-600',
+    ],
+    description: [
+      'tw-text-xs tw-mt-1 tw-transition-colors tw-duration-200',
+      'group-data-[status=wait]:tw-text-gray-400',
+      'group-data-[status=process]:tw-text-gray-600',
+      'group-data-[status=finish]:tw-text-gray-600',
+      'group-data-[status=error]:tw-text-red-600',
+    ],
+  },
 };
 export { twConfig };
