@@ -1,5 +1,6 @@
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/skeleton/class-config.ts';
+import './base.css';
 
 export type SkeletonProps = {
   /** 自定义 CSS 类名 */

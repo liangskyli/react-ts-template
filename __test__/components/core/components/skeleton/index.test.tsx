@@ -8,20 +8,20 @@ describe('Skeleton', () => {
     const skeleton = screen.getByRole('skeleton');
 
     expect(skeleton).toBeInTheDocument();
-    expect(skeleton).toHaveClass('animate-pulse');
-    expect(skeleton).toHaveClass('bg-gray-200');
+    expect(skeleton).toHaveClass('animate-[shimmer_1.4s_ease_infinite]');
+    expect(skeleton).toHaveClass('bg-gradient-to-r');
     expect(skeleton).toHaveClass('rounded');
   });
 
   it('renders different variants', () => {
     const { rerender } = render(<Skeleton />);
     expect(screen.getByRole('skeleton')).toHaveClass(
-      'bg-gray-200 rounded w-full h-5',
+      'bg-gradient-to-r rounded w-full h-5',
     );
 
     rerender(<Skeleton.circular />);
     expect(screen.getByRole('skeleton')).toHaveClass(
-      'bg-gray-200 rounded-full size-[40px]',
+      'bg-gradient-to-r rounded-full size-[40px]',
     );
 
     rerender(<Skeleton.Paragraph />);

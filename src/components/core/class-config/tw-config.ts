@@ -344,8 +344,12 @@ const twConfig = {
   },
   skeleton: {
     skeleton: {
-      base: ['tw-bg-gray-200', 'tw-rounded tw-w-full tw-h-5'],
-      animation: 'tw-animate-pulse',
+      base: [
+        'tw-bg-gradient-to-r tw-from-[#bebebe]/[0.2] tw-from-25% tw-via-[#818181]/[0.37] tw-via-[37%] tw-to-[#bebebe]/[0.2] tw-to-[63%]',
+        'tw-bg-[length:400%_100%]',
+        'tw-rounded tw-w-full tw-h-5',
+      ],
+      animation: 'tw-animate-[shimmer_1.4s_ease_infinite]',
     },
     paragraph: {
       list: 'tw-space-y-2',

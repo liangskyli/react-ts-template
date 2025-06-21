@@ -340,8 +340,12 @@ const defaultConfig = {
   },
   skeleton: {
     skeleton: {
-      base: ['bg-gray-200', 'rounded w-full h-5'],
-      animation: 'animate-pulse',
+      base: [
+        'bg-gradient-to-r from-[#bebebe]/[0.2] from-25% via-[#818181]/[0.37] via-[37%] to-[#bebebe]/[0.2] to-[63%]',
+        'bg-[length:400%_100%]',
+        'rounded w-full h-5',
+      ],
+      animation: 'animate-[shimmer_1.4s_ease_infinite]',
     },
     paragraph: {
       list: 'space-y-2',
