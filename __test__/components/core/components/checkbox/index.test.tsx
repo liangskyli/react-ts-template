@@ -44,7 +44,7 @@ describe('Checkbox', () => {
     expect(checkbox).toHaveAttribute('data-headlessui-state', 'indeterminate');
 
     const svg = container.querySelector('svg');
-    expect(svg).toBeNull();
+    expect(svg).toBeInTheDocument();
 
     rerender(
       <Checkbox checked indeterminate>
@@ -102,7 +102,7 @@ describe('Checkbox', () => {
       </Checkbox>,
     );
 
-    expect(screen.queryByTestId('custom-indeterminate')).toBeNull();
+    expect(screen.queryByTestId('custom-indeterminate')).toBeInTheDocument();
 
     rerender(
       <Checkbox
