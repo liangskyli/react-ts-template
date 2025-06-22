@@ -1,0 +1,283 @@
+import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { cn } from '@/components/core/class-config';
+import type { ListProps, ListRef } from '@/components/core/components/list';
+import List from '@/components/core/components/list';
+import classConfig from '@/components/core/components/tree/class-config.ts';
+import {
+  DefaultCollapseIcon,
+  DefaultExpandIcon,
+} from '@/components/core/components/tree/icons.tsx';
+
+export type TreeNode = {
+  /** 节点的唯一标识 */
+  key: string | number;
+  /** 节点标题 */
+  title: React.ReactNode;
+  /** 子节点 */
+  children?: TreeNode[];
+  /** 是否默认展开 */
+  defaultExpanded?: boolean;
+  /** 是否禁用 */
+  disabled?: boolean;
+  /** 是否可选择 */
+  selectable?: boolean;
+};
+
+type FlattenNode = TreeNode & {
+  /** 节点层级 */
+  level: number;
+  /** 父节点key */
+  parentKey?: string | number;
+  /** 是否是叶子节点 */
+  isLeaf: boolean;
+  /** 子节点keys */
+  childrenKeys: (string | number)[];
+  /** 所有后代节点keys */
+  allDescendantKeys: (string | number)[];
+};
+
+export type TreeRef = {
+  /** 获取所有扁平化树形数据 */
+  getFlattenNodes: ()=> FlattenNode[];
+};
+export type TreeProps = {
+  /** ref */
+  ref?: React.Ref<TreeRef>;
+  /** 树形数据 */
+  treeData: TreeNode[];
+  /** 展开的节点key */
+  expandedKeys?: (string | number)[];
+  /** 默认展开的节点key */
+  defaultExpandedKeys?: (string | number)[];
+  /** 是否显示展开/收起图标，不显示图标时节点默认展开 */
+  showIcon?: boolean;
+  /** 自定义展开图标 */
+  expandIcon?: React.ReactNode;
+  /** 自定义收起图标 */
+  collapseIcon?: React.ReactNode;
+  /** 缩进宽度 */
+  indentWidth?: number;
+  /** 展开/收起回调 */
+  onExpand?: (
+    expandedKeys: (string | number)[],
+    info: {
+      expanded: boolean;
+      node: TreeNode;
+    },
+  ) => void;
+  /** 自定义渲染节点标题 */
+  renderNode?: (node: FlattenNode) => React.ReactNode | undefined;
+  /** 自定义类名 */
+  className?: string;
+} & Pick<ListProps, 'virtualScroll' | 'infiniteScroll' | 'getPositionCache'>;
+
+const Tree = (props: TreeProps) => {
+  const {
+    ref,
+    treeData,
+    expandedKeys: controlledExpandedKeys,
+    defaultExpandedKeys = [],
+    showIcon = true,
+    expandIcon = <DefaultExpandIcon />,
+    collapseIcon = <DefaultCollapseIcon />,
+    onExpand,
+    indentWidth = 24,
+    renderNode,
+    className,
+    virtualScroll = false,
+    infiniteScroll,
+    getPositionCache,
+  } = props;
+
+  // 创建内部ref
+  const listRef = useRef<ListRef>(null);
+
+  const [internalExpandedKeys, setInternalExpandedKeys] = useState<
+    (string | number)[]
+  >(controlledExpandedKeys || defaultExpandedKeys);
+
+  const expandedKeys = controlledExpandedKeys || internalExpandedKeys;
+
+  // 构建节点关系映射
+  const nodeMap = useMemo(() => {
+    const map = new Map<string | number, TreeNode>();
+    const childrenMap = new Map<string | number, (string | number)[]>();
+    const descendantMap = new Map<string | number, (string | number)[]>();
+
+    const buildMap = (nodes: TreeNode[], parentKey?: string | number) => {
+      nodes.forEach((node) => {
+        map.set(node.key, node);
+
+        if (parentKey) {
+          const siblings = childrenMap.get(parentKey) || [];
+          siblings.push(node.key);
+          childrenMap.set(parentKey, siblings);
+        }
+
+        if (node.children) {
+          buildMap(node.children, node.key);
+
+          // 收集所有后代节点
+          const descendants: (string | number)[] = [];
+          const collectDescendants = (children: TreeNode[]) => {
+            children.forEach((child) => {
+              descendants.push(child.key);
+              if (child.children) {
+                collectDescendants(child.children);
+              }
+            });
+          };
+          collectDescendants(node.children);
+          descendantMap.set(node.key, descendants);
+        }
+      });
+    };
+
+    buildMap(treeData);
+    return { nodeMap: map, childrenMap, descendantMap };
+  }, [treeData]);
+
+  // 扁平化树形数据
+  const flattenNodes = useMemo(() => {
+    const flatten = (
+      nodes: TreeNode[],
+      level = 0,
+      parentKey?: string | number,
+    ): FlattenNode[] => {
+      const result: FlattenNode[] = [];
+
+      nodes.forEach((node) => {
+        const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
+        const allDescendantKeys = nodeMap.descendantMap.get(node.key) || [];
+
+        const flatNode: FlattenNode = {
+          ...node,
+          level,
+          parentKey,
+          isLeaf: !node.children || node.children.length === 0,
+          childrenKeys,
+          allDescendantKeys,
+        };
+
+        result.push(flatNode);
+
+        // 如果节点展开且有子节点，递归处理子节点
+        if (expandedKeys.includes(node.key) && node.children) {
+          result.push(...flatten(node.children, level + 1, node.key));
+        }
+      });
+
+      return result;
+    };
+
+    return flatten(treeData);
+  }, [treeData, expandedKeys, nodeMap]);
+
+  // 处理展开/收起
+  const handleNodeExpand = useCallback(
+    (node: FlattenNode) => {
+      if (node.isLeaf) return;
+
+      const isExpanded = expandedKeys.includes(node.key);
+      let newExpandedKeys: (string | number)[];
+
+      if (isExpanded) {
+        newExpandedKeys = expandedKeys.filter((key) => key !== node.key);
+      } else {
+        newExpandedKeys = [...expandedKeys, node.key];
+      }
+
+      if (!controlledExpandedKeys) {
+        setInternalExpandedKeys(newExpandedKeys);
+      }
+
+      onExpand?.(newExpandedKeys, {
+        expanded: !isExpanded,
+        node,
+      });
+    },
+    [expandedKeys, controlledExpandedKeys, onExpand],
+  );
+
+  // 渲染节点
+  const innerRenderNode = useCallback(
+    (node: FlattenNode) => {
+      const isExpanded = expandedKeys.includes(node.key);
+      const canExpand = !node.isLeaf;
+
+      return (
+        <div
+          key={node.key}
+          className={cn(classConfig.nodeConfig)}
+          data-disabled={node.disabled}
+        >
+          {/* 缩进 */}
+          <div
+            className={classConfig.nodeContentConfig.indent}
+            style={{ width: `${node.level * indentWidth}px` }}
+          />
+
+          {/* 展开/收起图标 */}
+          {showIcon && (
+            <div
+              className={classConfig.nodeContentConfig.switcher}
+              onClick={() => handleNodeExpand(node)}
+              data-testid={
+                canExpand
+                  ? isExpanded
+                    ? 'collapse-icon'
+                    : 'expand-icon'
+                  : 'leaf-icon'
+              }
+            >
+              {canExpand ? (isExpanded ? collapseIcon : expandIcon) : null}
+            </div>
+          )}
+
+          {/* 节点内容 */}
+          <div className={classConfig.nodeContentConfig.wrap}>
+            {renderNode?.(node) ?? node.title}
+          </div>
+        </div>
+      );
+    },
+    [
+      expandedKeys,
+      indentWidth,
+      showIcon,
+      collapseIcon,
+      expandIcon,
+      renderNode,
+      handleNodeExpand,
+    ],
+  );
+
+  useImperativeHandle(ref, () => {
+    return {
+      getFlattenNodes: () => flattenNodes,
+    };
+  }, [flattenNodes]);
+
+  const listContent = (
+    <List
+      ref={listRef}
+      className={cn(
+        /*classConfig.treeConfig({
+          virtualScroll: Boolean(virtualScroll),
+          infiniteScroll: Boolean(infiniteScroll),
+        }),*/
+        className,
+      )}
+      virtualScroll={virtualScroll}
+      infiniteScroll={infiniteScroll}
+      getPositionCache={getPositionCache}
+      list={flattenNodes}
+    >
+      {(nodes) => nodes.map(innerRenderNode)}
+    </List>
+  );
+
+  return listContent;
+};
+
+export default Tree;

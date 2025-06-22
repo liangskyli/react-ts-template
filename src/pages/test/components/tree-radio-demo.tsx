@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Tree from '@/components/core/components/tree';
 import type { TreeNode } from '@/components/core/components/tree';
 
-const TreeDemo = () => {
+const TreeRadioDemo = () => {
   // 基础树形数据
   const basicTreeData: TreeNode[] = [
     {
@@ -41,6 +41,11 @@ const TreeDemo = () => {
           key: '2-2',
           title: '子节点2-2',
           disabled: true,
+        },
+        {
+          key: '2-3',
+          title: '子节点2-3',
+          selectable: false,
         },
       ],
     },
@@ -84,64 +89,50 @@ const TreeDemo = () => {
 
   // 受控模式状态
   const [expandedKeys, setExpandedKeys] = useState<(string | number)[]>(['1']);
+  const [selectedKey, setSelectedKey] = useState<string | number | undefined>(
+    '1-1',
+  );
+  const [virtualScrollSelectedKey, setvirtualScrollSelectedKey] = useState<string | number | undefined>(
+    '',
+  );
 
   return (
     <div className="space-y-8 p-6">
-      <h1 className="text-3xl font-bold text-gray-900">Tree 树形控件演示</h1>
+      <h1 className="text-3xl font-bold text-gray-900">Tree radio 树形控件演示</h1>
 
       {/* 基础用法 */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">基础用法</h2>
         <div className="rounded-lg border bg-white p-6">
-          <Tree treeData={basicTreeData} />
-        </div>
-      </section>
-
-      {/* 默认展开 */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">默认展开</h2>
-        <div className="rounded-lg border bg-white p-6">
-          <Tree treeData={basicTreeData} defaultExpandedKeys={['1', '2']} />
-        </div>
-      </section>
-
-      {/* 自定义图标 */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">自定义图标</h2>
-        <div className="rounded-lg border bg-white p-6">
-          <Tree
+          <Tree.Radio
             treeData={basicTreeData}
-            expandIcon={
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            }
-            collapseIcon={
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            }
+            defaultExpandedKeys={['1', '2']}
+            defaultSelectedKey={'1-1'}
+            onSelect={(selectedKey, info) => {
+              console.log('选中的节点:', selectedKey, info);
+            }}
           />
+        </div>
+      </section>
+
+      {/* 只有叶子节点可选择 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          只有叶子节点可选择
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree.Radio
+            treeData={basicTreeData}
+            onlyLeafSelectable={true}
+            defaultExpandedKeys={['1', '1-2', '2']}
+            onSelect={(selectedKey, info) => {
+              console.log('只有叶子节点可选择:', selectedKey, info);
+            }}
+          />
+          <p className="mt-4 text-sm text-gray-600">
+            <strong>功能说明：</strong>
+            只有叶子节点可以选择
+          </p>
         </div>
       </section>
 
@@ -152,6 +143,9 @@ const TreeDemo = () => {
           <div className="mb-4 space-y-2">
             <p className="text-sm">
               <strong>展开的节点:</strong> {expandedKeys.join(', ') || '无'}
+            </p>
+            <p className="text-sm">
+              <strong>选中的key:</strong> {selectedKey || '无'}
             </p>
             <div className="space-x-2">
               <button
@@ -168,10 +162,12 @@ const TreeDemo = () => {
               </button>
             </div>
           </div>
-          <Tree
+          <Tree.Radio
             treeData={basicTreeData}
             expandedKeys={expandedKeys}
             onExpand={(keys) => setExpandedKeys(keys)}
+            selectedKey={selectedKey}
+            onSelect={(key) => setSelectedKey(key)}
           />
         </div>
       </section>
@@ -182,34 +178,24 @@ const TreeDemo = () => {
           虚拟滚动（大量数据）
         </h2>
         <div className="rounded-lg border bg-white p-6">
-          <p className="mb-4 text-sm text-gray-600">
+          <p className="mb-2 text-sm text-gray-600">
             包含 {largeTreeData.length} 个根节点，每个根节点有 50
             个子节点，每个子节点又有 50 个子节点
           </p>
-          <Tree
+          <p className="text-sm mb-4">
+            <strong>选中的key:</strong> {virtualScrollSelectedKey || '无'}
+          </p>
+          <Tree.Radio
             treeData={largeTreeData}
             virtualScroll
             className="rounded-md border border-gray-200"
+            selectedKey={virtualScrollSelectedKey}
+            onSelect={(key) => setvirtualScrollSelectedKey(key)}
           />
-        </div>
-      </section>
-
-      {/* 隐藏图标 */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">隐藏展开图标</h2>
-        <div className="rounded-lg border bg-white p-6">
-          <Tree
-            treeData={basicTreeData}
-            showIcon={false}
-            defaultExpandedKeys={['1', '2']}
-          />
-          <p className="mt-4 text-sm text-gray-600">
-            不显示展开/收起图标，节点默认展开
-          </p>
         </div>
       </section>
     </div>
   );
 };
 
-export default TreeDemo;
+export default TreeRadioDemo;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Tree from '@/components/core/components/tree';
-import type { TreeNode } from '@/components/core/components/tree';
+import Tree from '@/components/core/components/tree/index-temp.tsx';
+import type { TreeNode } from '@/components/core/components/tree/index-temp.tsx';
 
 const TreeTest = () => {
   const testTreeData: TreeNode[] = [

@@ -466,11 +466,10 @@ const defaultConfig = {
       'data-[selected]:bg-blue-50',
     ],
     nodeContent: {
-      wrap: 'flex-1 flex items-center py-1',
+      wrap: 'flex-1 flex items-center py-1 text-sm text-gray-900 select-none',
       indent: 'flex-shrink-0',
       switcher:
         'flex-shrink-0 w-6 h-6 flex items-center justify-center mr-1 cursor-pointer hover:bg-gray-100 rounded',
-      title: 'text-sm text-gray-900 select-none',
     },
     children: 'ml-6',
   },
