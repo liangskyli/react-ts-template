@@ -340,24 +340,25 @@ const TreeTest = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">虚拟滚动多选测试</h2>
         <div className="rounded-lg border bg-white p-6">
-          <Tree
-            treeData={Array.from({ length: 1000 }, (_, i) => ({
-              key: `node-${i}`,
-              title: `节点 ${i + 1}`,
-              children: i % 10 === 0 ? [
-                { key: `node-${i}-1`, title: `子节点 ${i + 1}-1` },
-                { key: `node-${i}-2`, title: `子节点 ${i + 1}-2` },
-              ] : undefined,
-            }))}
-            multiple
-            virtualScroll
-            style={{ height: 300 }}
-            defaultExpandedKeys={['node-0', 'node-10', 'node-20']}
-            onMultipleSelect={(keys, info) => {
-              console.log('虚拟滚动多选:', keys.length, '个节点选中');
-              console.log('详细信息:', info);
-            }}
-          />
+          <div style={{ height: 300 }}>
+            <Tree
+              treeData={Array.from({ length: 1000 }, (_, i) => ({
+                key: `node-${i}`,
+                title: `节点 ${i + 1}`,
+                children: i % 10 === 0 ? [
+                  { key: `node-${i}-1`, title: `子节点 ${i + 1}-1` },
+                  { key: `node-${i}-2`, title: `子节点 ${i + 1}-2` },
+                ] : undefined,
+              }))}
+              multiple
+              virtualScroll
+              defaultExpandedKeys={['node-0', 'node-10', 'node-20']}
+              onMultipleSelect={(keys, info) => {
+                console.log('虚拟滚动多选:', keys.length, '个节点选中');
+                console.log('详细信息:', info);
+              }}
+            />
+          </div>
           <p className="mt-4 text-sm text-gray-600">
             <strong>功能说明：</strong>虚拟滚动模式下的多选功能现在可以正常工作。
             这里有1000个节点，每10个节点有一个父节点。

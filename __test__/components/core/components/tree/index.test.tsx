@@ -869,4 +869,39 @@ describe('Tree Component', () => {
     expect(info.leafKeys).not.toContain('1-2');
     expect(info.selectedNodes.map((n: any) => n.key)).not.toContain('1-2');
   });
+
+  it('works correctly with virtual scroll in multiple mode', () => {
+    const largeTreeData = Array.from({ length: 100 }, (_, i) => ({
+      key: `node-${i}`,
+      title: `节点 ${i + 1}`,
+      children: i % 10 === 0 ? [
+        { key: `node-${i}-1`, title: `子节点 ${i + 1}-1` },
+        { key: `node-${i}-2`, title: `子节点 ${i + 1}-2` },
+      ] : undefined,
+    }));
+
+    const onMultipleSelect = vi.fn();
+    render(
+      <Tree
+        treeData={largeTreeData}
+        multiple
+        virtualScroll
+        onMultipleSelect={onMultipleSelect}
+        defaultExpandedKeys={['node-0', 'node-10']}
+      />,
+    );
+
+    // 验证虚拟滚动多选模式下使用了CheckboxGroup
+    expect(screen.getByTestId('checkbox-group')).toBeInTheDocument();
+
+    // 选择一个节点
+    fireEvent.click(screen.getByText('节点 1'));
+
+    // 验证回调被调用
+    expect(onMultipleSelect).toHaveBeenCalled();
+
+    const [selectedKeys, info] = onMultipleSelect.mock.calls[0];
+    expect(selectedKeys).toEqual(expect.arrayContaining(['node-0']));
+    expect(info.selectedNodes).toHaveLength(selectedKeys.length);
+  });
 });

@@ -518,7 +518,12 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
       const nonLeafKeys: (string | number)[] = [];
 
       // 遍历所有节点（包括未展开的节点）
-      nodeMap.nodeMap.forEach((_node, nodeKey) => {
+      nodeMap.nodeMap.forEach((node, nodeKey) => {
+        // 跳过不可选择的节点
+        if (node.selectable === false) {
+          return;
+        }
+
         const { checked, indeterminate } = getCheckState(
           nodeKey,
           newSelectedKeys,
@@ -555,9 +560,9 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
         setInternalSelectedKeys(newSelectedKeys);
       }
 
-      // 获取选中的节点信息（基于所有实际选中的节点）
+      // 获取选中的节点信息（基于所有实际选中的节点，排除不可选择的节点）
       const selectedNodes = flattenNodes.filter((n) =>
-        allEffectivelySelectedKeys.includes(n.key),
+        allEffectivelySelectedKeys.includes(n.key) && n.selectable !== false,
       );
 
       // 返回所有实际选中的节点作为selectedKeys
@@ -773,6 +778,15 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
   }
 
   if (multiple) {
+    // 多选模式使用Checkbox.Group包装，但不使用其onChange，而是使用自定义联动逻辑
+    /*return (
+      <Checkbox.Group
+        value={selectedKeys}
+        className={cn('block')}
+      >
+        {listContent}
+      </Checkbox.Group>
+    );*/
     // 多选模式不使用Checkbox.Group，因为我们需要自定义联动逻辑
     return listContent;
   } else {
