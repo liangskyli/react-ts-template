@@ -195,6 +195,116 @@ export default () => (
 );
 ```
 
+### 只有叶子节点可选择
+
+```tsx
+import Tree from '@/components/core/components/tree';
+
+export default () => (
+  <Tree
+    treeData={treeData}
+    multiple
+    onlyLeafSelectable={true} // 只有叶子节点可以选择
+    defaultExpandedKeys={['1', '2']}
+    onMultipleSelect={(selectedKeys, info) => {
+      console.log('叶子节点选择:', selectedKeys, info);
+    }}
+  />
+);
+```
+
+### 多选上限限制
+
+```tsx
+import Tree from '@/components/core/components/tree';
+
+export default () => (
+  <Tree
+    treeData={treeData}
+    multiple
+    maxSelectCount={3} // 最多选择3个节点
+    defaultExpandedKeys={['1', '2']}
+    onMultipleSelect={(selectedKeys, info) => {
+      console.log('选中的节点:', selectedKeys);
+    }}
+    onMaxSelectReached={(maxCount) => {
+      alert(`最多只能选择 ${maxCount} 个节点！`);
+    }}
+  />
+);
+```
+
+### 父节点选中子节点自动显示选中
+
+```tsx
+import Tree from '@/components/core/components/tree';
+
+export default () => (
+  <Tree
+    treeData={treeData}
+    multiple
+    selectedKeys={['1']} // 只选中父节点
+    defaultExpandedKeys={['1', '2']}
+    onMultipleSelect={(selectedKeys, info) => {
+      // 子节点会自动显示为选中状态
+      console.log('选中的节点:', selectedKeys);
+    }}
+  />
+);
+```
+
+### 禁用子节点的半选状态
+
+```tsx
+import Tree from '@/components/core/components/tree';
+
+const treeDataWithDisabled = [
+  {
+    key: '1',
+    title: '父节点',
+    children: [
+      { key: '1-1', title: '正常子节点' },
+      { key: '1-2', title: '禁用子节点', disabled: true },
+    ],
+  },
+];
+
+export default () => (
+  <Tree
+    treeData={treeDataWithDisabled}
+    multiple
+    defaultExpandedKeys={['1']}
+    onMultipleSelect={(selectedKeys, info) => {
+      // 当存在禁用子节点时，父节点会显示半选状态
+      console.log('选中的节点:', selectedKeys);
+      console.log('半选状态的节点:', info.halfCheckedKeys);
+    }}
+  />
+);
+```
+
+### 增强的onMultipleSelect回调
+
+```tsx
+import Tree from '@/components/core/components/tree';
+
+export default () => (
+  <Tree
+    treeData={treeData}
+    multiple
+    defaultExpandedKeys={['1', '2']}
+    onMultipleSelect={(selectedKeys, info) => {
+      console.log('总选中的节点:', selectedKeys);
+      console.log('完全选中的节点:', info.checkedKeys);
+      console.log('半选状态的节点:', info.halfCheckedKeys);
+      console.log('叶子节点:', info.leafKeys);
+      console.log('非叶子节点:', info.nonLeafKeys);
+      console.log('节点对象:', info.selectedNodes);
+    }}
+  />
+);
+```
+
 ### 禁用节点
 
 ```tsx
@@ -366,6 +476,8 @@ export default () => {
 | `multiple` | 是否支持多选 | `boolean` | `false` |
 | `selectable` | 是否可选择 | `boolean` | `true` |
 | `checkStrictly` | 是否启用父子节点联动（仅多选模式有效） | `boolean` | `false` |
+| `onlyLeafSelectable` | 是否只有叶子节点可以选择 | `boolean` | `false` |
+| `maxSelectCount` | 多选模式下的最大选择数量，0表示不限制 | `number` | `0` |
 | `selectedKey` | 选中的节点key（单选模式，受控） | `string \| number` | - |
 | `selectedKeys` | 选中的节点key（多选模式，受控） | `(string \| number)[]` | - |
 | `expandedKeys` | 展开的节点key（受控） | `(string \| number)[]` | - |
@@ -377,6 +489,7 @@ export default () => {
 | `collapseIcon` | 自定义收起图标 | `ReactNode` | - |
 | `onSelect` | 节点选择回调（单选模式） | `(selectedKey, info) => void` | - |
 | `onMultipleSelect` | 节点选择回调（多选模式） | `(selectedKeys, info) => void` | - |
+| `onMaxSelectReached` | 多选达到上限时的回调 | `(maxCount) => void` | - |
 | `onExpand` | 展开/收起回调 | `(expandedKeys, info) => void` | - |
 | `className` | 自定义类名 | `string` | - |
 | `virtualScroll` | 是否启用虚拟滚动 | `boolean \| VirtualScrollConfig` | `false` |
@@ -431,4 +544,10 @@ Tree 使用 Tailwind CSS 进行样式设置，支持以下预设样式：
 6. 设置 `selectable={false}` 可以禁用选择功能，仅用于展示
 7. 多选模式下默认启用父子节点联动，设置 `checkStrictly={true}` 可禁用联动
 8. 父子联动模式下，选中父节点会自动选中所有子节点，部分子节点选中时父节点显示半选状态
-9. `onMultipleSelect` 回调中的 `info` 参数包含 `checkedKeys`（完全选中）和 `halfCheckedKeys`（半选状态）
+9. `onMultipleSelect` 回调中的 `info` 参数包含 `checkedKeys`（完全选中）、`halfCheckedKeys`（半选状态）、`leafKeys`（叶子节点）和 `nonLeafKeys`（非叶子节点）
+10. 设置 `onlyLeafSelectable={true}` 时，只有叶子节点可以选择，父节点会显示为禁用状态
+11. 当父节点被选中时，所有子节点会自动显示为选中状态，即使子节点的key不在selectedKeys中
+12. 设置 `maxSelectCount` 可以限制多选模式下的最大选择数量，超过限制时会触发 `onMaxSelectReached` 回调
+13. 子节点的disabled状态会继承父节点的选择限制（如onlyLeafSelectable）
+14. 当子节点中存在禁用的节点时，即使所有可用子节点都被选中，父节点也会显示半选状态而不是选中状态
+15. `leafKeys` 和 `nonLeafKeys` 分别包含选中的叶子节点和非叶子节点的key，便于业务逻辑处理

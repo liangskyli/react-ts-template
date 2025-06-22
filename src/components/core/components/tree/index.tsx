@@ -50,6 +50,10 @@ export type TreeProps = {
   selectable?: boolean;
   /** 是否启用父子节点联动（仅多选模式有效） */
   checkStrictly?: boolean;
+  /** 是否只有叶子节点可以选择 */
+  onlyLeafSelectable?: boolean;
+  /** 多选模式下的最大选择数量，0表示不限制 */
+  maxSelectCount?: number;
   /** 选中的节点key（单选模式） */
   selectedKey?: string | number;
   /** 选中的节点key（多选模式） */
@@ -77,13 +81,23 @@ export type TreeProps = {
   ) => void;
   /** 节点选择回调（多选模式） */
   onMultipleSelect?: (
+    /** 所有选中的节点keys，包括半选状态的父节点 */
     selectedKeys: (string | number)[],
     info: {
+      /** 选中的节点对象 */
       selectedNodes: TreeNode[];
+      /** 完全选中的节点keys */
       checkedKeys: (string | number)[];
+      /** 半选状态的节点keys */
       halfCheckedKeys: (string | number)[];
+      /** 叶子节点keys */
+      leafKeys: (string | number)[];
+      /** 非叶子节点keys */
+      nonLeafKeys: (string | number)[];
     },
   ) => void;
+  /** 多选达到上限时的回调 */
+  onMaxSelectReached?: (maxCount: number) => void;
   /** 展开/收起回调 */
   onExpand?: (
     expandedKeys: (string | number)[],
@@ -104,6 +118,8 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
     multiple = false,
     selectable = true,
     checkStrictly = false,
+    onlyLeafSelectable = false,
+    maxSelectCount = 0,
     selectedKey: controlledSelectedKey,
     selectedKeys: controlledSelectedKeys,
     expandedKeys: controlledExpandedKeys,
@@ -115,6 +131,7 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
     collapseIcon = <DefaultCollapseIcon />,
     onSelect,
     onMultipleSelect,
+    onMaxSelectReached,
     onExpand,
     className,
     virtualScroll = false,
@@ -249,7 +266,55 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
     [controlledSelectedKey, flattenNodes, onSelect],
   );
 
-  // 计算半选状态
+  // 检查节点是否应该显示为选中状态（包括父节点选中时子节点自动选中的情况）
+  const isNodeEffectivelySelected = useCallback(
+    (nodeKey: string | number, checkedKeys: (string | number)[]): boolean => {
+      // 如果节点本身被选中
+      if (checkedKeys.includes(nodeKey)) {
+        return true;
+      }
+
+      // 如果启用了严格模式，不考虑父子联动
+      if (checkStrictly) {
+        return false;
+      }
+
+      // 检查节点是否被禁用或不可选择，这些节点不会因为父节点选中而显示为选中
+      const node = nodeMap.nodeMap.get(nodeKey);
+      if (node && (node.disabled || node.selectable === false)) {
+        return false;
+      }
+
+      // 检查是否有祖先节点被选中
+      // 从nodeMap中查找父节点关系
+      const findParentKey = (key: string | number): string | number | undefined => {
+        for (const [parentKey, children] of nodeMap.childrenMap.entries()) {
+          if (children.includes(key)) {
+            return parentKey;
+          }
+        }
+        return undefined;
+      };
+
+      // 向上查找祖先节点
+      let currentKey = nodeKey;
+      while (currentKey) {
+        const parentKey = findParentKey(currentKey);
+        if (!parentKey) break;
+
+        // 如果父节点被选中，则当前节点也应该显示为选中
+        if (checkedKeys.includes(parentKey)) {
+          return true;
+        }
+        currentKey = parentKey;
+      }
+
+      return false;
+    },
+    [checkStrictly, nodeMap],
+  );
+
+  // 计算半选状态 - 基于完整树结构而不是扁平化节点
   const getCheckState = useCallback(
     (nodeKey: string | number, checkedKeys: (string | number)[]) => {
       if (checkStrictly) {
@@ -259,7 +324,8 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
         };
       }
 
-      const node = flattenNodes.find((n) => n.key === nodeKey);
+      // 从完整的节点映射中查找节点，而不是从flattenNodes
+      const node = nodeMap.nodeMap.get(nodeKey);
       if (!node) {
         return {
           checked: checkedKeys.includes(nodeKey),
@@ -267,30 +333,31 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
         };
       }
 
-      // 如果是叶子节点，直接返回选中状态
-      if (node.isLeaf) {
+      // 获取子节点keys
+      const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
+
+      // 如果是叶子节点，检查是否有效选中（包括父节点选中的情况）
+      if (childrenKeys.length === 0) {
         return {
-          checked: checkedKeys.includes(nodeKey),
+          checked: isNodeEffectivelySelected(nodeKey, checkedKeys),
           indeterminate: false,
         };
       }
 
       // 对于非叶子节点，需要递归检查子节点状态
-      const childrenKeys = node.childrenKeys;
-
-      if (childrenKeys.length === 0) {
-        // 没有子节点，按叶子节点处理
-        return {
-          checked: checkedKeys.includes(nodeKey),
-          indeterminate: false,
-        };
-      }
-
-      // 计算子节点的状态
+      // 计算子节点的状态，但要排除禁用的子节点
       let checkedChildrenCount = 0;
       let indeterminateChildrenCount = 0;
+      let enabledChildrenCount = 0;
 
       childrenKeys.forEach((childKey) => {
+        const childNode = nodeMap.nodeMap.get(childKey);
+        if (childNode && (childNode.disabled || childNode.selectable === false)) {
+          // 跳过禁用的子节点和不可选择的子节点
+          return;
+        }
+
+        enabledChildrenCount++;
         const childState = getCheckState(childKey, checkedKeys);
         if (childState.checked) {
           checkedChildrenCount++;
@@ -301,17 +368,27 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
 
       // 根据子节点状态确定父节点状态
       if (checkedChildrenCount === 0 && indeterminateChildrenCount === 0) {
-        // 没有任何子节点被选中或半选
+        // 没有任何可用子节点被选中或半选，检查自身是否被选中
         return {
-          checked: false,
+          checked: checkedKeys.includes(nodeKey),
           indeterminate: false,
         };
-      } else if (checkedChildrenCount === childrenKeys.length) {
-        // 所有子节点都被选中
-        return {
-          checked: true,
-          indeterminate: false,
-        };
+      } else if (enabledChildrenCount > 0 && checkedChildrenCount === enabledChildrenCount) {
+        // 所有可用子节点都被选中，但如果总子节点数大于可用子节点数（存在禁用子节点），则显示半选状态
+        const totalChildrenCount = childrenKeys.length;
+        if (totalChildrenCount > enabledChildrenCount) {
+          // 存在禁用的子节点，显示半选状态
+          return {
+            checked: false,
+            indeterminate: true,
+          };
+        } else {
+          // 所有子节点都可用且都被选中
+          return {
+            checked: true,
+            indeterminate: false,
+          };
+        }
       } else {
         // 部分子节点被选中或有半选状态
         return {
@@ -320,7 +397,7 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
         };
       }
     },
-    [checkStrictly, flattenNodes],
+    [checkStrictly, nodeMap, isNodeEffectivelySelected],
   );
 
   // 处理父子节点联动选择
@@ -347,9 +424,10 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
           newKeys.push(targetKey);
         }
 
-        // 选中所有后代节点
+        // 选中所有后代节点（排除禁用的节点和不可选择的节点）
         targetNode.allDescendantKeys.forEach((descendantKey) => {
-          if (!newKeys.includes(descendantKey)) {
+          const descendantNode = flattenNodes.find((n) => n.key === descendantKey);
+          if (descendantNode && !descendantNode.disabled && descendantNode.selectable !== false && !newKeys.includes(descendantKey)) {
             newKeys.push(descendantKey);
           }
         });
@@ -360,10 +438,14 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
             (n) => n.key === targetNode.parentKey,
           );
           if (parentNode) {
-            const allSiblingsChecked = parentNode.childrenKeys.every(
+            const enabledSiblings = parentNode.childrenKeys.filter((siblingKey) => {
+              const siblingNode = flattenNodes.find((n) => n.key === siblingKey);
+              return siblingNode && !siblingNode.disabled && siblingNode.selectable !== false;
+            });
+            const allEnabledSiblingsChecked = enabledSiblings.every(
               (siblingKey) => newKeys.includes(siblingKey),
             );
-            if (allSiblingsChecked && !newKeys.includes(targetNode.parentKey)) {
+            if (allEnabledSiblingsChecked && !newKeys.includes(targetNode.parentKey)) {
               // 递归选中父节点
               newKeys = getUpdatedKeysWithCascade(
                 targetNode.parentKey,
@@ -374,61 +456,129 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
           }
         }
       } else {
-        // 取消选中：取消自己和所有后代
-        newKeys = newKeys.filter(
-          (key) =>
-            key !== targetKey && !targetNode.allDescendantKeys.includes(key),
-        );
+        // 取消选中：需要特殊处理父子联动的情况
 
-        // 取消所有祖先节点的选中状态
-        let currentParent = targetNode.parentKey;
-        while (currentParent) {
-          newKeys = newKeys.filter((key) => key !== currentParent);
-          const parentNode = flattenNodes.find((n) => n.key === currentParent);
-          currentParent = parentNode?.parentKey;
+        // 检查当前节点是否是因为父节点选中而显示为选中的
+        const isEffectivelySelectedByParent = isNodeEffectivelySelected(targetKey, currentKeys) && !currentKeys.includes(targetKey);
+
+        if (isEffectivelySelectedByParent) {
+          // 如果是因为父节点选中而显示选中的，需要将父节点改为半选状态
+          // 这意味着要取消父节点的选中，但保持其他兄弟节点的选中状态
+          let currentParent = targetNode.parentKey;
+          while (currentParent) {
+            if (newKeys.includes(currentParent)) {
+              // 取消父节点的选中
+              newKeys = newKeys.filter((key) => key !== currentParent);
+
+              // 添加其他兄弟节点到选中列表（除了当前取消的节点）
+              const parentNode = flattenNodes.find((n) => n.key === currentParent);
+              if (parentNode) {
+                parentNode.allDescendantKeys.forEach((descendantKey) => {
+                  const descendantNode = flattenNodes.find((n) => n.key === descendantKey);
+                  if (descendantNode && !descendantNode.disabled && descendantNode.selectable !== false && descendantKey !== targetKey && !newKeys.includes(descendantKey)) {
+                    newKeys.push(descendantKey);
+                  }
+                });
+              }
+              break;
+            }
+            const parentNode = flattenNodes.find((n) => n.key === currentParent);
+            currentParent = parentNode?.parentKey;
+          }
+        } else {
+          // 正常的取消选中：取消自己和所有后代
+          newKeys = newKeys.filter(
+            (key) =>
+              key !== targetKey && !targetNode.allDescendantKeys.includes(key),
+          );
+
+          // 取消所有祖先节点的选中状态
+          let currentParent = targetNode.parentKey;
+          while (currentParent) {
+            newKeys = newKeys.filter((key) => key !== currentParent);
+            const parentNode = flattenNodes.find((n) => n.key === currentParent);
+            currentParent = parentNode?.parentKey;
+          }
         }
       }
 
       return [...new Set(newKeys)]; // 去重
     },
-    [checkStrictly, flattenNodes],
+    [checkStrictly, flattenNodes, isNodeEffectivelySelected],
   );
 
   // 处理多选节点选择
   const handleMultipleSelect = useCallback(
     (newSelectedKeys: (string | number)[]) => {
+      // 计算所有实际选中的节点（包括因为父子联动而选中的节点）
+      const allEffectivelySelectedKeys: (string | number)[] = [];
+      const checkedKeys: (string | number)[] = [];
+      const halfCheckedKeys: (string | number)[] = [];
+      const leafKeys: (string | number)[] = [];
+      const nonLeafKeys: (string | number)[] = [];
+
+      // 遍历所有节点（包括未展开的节点）
+      nodeMap.nodeMap.forEach((_node, nodeKey) => {
+        const { checked, indeterminate } = getCheckState(
+          nodeKey,
+          newSelectedKeys,
+        );
+
+        if (checked) {
+          checkedKeys.push(nodeKey);
+          allEffectivelySelectedKeys.push(nodeKey);
+        } else if (indeterminate) {
+          halfCheckedKeys.push(nodeKey);
+          allEffectivelySelectedKeys.push(nodeKey);
+        }
+
+        // 区分叶子节点和非叶子节点（基于所有实际选中的节点）
+        if (checked || indeterminate) {
+          const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
+          if (childrenKeys.length === 0) {
+            // 叶子节点
+            leafKeys.push(nodeKey);
+          } else {
+            // 非叶子节点
+            nonLeafKeys.push(nodeKey);
+          }
+        }
+      });
+
+      // 检查是否超过最大选择数量（基于所有实际选中的节点）
+      if (maxSelectCount > 0 && allEffectivelySelectedKeys.length > maxSelectCount) {
+        onMaxSelectReached?.(maxSelectCount);
+        return;
+      }
+
       if (!controlledSelectedKeys) {
         setInternalSelectedKeys(newSelectedKeys);
       }
 
-      // 获取选中的节点信息
+      // 获取选中的节点信息（基于所有实际选中的节点）
       const selectedNodes = flattenNodes.filter((n) =>
-        newSelectedKeys.includes(n.key),
+        allEffectivelySelectedKeys.includes(n.key),
       );
 
-      // 计算半选状态
-      const checkedKeys: (string | number)[] = [];
-      const halfCheckedKeys: (string | number)[] = [];
-
-      flattenNodes.forEach((node) => {
-        const { checked, indeterminate } = getCheckState(
-          node.key,
-          newSelectedKeys,
-        );
-        if (checked) {
-          checkedKeys.push(node.key);
-        } else if (indeterminate) {
-          halfCheckedKeys.push(node.key);
-        }
-      });
-
-      onMultipleSelect?.(newSelectedKeys, {
+      // 返回所有实际选中的节点作为selectedKeys
+      onMultipleSelect?.(allEffectivelySelectedKeys, {
         selectedNodes,
         checkedKeys,
         halfCheckedKeys,
+        leafKeys,
+        nonLeafKeys,
       });
     },
-    [controlledSelectedKeys, flattenNodes, onMultipleSelect, getCheckState],
+    [
+      maxSelectCount,
+      onMaxSelectReached,
+      controlledSelectedKeys,
+      flattenNodes,
+      nodeMap.nodeMap,
+      nodeMap.childrenMap,
+      onMultipleSelect,
+      getCheckState,
+    ],
   );
 
   // 处理展开/收起
@@ -462,8 +612,20 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
     (node: FlattenNode) => {
       const isExpanded = expandedKeys.includes(node.key);
       const canExpand = !node.isLeaf;
-      const nodeSelectable =
-        selectable && node.selectable !== false && !node.disabled;
+
+      // 计算节点是否可选择（暂时保留变量以备将来使用）
+      // let nodeSelectable = selectable && node.selectable !== false && !node.disabled;
+
+      // 如果设置了只有叶子节点可选择，则非叶子节点不可选择
+      // if (onlyLeafSelectable && !node.isLeaf) {
+      //   nodeSelectable = false;
+      // }
+
+      // 计算节点是否应该显示为disabled状态
+      const isNodeDisabled = node.disabled ||
+        node.selectable === false ||
+        (onlyLeafSelectable && !node.isLeaf) ||
+        (maxSelectCount > 0 && selectedKeys.length >= maxSelectCount && !selectedKeys.includes(node.key));
 
       // 计算选中和半选状态
       const { checked, indeterminate } = multiple
@@ -501,26 +663,63 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
 
           {/* 节点内容 */}
           <div className={classConfig.nodeContentConfig.wrap}>
-            {nodeSelectable ? (
+            {selectable && node.selectable !== false && (!onlyLeafSelectable || node.isLeaf) ? (
               multiple ? (
                 <Checkbox
                   value={node.key}
-                  disabled={node.disabled}
-                  checked={checked || indeterminate} // 半选状态也需要checked=true
+                  disabled={isNodeDisabled}
+                  checked={checked}
                   indeterminate={indeterminate}
                   onChange={(newChecked) => {
-                    const newKeys = getUpdatedKeysWithCascade(
-                      node.key,
-                      newChecked,
-                      selectedKeys,
-                    );
-                    handleMultipleSelect(newKeys);
+                    // 如果节点被禁用，不处理点击
+                    if (isNodeDisabled) return;
+
+                    // 处理半选状态的点击逻辑
+                    if (indeterminate) {
+                      // 半选状态点击时的逻辑：
+                      // 1. 如果存在禁用的子节点，点击后应该取消所有可选子节点的选中状态
+                      // 2. 如果不存在禁用的子节点，点击后选中所有子节点
+                      const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
+                      const hasDisabledChildren = childrenKeys.some(childKey => {
+                        const childNode = nodeMap.nodeMap.get(childKey);
+                        return childNode && (childNode.disabled || childNode.selectable === false);
+                      });
+
+                      if (hasDisabledChildren) {
+                        // 存在禁用子节点，取消所有可选子节点的选中状态
+                        const newKeys = getUpdatedKeysWithCascade(
+                          node.key,
+                          false,
+                          selectedKeys,
+                        );
+                        handleMultipleSelect(newKeys);
+                      } else {
+                        // 不存在禁用子节点，选中所有子节点
+                        const newKeys = getUpdatedKeysWithCascade(
+                          node.key,
+                          true,
+                          selectedKeys,
+                        );
+                        handleMultipleSelect(newKeys);
+                      }
+                    } else {
+                      // 正常的选中/取消选中逻辑
+                      const newKeys = getUpdatedKeysWithCascade(
+                        node.key,
+                        newChecked,
+                        selectedKeys,
+                      );
+                      handleMultipleSelect(newKeys);
+                    }
                   }}
                 >
                   {node.title}
                 </Checkbox>
               ) : (
-                <RadioGroup.Radio value={node.key} disabled={node.disabled}>
+                <RadioGroup.Radio
+                  value={node.key}
+                  disabled={isNodeDisabled}
+                >
                   {node.title}
                 </RadioGroup.Radio>
               )
@@ -541,6 +740,8 @@ const Tree = (props: TreeProps & { ref?: React.Ref<TreeRef> }) => {
       handleNodeExpand,
       selectable,
       multiple,
+      onlyLeafSelectable,
+      maxSelectCount,
       selectedKeys,
       getCheckState,
       getUpdatedKeysWithCascade,

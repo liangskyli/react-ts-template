@@ -46,7 +46,23 @@ const TreeDemo = () => {
     },
     {
       key: '3',
-      title: '叶子节点',
+      title: '叶子节点3',
+      selectable: false,
+    },
+    {
+      key: '4',
+      title: '父节点4',
+      selectable: false,
+      children: [
+        {
+          key: '4-1',
+          title: '子节点4-1',
+        },
+        {
+          key: '4-2',
+          title: '子节点4-2',
+        },
+      ],
     },
   ];
 
@@ -65,6 +81,20 @@ const TreeDemo = () => {
   };
 
   const largeTreeData = generateLargeTreeData();
+
+  const generateLargeTreeData2 = (level = 0, parentKey = ''): TreeNode[] => {
+    if (level > 2) return [];
+
+    return Array.from({ length: 50 }, (_, index) => {
+      const key = parentKey ? `${parentKey}-${index}` : `${index}`;
+      return {
+        key,
+        title: `节点 ${key}`,
+        children: level < 2 ? generateLargeTreeData2(level + 1, key) : undefined,
+      };
+    });
+  };
+  const largeTreeData2 = generateLargeTreeData2();
 
   // 受控模式状态
   const [selectedKey, setSelectedKey] = useState<string | number | undefined>(
@@ -120,7 +150,7 @@ const TreeDemo = () => {
             treeData={basicTreeData}
             multiple
             defaultExpandedKeys={['1', '2']}
-            defaultSelectedKeys={['1-1']} // 只选中一个子节点，父节点会显示半选状态
+            defaultSelectedKeys={['2']} // 只选中一个子节点，父节点会显示半选状态
             onMultipleSelect={(selectedKeys, info) => {
               console.log('多选节点:', selectedKeys, info);
               console.log('完全选中的节点:', info.checkedKeys);
@@ -151,17 +181,6 @@ const TreeDemo = () => {
           />
           <p className="mt-4 text-sm text-gray-600">
             严格模式下，父子节点选择互不影响
-          </p>
-        </div>
-      </section>
-
-      {/* 禁用节点 */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">禁用节点</h2>
-        <div className="rounded-lg border bg-white p-6">
-          <Tree treeData={basicTreeData} defaultExpandedKeys={['1', '2']} />
-          <p className="mt-4 text-sm text-gray-600">
-            子节点2-2被禁用，无法选择
           </p>
         </div>
       </section>
@@ -206,6 +225,28 @@ const TreeDemo = () => {
         </div>
       </section>
 
+      {/* 只有叶子节点可选择 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          只有叶子节点可选择
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree
+            treeData={basicTreeData}
+            multiple
+            onlyLeafSelectable={true}
+            defaultExpandedKeys={['1', '1-2', '2']}
+            onMultipleSelect={(keys, info) => {
+              console.log('只有叶子节点可选择:', keys, info);
+            }}
+          />
+          <p className="mt-4 text-sm text-gray-600">
+            <strong>功能说明：</strong>
+            只有叶子节点可以选择，父节点显示为禁用状态。
+          </p>
+        </div>
+      </section>
+
       {/* 受控模式 */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">受控模式</h2>
@@ -220,7 +261,7 @@ const TreeDemo = () => {
             <div className="space-x-2">
               <button
                 className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
-                onClick={() => setExpandedKeys(['1', '2'])}
+                onClick={() => setExpandedKeys(['1', '2', '4'])}
               >
                 展开所有
               </button>
@@ -238,7 +279,7 @@ const TreeDemo = () => {
               </button>
               <button
                 className="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-                onClick={() => setSelectedKey(undefined)}
+                onClick={() => setSelectedKey(null as never)}
               >
                 清空选择
               </button>
@@ -270,7 +311,7 @@ const TreeDemo = () => {
             <div className="space-x-2">
               <button
                 className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
-                onClick={() => setExpandedKeys(['1', '2'])}
+                onClick={() => setExpandedKeys(['1', '2', '4'])}
               >
                 展开所有
               </button>
@@ -282,7 +323,7 @@ const TreeDemo = () => {
               </button>
               <button
                 className="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600"
-                onClick={() => setSelectedKeys(['1', '2', '3'])}
+                onClick={() => setSelectedKeys(['1', '2', '3', '4'])}
               >
                 选择根节点
               </button>
@@ -305,10 +346,10 @@ const TreeDemo = () => {
         </div>
       </section>
 
-      {/* 虚拟滚动 */}
+      {/* 虚拟滚动单选 */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">
-          虚拟滚动（大量数据）
+          虚拟滚动单选（大量数据）
         </h2>
         <div className="rounded-lg border bg-white p-6">
           <p className="mb-4 text-sm text-gray-600">
@@ -319,12 +360,33 @@ const TreeDemo = () => {
             treeData={largeTreeData}
             multiple={false}
             virtualScroll
-            /*className="h-[400px] border border-gray-200 rounded-md"*/
             className="rounded-md border border-gray-200"
             onSelect={(selectedKey, info) => {
-              console.log('虚拟滚动选择:', selectedKey, info);
+              console.log('虚拟滚动单选选择:', selectedKey, info);
             }}
           />
+        </div>
+      </section>
+
+      {/* 虚拟滚动多选 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          虚拟滚动多选（大量数据）
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <p className="mb-4 text-sm text-gray-600">
+            包含 {largeTreeData2.length} 个根节点，每个根节点有 50
+            个子节点，每个子节点又有 50 个子节点
+          </p>
+          {/*<Tree
+            treeData={largeTreeData2}
+            multiple
+            virtualScroll
+            className="rounded-md border border-gray-200"
+            onMultipleSelect={(selectedKeys, info) => {
+              console.log('虚拟滚动多选选择:', selectedKeys, info);
+            }}
+          />*/}
         </div>
       </section>
 
