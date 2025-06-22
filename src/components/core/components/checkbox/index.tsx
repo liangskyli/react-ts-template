@@ -26,7 +26,7 @@ export type CheckboxProps<T extends ElementType = 'span'> = {
   checkClassName?: string;
   /** 复选框文本类名 */
   labelClassName?: string;
-  /** 是否为半选状态 */
+  /** 是否为半选状态, 优先级高于checked状态 */
   indeterminate?: boolean;
   /** 自定义勾选图标 */
   checkedIcon?: ReactNode;
@@ -99,12 +99,18 @@ const CheckboxBase = <T extends ElementType = 'span'>(
         ) : (
           <>
             <div className={cn(classConfig.boxConfig, boxClassName)}>
-              {(checked || indeterminate) && (
+              {indeterminate ? (
                 <span className={cn(classConfig.checkedConfig, checkClassName)}>
-                  {checked && indeterminate
-                    ? indeterminateIcon
-                    : checked && checkedIcon}
+                  {indeterminateIcon}
                 </span>
+              ) : (
+                checked && (
+                  <span
+                    className={cn(classConfig.checkedConfig, checkClassName)}
+                  >
+                    {checkedIcon}
+                  </span>
+                )
               )}
             </div>
             {children && (

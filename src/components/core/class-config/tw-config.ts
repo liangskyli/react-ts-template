@@ -215,6 +215,7 @@ const twConfig = {
       'tw-relative tw-inline-flex tw-h-5 tw-w-5 tw-shrink-0 tw-cursor-pointer tw-items-center tw-justify-center tw-rounded tw-border tw-transition-colors',
       'tw-border-gray-300 tw-bg-white',
       'group-data-[checked]:tw-border-blue-600 group-data-[checked]:tw-bg-blue-600',
+      'group-data-[indeterminate]:tw-border-blue-600 group-data-[indeterminate]:tw-bg-blue-600',
       'group-data-[disabled]:tw-cursor-not-allowed',
       'group-data-[hover]:hover:tw-border-blue-500',
     ],
