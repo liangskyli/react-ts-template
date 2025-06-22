@@ -456,5 +456,26 @@ const twConfig = {
       'group-data-[status=error]:tw-text-red-600',
     ],
   },
+  tree: {
+    tree: {
+      base: 'tw-bg-white',
+      defaultScrollHeight: 'tw-h-[300px]',
+      isScroll: 'tw-overflow-y-auto',
+    },
+    node: [
+      'tw-flex tw-items-center',
+      'data-[clickable]:tw-cursor-pointer data-[clickable]:hover:tw-bg-gray-50',
+      'data-[disabled]:tw-cursor-not-allowed data-[disabled]:tw-opacity-40',
+      'data-[selected]:tw-bg-blue-50',
+    ],
+    nodeContent: {
+      wrap: 'tw-flex-1 tw-flex tw-items-center tw-py-1',
+      indent: 'tw-flex-shrink-0',
+      switcher:
+        'tw-flex-shrink-0 tw-w-6 tw-h-6 tw-flex tw-items-center tw-justify-center tw-mr-1 tw-cursor-pointer hover:tw-bg-gray-100 tw-rounded',
+      title: 'tw-text-sm tw-text-gray-900 tw-select-none',
+    },
+    children: 'tw-ml-6',
+  },
 };
 export { twConfig };

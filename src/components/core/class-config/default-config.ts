@@ -452,5 +452,26 @@ const defaultConfig = {
       'group-data-[status=error]:text-red-600',
     ],
   },
+  tree: {
+    tree: {
+      base: 'bg-white',
+      defaultScrollHeight: 'h-[300px]',
+      isScroll: 'overflow-y-auto',
+    },
+    node: [
+      'flex items-center',
+      'data-[clickable]:cursor-pointer data-[clickable]:hover:bg-gray-50',
+      'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40',
+      'data-[selected]:bg-blue-50',
+    ],
+    nodeContent: {
+      wrap: 'flex-1 flex items-center py-1',
+      indent: 'flex-shrink-0',
+      switcher:
+        'flex-shrink-0 w-6 h-6 flex items-center justify-center mr-1 cursor-pointer hover:bg-gray-100 rounded',
+      title: 'text-sm text-gray-900 select-none',
+    },
+    children: 'ml-6',
+  },
 };
 export { defaultConfig };

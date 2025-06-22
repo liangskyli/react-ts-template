@@ -1,0 +1,349 @@
+import { useState } from 'react';
+import Tree from '@/components/core/components/tree';
+import type { TreeNode } from '@/components/core/components/tree';
+
+const TreeDemo = () => {
+  // 基础树形数据
+  const basicTreeData: TreeNode[] = [
+    {
+      key: '1',
+      title: '父节点1',
+      children: [
+        {
+          key: '1-1',
+          title: '子节点1-1',
+        },
+        {
+          key: '1-2',
+          title: '子节点1-2',
+          children: [
+            {
+              key: '1-2-1',
+              title: '子节点1-2-1',
+            },
+            {
+              key: '1-2-2',
+              title: '子节点1-2-2',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      key: '2',
+      title: '父节点2',
+      children: [
+        {
+          key: '2-1',
+          title: '子节点2-1',
+        },
+        {
+          key: '2-2',
+          title: '子节点2-2',
+          disabled: true,
+        },
+      ],
+    },
+    {
+      key: '3',
+      title: '叶子节点',
+    },
+  ];
+
+  // 大量数据生成函数
+  const generateLargeTreeData = (level = 0, parentKey = ''): TreeNode[] => {
+    if (level > 2) return [];
+
+    return Array.from({ length: 50 }, (_, index) => {
+      const key = parentKey ? `${parentKey}-${index}` : `${index}`;
+      return {
+        key,
+        title: `节点 ${key}`,
+        children: level < 2 ? generateLargeTreeData(level + 1, key) : undefined,
+      };
+    });
+  };
+
+  const largeTreeData = generateLargeTreeData();
+
+  // 受控模式状态
+  const [selectedKey, setSelectedKey] = useState<string | number | undefined>(
+    '1-1',
+  );
+  const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+    '1-1',
+  ]);
+  const [expandedKeys, setExpandedKeys] = useState<(string | number)[]>(['1']);
+
+  return (
+    <div className="space-y-8 p-6">
+      <h1 className="text-3xl font-bold text-gray-900">Tree 树形控件演示</h1>
+
+      {/* 基础用法 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">基础用法</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree treeData={basicTreeData} />
+        </div>
+      </section>
+
+      {/* 默认展开 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">默认展开</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree treeData={basicTreeData} defaultExpandedKeys={['1', '2']} />
+        </div>
+      </section>
+
+      {/* 可选择（单选） */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">可选择（单选）</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree
+            treeData={basicTreeData}
+            defaultExpandedKeys={['1', '2']}
+            defaultSelectedKey={'1-1'}
+            onSelect={(selectedKey, info) => {
+              console.log('选中的节点:', selectedKey, info);
+            }}
+          />
+        </div>
+      </section>
+
+      {/* 多选（父子联动） */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          多选（父子联动）
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree
+            treeData={basicTreeData}
+            multiple
+            defaultExpandedKeys={['1', '2']}
+            defaultSelectedKeys={['1-1']} // 只选中一个子节点，父节点会显示半选状态
+            onMultipleSelect={(selectedKeys, info) => {
+              console.log('多选节点:', selectedKeys, info);
+              console.log('完全选中的节点:', info.checkedKeys);
+              console.log('半选状态的节点:', info.halfCheckedKeys);
+            }}
+          />
+          <p className="mt-4 text-sm text-gray-600">
+            选中子节点时，父节点会显示半选状态；选中父节点时，会自动选中所有子节点
+          </p>
+        </div>
+      </section>
+
+      {/* 多选（严格模式） */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          多选（严格模式）
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree
+            treeData={basicTreeData}
+            multiple
+            checkStrictly={true}
+            defaultExpandedKeys={['1', '2']}
+            defaultSelectedKeys={['1-1', '2-1']}
+            onMultipleSelect={(selectedKeys, info) => {
+              console.log('严格模式多选:', selectedKeys, info);
+            }}
+          />
+          <p className="mt-4 text-sm text-gray-600">
+            严格模式下，父子节点选择互不影响
+          </p>
+        </div>
+      </section>
+
+      {/* 禁用节点 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">禁用节点</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree treeData={basicTreeData} defaultExpandedKeys={['1', '2']} />
+          <p className="mt-4 text-sm text-gray-600">
+            子节点2-2被禁用，无法选择
+          </p>
+        </div>
+      </section>
+
+      {/* 自定义图标 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">自定义图标</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree
+            treeData={basicTreeData}
+            expandIcon={
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            }
+            collapseIcon={
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            }
+          />
+        </div>
+      </section>
+
+      {/* 受控模式 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">受控模式</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <div className="mb-4 space-y-2">
+            <p className="text-sm">
+              <strong>选中的节点:</strong> {selectedKey || '无'}
+            </p>
+            <p className="text-sm">
+              <strong>展开的节点:</strong> {expandedKeys.join(', ') || '无'}
+            </p>
+            <div className="space-x-2">
+              <button
+                className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
+                onClick={() => setExpandedKeys(['1', '2'])}
+              >
+                展开所有
+              </button>
+              <button
+                className="rounded bg-gray-500 px-3 py-1 text-sm text-white hover:bg-gray-600"
+                onClick={() => setExpandedKeys([])}
+              >
+                收起所有
+              </button>
+              <button
+                className="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600"
+                onClick={() => setSelectedKey('1')}
+              >
+                选择父节点1
+              </button>
+              <button
+                className="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
+                onClick={() => setSelectedKey(undefined)}
+              >
+                清空选择
+              </button>
+            </div>
+          </div>
+          <Tree
+            treeData={basicTreeData}
+            selectedKey={selectedKey}
+            expandedKeys={expandedKeys}
+            onSelect={(key) => setSelectedKey(key)}
+            onExpand={(keys) => setExpandedKeys(keys)}
+          />
+        </div>
+      </section>
+
+      {/* 受控模式（多选） */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          受控模式（多选）
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <div className="mb-4 space-y-2">
+            <p className="text-sm">
+              <strong>选中的节点:</strong> {selectedKeys.join(', ') || '无'}
+            </p>
+            <p className="text-sm">
+              <strong>展开的节点:</strong> {expandedKeys.join(', ') || '无'}
+            </p>
+            <div className="space-x-2">
+              <button
+                className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
+                onClick={() => setExpandedKeys(['1', '2'])}
+              >
+                展开所有
+              </button>
+              <button
+                className="rounded bg-gray-500 px-3 py-1 text-sm text-white hover:bg-gray-600"
+                onClick={() => setExpandedKeys([])}
+              >
+                收起所有
+              </button>
+              <button
+                className="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600"
+                onClick={() => setSelectedKeys(['1', '2', '3'])}
+              >
+                选择根节点
+              </button>
+              <button
+                className="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
+                onClick={() => setSelectedKeys([])}
+              >
+                清空选择
+              </button>
+            </div>
+          </div>
+          <Tree
+            treeData={basicTreeData}
+            multiple
+            selectedKeys={selectedKeys}
+            expandedKeys={expandedKeys}
+            onMultipleSelect={(keys) => setSelectedKeys(keys)}
+            onExpand={(keys) => setExpandedKeys(keys)}
+          />
+        </div>
+      </section>
+
+      {/* 虚拟滚动 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          虚拟滚动（大量数据）
+        </h2>
+        <div className="rounded-lg border bg-white p-6">
+          <p className="mb-4 text-sm text-gray-600">
+            包含 {largeTreeData.length} 个根节点，每个根节点有 50
+            个子节点，每个子节点又有 50 个子节点
+          </p>
+          <Tree
+            treeData={largeTreeData}
+            multiple={false}
+            virtualScroll
+            /*className="h-[400px] border border-gray-200 rounded-md"*/
+            className="rounded-md border border-gray-200"
+            onSelect={(selectedKey, info) => {
+              console.log('虚拟滚动选择:', selectedKey, info);
+            }}
+          />
+        </div>
+      </section>
+
+      {/* 隐藏图标 */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">隐藏展开图标</h2>
+        <div className="rounded-lg border bg-white p-6">
+          <Tree
+            treeData={basicTreeData}
+            showIcon={false}
+            defaultExpandedKeys={['1', '2']}
+          />
+          <p className="mt-4 text-sm text-gray-600">
+            不显示展开/收起图标，节点默认展开
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default TreeDemo;

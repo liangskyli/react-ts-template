@@ -13,11 +13,13 @@ import StepsDemo from '@/pages/test/components/steps-demo.tsx';
 import SwitchDemo from '@/pages/test/components/switch-demo.tsx';
 import TextareaDemo from '@/pages/test/components/textarea-demo.tsx';
 import ToastDemo from '@/pages/test/components/toast-demo.tsx';
+import TreeDemo from '@/pages/test/components/tree-demo.tsx';
 
 const Index = () => {
   return (
     <div className="mt-[10px] text-center">
       <title>UI</title>
+      <TreeDemo />
       <StepsDemo />
       <BadgeDemo />
       <SkeletonDemo />
