@@ -237,7 +237,7 @@ const twConfig = {
       'data-[disabled]:tw-opacity-40',
     ],
     radioBox: [
-      'tw-relative tw-inline-flex tw-h-5 tw-w-5 tw-shrink-0 tw-cursor-pointer tw-items-center tw-justify-center tw-rounded-full tw-border tw-transition-colors',
+      'tw-relative tw-inline-flex tw-h-5 tw-w-5 tw-shrink-0 tw-cursor-pointer tw-items-center tw-justify-center tw-rounded-full tw-border',
       'tw-border-gray-300 tw-bg-white',
       'group-data-[checked]:tw-border-blue-600',
       'group-data-[disabled]:tw-cursor-not-allowed',

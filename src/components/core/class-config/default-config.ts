@@ -236,7 +236,7 @@ const defaultConfig = {
       'data-[disabled]:opacity-40',
     ],
     radioBox: [
-      'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors',
+      'relative inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full border',
       'border-gray-300 bg-white',
       'group-data-[checked]:border-blue-600',
       'group-data-[disabled]:cursor-not-allowed',
