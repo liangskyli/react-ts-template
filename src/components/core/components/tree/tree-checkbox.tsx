@@ -1,21 +1,21 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { cn } from '@/components/core/class-config';
-import type { RadioGroupProps } from '@/components/core/components/radio';
-import RadioGroup from '@/components/core/components/radio';
-import ClassConfig from '@/components/core/components/tree/class-config.ts';
+import { useCallback, useRef, useState } from 'react';
+import Checkbox from '@/components/core/components/checkbox';
 import type {
   TreeNode,
   TreeProps,
   TreeRef,
 } from '@/components/core/components/tree/tree.tsx';
 import Tree from '@/components/core/components/tree/tree.tsx';
-import Checkbox from '@/components/core/components/checkbox';
 
-export type TreeCheckboxProps = Omit<TreeProps, 'ref' | 'className'> & {
-  /** 自定义类名 */
-  className?: string;
-  /** 树的类名 */
-  treeClassName?: string;
+type TreeExtendedProps = {
+  /** 是否可选择 */
+  selectable?: boolean;
+};
+
+export type TreeCheckboxProps<K extends string | number = string> = Omit<
+  TreeProps<K,TreeExtendedProps>,
+  'ref'
+> & {
   /** 是否启用严格模式，即禁用父子节点联动 */
   checkStrictly?: boolean;
   /** 是否只有叶子节点可以选择 */
@@ -23,31 +23,31 @@ export type TreeCheckboxProps = Omit<TreeProps, 'ref' | 'className'> & {
   /** 多选模式下的最大选择数量，0表示不限制 */
   maxSelectCount?: number;
   /** 选中的节点keys */
-  selectedKeys?: (string | number)[];
+  selectedKeys?: K[];
   /** 默认选中的节点key */
-  defaultSelectedKeys?: (string | number)[];
+  defaultSelectedKeys?: K[];
   /** 节点选择回调 */
   onSelect?: (
     /** 所有选中的节点keys，包括半选状态的父节点 */
-    selectedKeys: (string | number)[],
+    selectedKeys: K[],
     info: {
       /** 选中的节点对象 */
-      selectedNodes: TreeNode[];
+      selectedNodes: TreeNode<K,TreeExtendedProps>[];
       /** 完全选中的节点keys */
-      checkedKeys: (string | number)[];
+      checkedKeys: K[];
       /** 半选状态的节点keys */
-      halfCheckedKeys: (string | number)[];
+      halfCheckedKeys: K[];
       /** 叶子节点keys */
-      leafKeys: (string | number)[];
+      leafKeys: K[];
       /** 非叶子节点keys */
-      nonLeafKeys: (string | number)[];
+      nonLeafKeys: K[];
     },
   ) => void;
   /** 多选达到上限时的回调 */
   onMaxSelectReached?: (maxCount: number) => void;
 };
 
-const TreeCheckbox = (props: TreeCheckboxProps) => {
+const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxProps<K>) => {
   const {
     onlyLeafSelectable,
     selectedKeys: controlledSelectedKeys,
@@ -57,15 +57,14 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
     onSelect,
     onMaxSelectReached,
     className,
-    treeClassName,
     ...treeProps
   } = props;
 
-  const treeRef = useRef<TreeRef>(null);
+  const treeRef = useRef<TreeRef<K,TreeExtendedProps>>(null);
 
   // 内部状态管理
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<
-    (string | number)[]
+    K[]
   >(controlledSelectedKeys || defaultSelectedKeys);
 
   // 使用受控或非受控状态
@@ -73,7 +72,7 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
 
   // 检查节点是否应该显示为选中状态（包括父节点选中时子节点自动选中的情况）
   const isNodeEffectivelySelected = useCallback(
-    (nodeKey: string | number, checkedKeys: (string | number)[]): boolean => {
+    (nodeKey: K, checkedKeys: K[]): boolean => {
       // 如果节点本身被选中
       if (checkedKeys.includes(nodeKey)) {
         return true;
@@ -94,9 +93,9 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
       // 检查是否有祖先节点被选中
       // 从nodeMap中查找父节点关系
       const findParentKey = (
-        key: string | number,
-      ): string | number | undefined => {
-        const childrenMap  = nodeMap?.childrenMap;
+        key: K,
+      ): K | undefined => {
+        const childrenMap = nodeMap?.childrenMap;
         if (childrenMap) {
           for (const [parentKey, children] of childrenMap.entries()) {
             if (children.includes(key)) {
@@ -127,7 +126,7 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
 
   // 计算半选状态 - 基于完整树结构而不是扁平化节点
   const getCheckState = useCallback(
-    (nodeKey: string | number, checkedKeys: (string | number)[]) => {
+    (nodeKey: K, checkedKeys: K[]) => {
       if (checkStrictly) {
         return {
           checked: checkedKeys.includes(nodeKey),
@@ -221,10 +220,10 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
   // 处理父子节点联动选择
   const getUpdatedKeysWithCascade = useCallback(
     (
-      targetKey: string | number,
+      targetKey: K,
       checked: boolean,
-      currentKeys: (string | number)[],
-    ): (string | number)[] => {
+      currentKeys: K[],
+    ): K[] => {
       if (checkStrictly) {
         return checked
           ? [...currentKeys, targetKey]
@@ -232,8 +231,8 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
       }
 
       let newKeys = [...currentKeys];
-      const flattenNodes = treeRef.current?.getFlattenNodes();
-      const targetNode = flattenNodes?.find((n) => n.key === targetKey);
+      const flattenNodes = treeRef.current!.getFlattenNodes();
+      const targetNode = flattenNodes.find((n) => n.key === targetKey);
 
       if (!targetNode) return newKeys;
 
@@ -357,10 +356,92 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
 
       return [...new Set(newKeys)]; // 去重
     },
-    [checkStrictly, flattenNodes, isNodeEffectivelySelected],
+    [checkStrictly, isNodeEffectivelySelected],
   );
 
-  const innerRenderNode: TreeProps['renderNode'] = (node) => {
+  // 处理多选节点选择
+  const handleMultipleSelect = useCallback(
+    (newSelectedKeys: K[]) => {
+      // 计算所有实际选中的节点（包括因为父子联动而选中的节点）
+      const allEffectivelySelectedKeys: K[] = [];
+      const checkedKeys: K[] = [];
+      const halfCheckedKeys: K[] = [];
+      const leafKeys: K[] = [];
+      const nonLeafKeys: K[] = [];
+
+      const nodeMap = treeRef.current!.getNodeMap();
+      const flattenNodes = treeRef.current!.getFlattenNodes();
+      // 遍历所有节点（包括未展开的节点）
+      nodeMap.nodeMap.forEach((node, nodeKey) => {
+        // 跳过不可选择的节点
+        if (node.selectable === false) {
+          return;
+        }
+
+        const { checked, indeterminate } = getCheckState(
+          nodeKey,
+          newSelectedKeys,
+        );
+
+        if (checked) {
+          checkedKeys.push(nodeKey);
+          allEffectivelySelectedKeys.push(nodeKey);
+        } else if (indeterminate) {
+          halfCheckedKeys.push(nodeKey);
+          allEffectivelySelectedKeys.push(nodeKey);
+        }
+
+        // 区分叶子节点和非叶子节点（基于所有实际选中的节点）
+        if (checked || indeterminate) {
+          const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
+          if (childrenKeys.length === 0) {
+            // 叶子节点
+            leafKeys.push(nodeKey);
+          } else {
+            // 非叶子节点
+            nonLeafKeys.push(nodeKey);
+          }
+        }
+      });
+
+      // 检查是否超过最大选择数量（基于所有实际选中的节点）
+      if (
+        maxSelectCount > 0 &&
+        allEffectivelySelectedKeys.length > maxSelectCount
+      ) {
+        onMaxSelectReached?.(maxSelectCount);
+        return;
+      }
+
+      if (!controlledSelectedKeys) {
+        setInternalSelectedKeys(newSelectedKeys);
+      }
+
+      // 获取选中的节点信息（基于所有实际选中的节点，排除不可选择的节点）
+      const selectedNodes = flattenNodes.filter(
+        (n) =>
+          allEffectivelySelectedKeys.includes(n.key) && n.selectable !== false,
+      );
+
+      // 返回所有实际选中的节点作为selectedKeys
+      onSelect?.(allEffectivelySelectedKeys, {
+        selectedNodes,
+        checkedKeys,
+        halfCheckedKeys,
+        leafKeys,
+        nonLeafKeys,
+      });
+    },
+    [
+      maxSelectCount,
+      onMaxSelectReached,
+      controlledSelectedKeys,
+      onSelect,
+      getCheckState,
+    ],
+  );
+
+  const innerRenderNode: TreeCheckboxProps<K>['renderNode'] = (node) => {
     // 如果节点不可选择或只有叶子节点可选择且当前节点不是叶子节点，则使用默认渲染
     if (node.selectable === false || (onlyLeafSelectable && !node.isLeaf)) {
       return;
@@ -373,7 +454,6 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
         !selectedKeys.includes(node.key));
     // 计算选中和半选状态
     const { checked, indeterminate } = getCheckState(node.key, selectedKeys);
-
 
     return (
       <Checkbox
@@ -391,14 +471,11 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
             // 1. 如果存在禁用的子节点，点击后应该取消所有可选子节点的选中状态
             // 2. 如果不存在禁用的子节点，点击后选中所有子节点
             const nodeMap = treeRef.current?.getNodeMap();
-            const childrenKeys =
-              nodeMap?.childrenMap.get(node.key) || [];
-            const hasDisabledChildren = childrenKeys.some(
-              (childKey) => {
-                const childNode = nodeMap?.nodeMap.get(childKey);
-                return childNode && childNode.disabled;
-              },
-            );
+            const childrenKeys = nodeMap?.childrenMap.get(node.key) || [];
+            const hasDisabledChildren = childrenKeys.some((childKey) => {
+              const childNode = nodeMap?.nodeMap.get(childKey);
+              return childNode && childNode.disabled;
+            });
 
             if (hasDisabledChildren) {
               // 存在禁用子节点，取消所有可选子节点的选中状态
@@ -438,7 +515,7 @@ const TreeCheckbox = (props: TreeCheckboxProps) => {
       {...treeProps}
       ref={treeRef}
       renderNode={innerRenderNode}
-      className={treeClassName}
+      className={className}
     />
   );
 };

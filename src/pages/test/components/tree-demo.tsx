@@ -83,7 +83,7 @@ const TreeDemo = () => {
   const largeTreeData = generateLargeTreeData();
 
   // 受控模式状态
-  const [expandedKeys, setExpandedKeys] = useState<(string | number)[]>(['1']);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>(['1']);
 
   return (
     <div className="space-y-8 p-6">

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Tree from '@/components/core/components/tree';
 import type { TreeNode } from '@/components/core/components/tree';
 
-const TreeRadioDemo = () => {
+const TreeCheckboxDemo = () => {
   // 基础树形数据
   const basicTreeData: TreeNode[] = [
     {
@@ -89,27 +89,27 @@ const TreeRadioDemo = () => {
 
   // 受控模式状态
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['1']);
-  const [selectedKey, setSelectedKey] = useState<string | undefined | null>(
-    '1-1',
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(
+    ['1-1'],
   );
-  const [virtualScrollSelectedKey, setVirtualScrollSelectedKey] = useState<string | undefined | null>(
-    '',
+  const [virtualScrollSelectedKeys, setVirtualScrollSelectedKeys] = useState<string[]>(
+    [],
   );
 
   return (
     <div className="space-y-8 p-6">
-      <h1 className="text-3xl font-bold text-gray-900">Tree radio 树形控件演示</h1>
+      <h1 className="text-3xl font-bold text-gray-900">Tree checkbox 树形控件演示</h1>
 
       {/* 基础用法 */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">基础用法</h2>
         <div className="rounded-lg border bg-white p-6">
-          <Tree.Radio
+          <Tree.Checkbox
             treeData={basicTreeData}
             defaultExpandedKeys={['1', '2']}
-            defaultSelectedKey={'1-1'}
-            onSelect={(selectedKey, info) => {
-              console.log('选中的节点:', selectedKey, info);
+            defaultSelectedKeys={['1-1']}
+            onSelect={(selectedKeys, info) => {
+              console.log('选中的节点:', selectedKeys, info);
             }}
           />
         </div>
@@ -121,12 +121,12 @@ const TreeRadioDemo = () => {
           只有叶子节点可选择
         </h2>
         <div className="rounded-lg border bg-white p-6">
-          <Tree.Radio
+          <Tree.Checkbox
             treeData={basicTreeData}
             onlyLeafSelectable={true}
             defaultExpandedKeys={['1', '1-2', '2']}
-            onSelect={(selectedKey, info) => {
-              console.log('只有叶子节点可选择:', selectedKey, info);
+            onSelect={(selectedKeys, info) => {
+              console.log('只有叶子节点可选择:', selectedKeys, info);
             }}
           />
           <p className="mt-4 text-sm text-gray-600">
@@ -145,7 +145,7 @@ const TreeRadioDemo = () => {
               <strong>展开的节点:</strong> {expandedKeys.join(', ') || '无'}
             </p>
             <p className="text-sm">
-              <strong>选中的key:</strong> {selectedKey || '无'}
+              <strong>选中的key:</strong> {selectedKeys.join(', ') || '无'}
             </p>
             <div className="space-x-2">
               <button
@@ -162,12 +162,12 @@ const TreeRadioDemo = () => {
               </button>
             </div>
           </div>
-          <Tree.Radio
+          <Tree.Checkbox
             treeData={basicTreeData}
             expandedKeys={expandedKeys}
             onExpand={(keys) => setExpandedKeys(keys)}
-            selectedKey={selectedKey}
-            onSelect={(key) => setSelectedKey(key)}
+            selectedKeys={selectedKeys}
+            onSelect={(key) => setSelectedKeys(key)}
           />
         </div>
       </section>
@@ -183,14 +183,14 @@ const TreeRadioDemo = () => {
             个子节点，每个子节点又有 50 个子节点
           </p>
           <p className="text-sm mb-4">
-            <strong>选中的key:</strong> {virtualScrollSelectedKey || '无'}
+            <strong>选中的key:</strong> {virtualScrollSelectedKeys.join(', ') || '无'}
           </p>
-          <Tree.Radio
+          <Tree.Checkbox
             treeData={largeTreeData}
             virtualScroll
             className="rounded-md border border-gray-200"
-            selectedKey={virtualScrollSelectedKey}
-            onSelect={(key) => setVirtualScrollSelectedKey(key)}
+            selectedKeys={virtualScrollSelectedKeys}
+            onSelect={(key) => setVirtualScrollSelectedKeys(key)}
           />
         </div>
       </section>
@@ -198,4 +198,4 @@ const TreeRadioDemo = () => {
   );
 };
 
-export default TreeRadioDemo;
+export default TreeCheckboxDemo;

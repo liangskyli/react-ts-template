@@ -10,7 +10,17 @@ import type {
 } from '@/components/core/components/tree/tree.tsx';
 import Tree from '@/components/core/components/tree/tree.tsx';
 
-export type TreeRadioProps = Omit<TreeProps, 'ref' | 'className'> & {
+type TreeExtendedProps = {
+  /** 是否可选择 */
+  selectable?: boolean;
+};
+export type TreeRadioProps<K extends string | number = string> = Omit<
+  TreeProps<
+    K,
+    TreeExtendedProps
+  >,
+  'ref' | 'className'
+> & {
   /** 自定义类名 */
   className?: string;
   /** 树的类名 */
@@ -18,19 +28,21 @@ export type TreeRadioProps = Omit<TreeProps, 'ref' | 'className'> & {
   /** 是否只有叶子节点可以选择 */
   onlyLeafSelectable?: boolean;
   /** 选中的节点key */
-  selectedKey?: string | number | null;
+  selectedKey?: K | null;
   /** 默认选中的节点key */
-  defaultSelectedKey?: string | number;
+  defaultSelectedKey?: K;
   /** 节点选择回调 */
   onSelect?: (
-    selectedKey: string | number | undefined | null,
+    selectedKey: K | undefined | null,
     info: {
-      node: TreeNode;
+      node: TreeNode<K,TreeExtendedProps>;
     },
   ) => void;
 } & Pick<RadioGroupProps, 'allowDeselect'>;
 
-const TreeRadio = (props: TreeRadioProps) => {
+const TreeRadio = <K extends string | number = string>(
+  props: TreeRadioProps<K>,
+) => {
   const {
     onlyLeafSelectable,
     selectedKey: controlledSelectedKey,
@@ -42,11 +54,11 @@ const TreeRadio = (props: TreeRadioProps) => {
     ...treeProps
   } = props;
 
-  const treeRef = useRef<TreeRef>(null);
+  const treeRef = useRef<TreeRef<K,TreeExtendedProps>>(null);
 
   // 内部状态管理
   const [internalSelectedKey, setInternalSelectedKey] = useState<
-    string | number | undefined | null
+    K | undefined | null
   >(controlledSelectedKey || defaultSelectedKey);
 
   // 使用受控或非受控状态
@@ -57,7 +69,7 @@ const TreeRadio = (props: TreeRadioProps) => {
 
   // 处理单选节点选择
   const handleSingleSelect = useCallback(
-    (newSelectedKey: string | number | undefined | null) => {
+    (newSelectedKey: K | undefined | null) => {
       if (controlledSelectedKey === undefined) {
         setInternalSelectedKey(newSelectedKey);
       }
@@ -71,7 +83,7 @@ const TreeRadio = (props: TreeRadioProps) => {
     [controlledSelectedKey, onSelect],
   );
 
-  const innerRenderNode: TreeProps['renderNode'] = (node) => {
+  const innerRenderNode: TreeRadioProps<K>['renderNode'] = (node) => {
     // 如果节点不可选择或只有叶子节点可选择且当前节点不是叶子节点，则使用默认渲染
     if (node.selectable === false || (onlyLeafSelectable && !node.isLeaf)) {
       return;

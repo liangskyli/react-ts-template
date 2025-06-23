@@ -1,4 +1,10 @@
-import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { cn } from '@/components/core/class-config';
 import type { ListProps, ListRef } from '@/components/core/components/list';
 import List from '@/components/core/components/list';
@@ -8,53 +14,63 @@ import {
   DefaultExpandIcon,
 } from '@/components/core/components/tree/icons.tsx';
 
-export type TreeNode = {
+export type TreeNode<
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   /** 节点的唯一标识 */
-  key: string | number;
+  key: K;
   /** 节点标题 */
   title: React.ReactNode;
   /** 子节点 */
-  children?: TreeNode[];
+  children?: TreeNode<K, T>[];
   /** 是否默认展开 */
   defaultExpanded?: boolean;
   /** 是否禁用 */
   disabled?: boolean;
-  /** 是否可选择 */
-  selectable?: boolean;
-};
+} & T;
 
-type FlattenNode = TreeNode & {
+type FlattenNode<
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = TreeNode<K, T> & {
   /** 节点层级 */
   level: number;
   /** 父节点key */
-  parentKey?: string | number;
+  parentKey?: K;
   /** 是否是叶子节点 */
   isLeaf: boolean;
   /** 子节点keys */
-  childrenKeys: (string | number)[];
+  childrenKeys: K[];
   /** 所有后代节点keys */
-  allDescendantKeys: (string | number)[];
+  allDescendantKeys: K[];
 };
 
-export type TreeRef = {
+export type TreeRef<
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   /** 获取所有扁平化树形数据 */
-  getFlattenNodes: ()=> FlattenNode[];
+  getFlattenNodes: () => FlattenNode<K,T>[];
   /** 获取节点映射 */
   getNodeMap: () => {
-    nodeMap: Map<string | number, TreeNode>;
-    childrenMap: Map<string | number, (string | number)[]>;
-    descendantMap: Map<string | number, (string | number)[]>;
+    nodeMap: Map<K, TreeNode<K, T>>;
+    childrenMap: Map<K, K[]>;
+    descendantMap: Map<K, K[]>;
   };
 };
-export type TreeProps = {
+export type TreeProps<
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
   /** ref */
-  ref?: React.Ref<TreeRef>;
+  ref?: React.Ref<TreeRef<K, T>>;
   /** 树形数据 */
-  treeData: TreeNode[];
+  treeData: TreeNode<K, T>[];
   /** 展开的节点key */
-  expandedKeys?: (string | number)[];
+  expandedKeys?: K[];
   /** 默认展开的节点key */
-  defaultExpandedKeys?: (string | number)[];
+  defaultExpandedKeys?: K[];
   /** 是否显示展开/收起图标，不显示图标时节点默认展开 */
   showIcon?: boolean;
   /** 自定义展开图标 */
@@ -65,19 +81,24 @@ export type TreeProps = {
   indentWidth?: number;
   /** 展开/收起回调 */
   onExpand?: (
-    expandedKeys: (string | number)[],
+    expandedKeys: K[],
     info: {
       expanded: boolean;
-      node: TreeNode;
+      node: FlattenNode<K, T>;
     },
   ) => void;
   /** 自定义渲染节点标题 */
-  renderNode?: (node: FlattenNode) => React.ReactNode | undefined;
+  renderNode?: (node: FlattenNode<K, T>) => React.ReactNode | undefined;
   /** 自定义类名 */
   className?: string;
 } & Pick<ListProps, 'virtualScroll' | 'infiniteScroll' | 'getPositionCache'>;
 
-const Tree = (props: TreeProps) => {
+const Tree = <
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(
+  props: TreeProps<K, T>,
+) => {
   const {
     ref,
     treeData,
@@ -98,19 +119,19 @@ const Tree = (props: TreeProps) => {
   // 创建内部ref
   const listRef = useRef<ListRef>(null);
 
-  const [internalExpandedKeys, setInternalExpandedKeys] = useState<
-    (string | number)[]
-  >(controlledExpandedKeys || defaultExpandedKeys);
+  const [internalExpandedKeys, setInternalExpandedKeys] = useState<K[]>(
+    controlledExpandedKeys || defaultExpandedKeys,
+  );
 
   const expandedKeys = controlledExpandedKeys || internalExpandedKeys;
 
   // 构建节点关系映射
   const nodeMap = useMemo(() => {
-    const map = new Map<string | number, TreeNode>();
-    const childrenMap = new Map<string | number, (string | number)[]>();
-    const descendantMap = new Map<string | number, (string | number)[]>();
+    const map = new Map<K, TreeNode<K, T>>();
+    const childrenMap = new Map<K, K[]>();
+    const descendantMap = new Map<K, K[]>();
 
-    const buildMap = (nodes: TreeNode[], parentKey?: string | number) => {
+    const buildMap = (nodes: TreeNode<K, T>[], parentKey?: K) => {
       nodes.forEach((node) => {
         map.set(node.key, node);
 
@@ -124,8 +145,8 @@ const Tree = (props: TreeProps) => {
           buildMap(node.children, node.key);
 
           // 收集所有后代节点
-          const descendants: (string | number)[] = [];
-          const collectDescendants = (children: TreeNode[]) => {
+          const descendants: K[] = [];
+          const collectDescendants = (children: TreeNode<K, T>[]) => {
             children.forEach((child) => {
               descendants.push(child.key);
               if (child.children) {
@@ -146,17 +167,17 @@ const Tree = (props: TreeProps) => {
   // 扁平化树形数据
   const flattenNodes = useMemo(() => {
     const flatten = (
-      nodes: TreeNode[],
+      nodes: TreeNode<K, T>[],
       level = 0,
-      parentKey?: string | number,
-    ): FlattenNode[] => {
-      const result: FlattenNode[] = [];
+      parentKey?: K,
+    ): FlattenNode<K, T>[] => {
+      const result: FlattenNode<K, T>[] = [];
 
       nodes.forEach((node) => {
         const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
         const allDescendantKeys = nodeMap.descendantMap.get(node.key) || [];
 
-        const flatNode: FlattenNode = {
+        const flatNode: FlattenNode<K, T> = {
           ...node,
           level,
           parentKey,
@@ -181,11 +202,11 @@ const Tree = (props: TreeProps) => {
 
   // 处理展开/收起
   const handleNodeExpand = useCallback(
-    (node: FlattenNode) => {
+    (node: FlattenNode<K, T>) => {
       if (node.isLeaf) return;
 
       const isExpanded = expandedKeys.includes(node.key);
-      let newExpandedKeys: (string | number)[];
+      let newExpandedKeys: K[];
 
       if (isExpanded) {
         newExpandedKeys = expandedKeys.filter((key) => key !== node.key);
@@ -207,7 +228,7 @@ const Tree = (props: TreeProps) => {
 
   // 渲染节点
   const innerRenderNode = useCallback(
-    (node: FlattenNode) => {
+    (node: FlattenNode<K, T>) => {
       const isExpanded = expandedKeys.includes(node.key);
       const canExpand = !node.isLeaf;
 
@@ -261,12 +282,12 @@ const Tree = (props: TreeProps) => {
   useImperativeHandle(ref, () => {
     return {
       getFlattenNodes: () => flattenNodes,
-      getNodeMap: ()=>nodeMap,
-    };
-  }, [flattenNodes]);
+      getNodeMap: () => nodeMap,
+    } as TreeRef<K, T>;
+  }, [flattenNodes, nodeMap]);
 
   const listContent = (
-    <List
+    <List<FlattenNode<K, T>>
       ref={listRef}
       className={cn(
         /*classConfig.treeConfig({
