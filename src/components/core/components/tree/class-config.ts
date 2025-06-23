@@ -25,6 +25,7 @@ const classConfig = {
   nodeConfig: currentConfig.node,
   nodeContentConfig: currentConfig.nodeContent,
   childrenConfig: currentConfig.children,
+  treeRadioConfig: currentConfig.treeRadio,
 };
 
 export default classConfig;

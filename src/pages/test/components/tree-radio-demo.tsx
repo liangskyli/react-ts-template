@@ -89,10 +89,10 @@ const TreeRadioDemo = () => {
 
   // 受控模式状态
   const [expandedKeys, setExpandedKeys] = useState<(string | number)[]>(['1']);
-  const [selectedKey, setSelectedKey] = useState<string | number | undefined>(
+  const [selectedKey, setSelectedKey] = useState<string | number | undefined | null>(
     '1-1',
   );
-  const [virtualScrollSelectedKey, setvirtualScrollSelectedKey] = useState<string | number | undefined>(
+  const [virtualScrollSelectedKey, setVirtualScrollSelectedKey] = useState<string | number | undefined | null>(
     '',
   );
 
@@ -190,7 +190,7 @@ const TreeRadioDemo = () => {
             virtualScroll
             className="rounded-md border border-gray-200"
             selectedKey={virtualScrollSelectedKey}
-            onSelect={(key) => setvirtualScrollSelectedKey(key)}
+            onSelect={(key) => setVirtualScrollSelectedKey(key)}
           />
         </div>
       </section>

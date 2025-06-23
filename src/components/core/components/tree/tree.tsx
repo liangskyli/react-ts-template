@@ -39,6 +39,12 @@ type FlattenNode = TreeNode & {
 export type TreeRef = {
   /** 获取所有扁平化树形数据 */
   getFlattenNodes: ()=> FlattenNode[];
+  /** 获取节点映射 */
+  getNodeMap: () => {
+    nodeMap: Map<string | number, TreeNode>;
+    childrenMap: Map<string | number, (string | number)[]>;
+    descendantMap: Map<string | number, (string | number)[]>;
+  };
 };
 export type TreeProps = {
   /** ref */
@@ -255,6 +261,7 @@ const Tree = (props: TreeProps) => {
   useImperativeHandle(ref, () => {
     return {
       getFlattenNodes: () => flattenNodes,
+      getNodeMap: ()=>nodeMap,
     };
   }, [flattenNodes]);
 

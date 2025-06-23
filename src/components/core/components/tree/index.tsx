@@ -1,6 +1,7 @@
 import type {
   TreeNode,
   TreeProps,
+  TreeRef,
 } from '@/components/core/components/tree/tree.tsx';
 import Tree from '@/components/core/components/tree/tree.tsx';
 import TreeRadio from "@/components/core/components/tree/tree-radio.tsx";
@@ -11,4 +12,4 @@ import TreeRadio from "@/components/core/components/tree/tree-radio.tsx";
 export default Tree as typeof Tree & {
   Radio: typeof TreeRadio;
 };
-export type { TreeProps, TreeNode };
+export type { TreeProps, TreeNode, TreeRef };

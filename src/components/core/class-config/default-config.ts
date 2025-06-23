@@ -472,6 +472,7 @@ const defaultConfig = {
         'flex-shrink-0 w-6 h-6 flex items-center justify-center mr-1 cursor-pointer hover:bg-gray-100 rounded',
     },
     children: 'ml-6',
+    treeRadio: 'block',
   },
 };
 export { defaultConfig };
