@@ -62,13 +62,16 @@ type NodesData<
 > = {
   nodeMap: NodeMap<K, T>;
   flattenNodes: FlattenNode<K, T>[];
+  allFlattenNodes: FlattenNode<K, T>[];
 };
 export type TreeRef<
   K extends string | number = string,
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
-  /** 获取所有扁平化树形数据 */
+  /** 获取展开的节点扁平化树形数据 */
   getFlattenNodes: () => NodesData<K, T>['flattenNodes'];
+  /** 获取所有扁平化树形数据 */
+  getAllFlattenNodes: () => NodesData<K, T>['allFlattenNodes'];
   /** 获取节点映射 */
   getNodeMap: () => NodesData<K, T>['nodeMap'];
 };
@@ -180,7 +183,7 @@ const Tree = <
     return { nodeMap: map, childrenMap, descendantMap };
   }, [treeData]);
 
-  // 扁平化树形数据
+  // 展开的扁平化树形数据
   const flattenNodes = useMemo(() => {
     const flatten = (
       nodes: TreeNode<K, T>[],
@@ -215,6 +218,42 @@ const Tree = <
 
     return flatten(treeData);
   }, [treeData, expandedKeys, nodeMap]);
+
+  // 所有的扁平化树形数据
+  const allFlattenNodes = useMemo(() => {
+    const flatten = (
+      nodes: TreeNode<K, T>[],
+      level = 0,
+      parentKey?: K,
+    ): FlattenNode<K, T>[] => {
+      const result: FlattenNode<K, T>[] = [];
+
+      nodes.forEach((node) => {
+        const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
+        const allDescendantKeys = nodeMap.descendantMap.get(node.key) || [];
+
+        const flatNode: FlattenNode<K, T> = {
+          ...node,
+          level,
+          parentKey,
+          isLeaf: !node.children || node.children.length === 0,
+          childrenKeys,
+          allDescendantKeys,
+        };
+
+        result.push(flatNode);
+
+        // 递归处理子节点
+        if (node.children) {
+          result.push(...flatten(node.children, level + 1, node.key));
+        }
+      });
+
+      return result;
+    };
+
+    return flatten(treeData);
+  }, [treeData, nodeMap]);
 
   // 处理展开/收起
   const handleNodeExpand = useCallback(
@@ -279,7 +318,8 @@ const Tree = <
 
           {/* 节点内容 */}
           <div className={classConfig.nodeContentConfig.wrap}>
-            {renderNode?.(node, { nodeMap, flattenNodes }) ?? node.title}
+            {renderNode?.(node, { nodeMap, flattenNodes, allFlattenNodes }) ??
+              node.title}
           </div>
         </div>
       );
@@ -293,6 +333,7 @@ const Tree = <
       renderNode,
       nodeMap,
       flattenNodes,
+      allFlattenNodes,
       handleNodeExpand,
     ],
   );
@@ -300,6 +341,7 @@ const Tree = <
   useImperativeHandle(ref, () => {
     return {
       getFlattenNodes: () => flattenNodes,
+      getAllFlattenNodes: () => allFlattenNodes,
       getNodeMap: () => nodeMap,
     } as TreeRef<K, T>;
   }, [flattenNodes, nodeMap]);
@@ -319,10 +361,7 @@ const Tree = <
       getPositionCache={getPositionCache}
       list={flattenNodes}
     >
-      {(nodes) => {
-        console.log('nodes count:',nodes.length)
-        return nodes.map(innerRenderNode);
-      }}
+      {(nodes) => nodes.map(innerRenderNode)}
     </List>
   );
 

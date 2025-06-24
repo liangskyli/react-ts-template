@@ -101,19 +101,23 @@ const TreeCheckboxDemo = () => {
       <h1 className="text-3xl font-bold text-gray-900">Tree checkbox 树形控件演示</h1>
 
       {/* 基础用法 */}
-      {/*<section className="space-y-4">
+      <section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">基础用法</h2>
         <div className="rounded-lg border bg-white p-6">
           <Tree.Checkbox
             treeData={basicTreeData}
             defaultExpandedKeys={['1', '2']}
-            defaultSelectedKeys={['1-1']}
+            defaultSelectedKeys={['1-2']}
+            /*maxSelectCount={3}
+            onMaxSelectReached={(maxCount) => {
+              alert(`最多只能选择 ${maxCount} 个节点！`);
+            }}*/
             onSelect={(selectedKeys, info) => {
               console.log('选中的节点:', selectedKeys, info);
             }}
           />
         </div>
-      </section>*/}
+      </section>
 
       {/* 只有叶子节点可选择 */}
       {/*<section className="space-y-4">
@@ -185,16 +189,19 @@ const TreeCheckboxDemo = () => {
             包含 {largeTreeData.length} 个根节点，每个根节点有 50
             个子节点，每个子节点又有 50 个子节点
           </p>
-          <p className="text-sm mb-4">
-            <strong>选中的key:</strong> {virtualScrollSelectedKeys.join(', ') || '无'}
-          </p>
           <Tree.Checkbox
             treeData={largeTreeData}
             virtualScroll
-            checkStrictly
             className="rounded-md border border-gray-200"
             selectedKeys={virtualScrollSelectedKeys}
-            onSelect={(keys) => setVirtualScrollSelectedKeys(keys)}
+            onSelect={(keys) => {
+              console.log('虚拟滚动选择:', keys.join(', '));
+              setVirtualScrollSelectedKeys(keys);
+            }}
+            /*maxSelectCount={100}
+            onMaxSelectReached={(maxCount) => {
+              alert(`最多只能选择 ${maxCount} 个节点！`);
+            }}*/
           />
         </div>
       </section>
