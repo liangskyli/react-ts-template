@@ -13,7 +13,7 @@ type TreeExtendedProps = {
 };
 
 export type TreeCheckboxProps<K extends string | number = string> = Omit<
-  TreeProps<K,TreeExtendedProps>,
+  TreeProps<K, TreeExtendedProps>,
   'ref'
 > & {
   /** 是否启用严格模式，即禁用父子节点联动 */
@@ -22,17 +22,17 @@ export type TreeCheckboxProps<K extends string | number = string> = Omit<
   onlyLeafSelectable?: boolean;
   /** 多选模式下的最大选择数量，0表示不限制 */
   maxSelectCount?: number;
-  /** 选中的节点keys */
+  /** 完全选中的节点keys */
   selectedKeys?: K[];
-  /** 默认选中的节点key */
+  /** 默认完全选中的节点key */
   defaultSelectedKeys?: K[];
   /** 节点选择回调 */
   onSelect?: (
-    /** 所有选中的节点keys，包括半选状态的父节点 */
+    /** 所有完全选中的节点keys，不包括半选状态的节点 */
     selectedKeys: K[],
     info: {
-      /** 选中的节点对象 */
-      selectedNodes: TreeNode<K,TreeExtendedProps>[];
+      /** 选中的节点对象，包括半选状态的节点 */
+      selectedNodes: TreeNode<K, TreeExtendedProps>[];
       /** 完全选中的节点keys */
       checkedKeys: K[];
       /** 半选状态的节点keys */
@@ -47,7 +47,9 @@ export type TreeCheckboxProps<K extends string | number = string> = Omit<
   onMaxSelectReached?: (maxCount: number) => void;
 };
 
-const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxProps<K>) => {
+const TreeCheckbox = <K extends string | number = string>(
+  props: TreeCheckboxProps<K>,
+) => {
   const {
     onlyLeafSelectable,
     selectedKeys: controlledSelectedKeys,
@@ -60,19 +62,22 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
     ...treeProps
   } = props;
 
-  const treeRef = useRef<TreeRef<K,TreeExtendedProps>>(null);
+  type NodesData = Parameters<Required<TreeCheckboxProps<K>>['renderNode']>[1];
+
+  const treeRef = useRef<TreeRef<K, TreeExtendedProps>>(null);
 
   // 内部状态管理
-  const [internalSelectedKeys, setInternalSelectedKeys] = useState<
-    K[]
-  >(controlledSelectedKeys || defaultSelectedKeys);
+  const [internalSelectedKeys, setInternalSelectedKeys] = useState<K[]>(
+    controlledSelectedKeys || defaultSelectedKeys,
+  );
 
   // 使用受控或非受控状态
   const selectedKeys = controlledSelectedKeys || internalSelectedKeys;
 
   // 检查节点是否应该显示为选中状态（包括父节点选中时子节点自动选中的情况）
   const isNodeEffectivelySelected = useCallback(
-    (nodeKey: K, checkedKeys: K[]): boolean => {
+    (nodeKey: K, checkedKeys: K[], nodesData: NodesData): boolean => {
+      const { nodeMap } = nodesData;
       // 如果节点本身被选中
       if (checkedKeys.includes(nodeKey)) {
         return true;
@@ -84,18 +89,15 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       }
 
       // 检查节点是否被禁用或不可选择，这些节点不会因为父节点选中而显示为选中
-      const nodeMap = treeRef.current?.getNodeMap();
-      const node = nodeMap?.nodeMap.get(nodeKey);
+      const node = nodeMap.nodeMap.get(nodeKey);
       if (node && (node.disabled || node.selectable === false)) {
         return false;
       }
 
       // 检查是否有祖先节点被选中
       // 从nodeMap中查找父节点关系
-      const findParentKey = (
-        key: K,
-      ): K | undefined => {
-        const childrenMap = nodeMap?.childrenMap;
+      const findParentKey = (key: K): K | undefined => {
+        const childrenMap = nodeMap.childrenMap;
         if (childrenMap) {
           for (const [parentKey, children] of childrenMap.entries()) {
             if (children.includes(key)) {
@@ -126,7 +128,8 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
 
   // 计算半选状态 - 基于完整树结构而不是扁平化节点
   const getCheckState = useCallback(
-    (nodeKey: K, checkedKeys: K[]) => {
+    (nodeKey: K, checkedKeys: K[], nodesData: NodesData) => {
+      const { nodeMap } = nodesData;
       if (checkStrictly) {
         return {
           checked: checkedKeys.includes(nodeKey),
@@ -135,8 +138,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       }
 
       // 从完整的节点映射中查找节点，而不是从flattenNodes
-      const nodeMap = treeRef.current?.getNodeMap();
-      const node = nodeMap?.nodeMap.get(nodeKey);
+      const node = nodeMap.nodeMap.get(nodeKey);
       if (!node) {
         return {
           checked: checkedKeys.includes(nodeKey),
@@ -145,12 +147,11 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       }
 
       // 获取子节点keys
-      const childrenKeys = nodeMap?.childrenMap.get(nodeKey) || [];
-
+      const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
       // 如果是叶子节点，检查是否有效选中（包括父节点选中的情况）
       if (childrenKeys.length === 0) {
         return {
-          checked: isNodeEffectivelySelected(nodeKey, checkedKeys),
+          checked: isNodeEffectivelySelected(nodeKey, checkedKeys, nodesData),
           indeterminate: false,
         };
       }
@@ -162,7 +163,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       let enabledChildrenCount = 0;
 
       childrenKeys.forEach((childKey) => {
-        const childNode = nodeMap?.nodeMap.get(childKey);
+        const childNode = nodeMap.nodeMap.get(childKey);
         if (
           childNode &&
           (childNode.disabled || childNode.selectable === false)
@@ -172,7 +173,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
         }
 
         enabledChildrenCount++;
-        const childState = getCheckState(childKey, checkedKeys);
+        const childState = getCheckState(childKey, checkedKeys, nodesData);
         if (childState.checked) {
           checkedChildrenCount++;
         } else if (childState.indeterminate) {
@@ -223,7 +224,9 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       targetKey: K,
       checked: boolean,
       currentKeys: K[],
+      nodesData: NodesData,
     ): K[] => {
+      const { flattenNodes } = nodesData;
       if (checkStrictly) {
         return checked
           ? [...currentKeys, targetKey]
@@ -231,7 +234,6 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       }
 
       let newKeys = [...currentKeys];
-      const flattenNodes = treeRef.current!.getFlattenNodes();
       const targetNode = flattenNodes.find((n) => n.key === targetKey);
 
       if (!targetNode) return newKeys;
@@ -287,6 +289,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
                 targetNode.parentKey,
                 true,
                 newKeys,
+                nodesData,
               );
             }
           }
@@ -296,7 +299,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
 
         // 检查当前节点是否是因为父节点选中而显示为选中的
         const isEffectivelySelectedByParent =
-          isNodeEffectivelySelected(targetKey, currentKeys) &&
+          isNodeEffectivelySelected(targetKey, currentKeys, nodesData) &&
           !currentKeys.includes(targetKey);
 
         if (isEffectivelySelectedByParent) {
@@ -374,13 +377,15 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       // 遍历所有节点（包括未展开的节点）
       nodeMap.nodeMap.forEach((node, nodeKey) => {
         // 跳过不可选择的节点
-        if (node.selectable === false) {
+        const isLeaf = !node.children || node.children.length === 0;
+        if (node.selectable === false || (onlyLeafSelectable && !isLeaf)) {
           return;
         }
 
         const { checked, indeterminate } = getCheckState(
           nodeKey,
           newSelectedKeys,
+          { nodeMap, flattenNodes },
         );
 
         if (checked) {
@@ -414,7 +419,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       }
 
       if (!controlledSelectedKeys) {
-        setInternalSelectedKeys(newSelectedKeys);
+        setInternalSelectedKeys(checkedKeys);
       }
 
       // 获取选中的节点信息（基于所有实际选中的节点，排除不可选择的节点）
@@ -424,7 +429,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
       );
 
       // 返回所有实际选中的节点作为selectedKeys
-      onSelect?.(allEffectivelySelectedKeys, {
+      onSelect?.(checkedKeys, {
         selectedNodes,
         checkedKeys,
         halfCheckedKeys,
@@ -434,14 +439,19 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
     },
     [
       maxSelectCount,
-      onMaxSelectReached,
       controlledSelectedKeys,
       onSelect,
+      onlyLeafSelectable,
       getCheckState,
+      onMaxSelectReached,
     ],
   );
 
-  const innerRenderNode: TreeCheckboxProps<K>['renderNode'] = (node) => {
+  const innerRenderNode: TreeCheckboxProps<K>['renderNode'] = (
+    node,
+    nodesData,
+  ) => {
+    const { nodeMap } = nodesData;
     // 如果节点不可选择或只有叶子节点可选择且当前节点不是叶子节点，则使用默认渲染
     if (node.selectable === false || (onlyLeafSelectable && !node.isLeaf)) {
       return;
@@ -453,7 +463,11 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
         selectedKeys.length >= maxSelectCount &&
         !selectedKeys.includes(node.key));
     // 计算选中和半选状态
-    const { checked, indeterminate } = getCheckState(node.key, selectedKeys);
+    const { checked, indeterminate } = getCheckState(
+      node.key,
+      selectedKeys,
+      nodesData,
+    );
 
     return (
       <Checkbox
@@ -470,10 +484,9 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
             // 半选状态点击时的逻辑：
             // 1. 如果存在禁用的子节点，点击后应该取消所有可选子节点的选中状态
             // 2. 如果不存在禁用的子节点，点击后选中所有子节点
-            const nodeMap = treeRef.current?.getNodeMap();
-            const childrenKeys = nodeMap?.childrenMap.get(node.key) || [];
+            const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
             const hasDisabledChildren = childrenKeys.some((childKey) => {
-              const childNode = nodeMap?.nodeMap.get(childKey);
+              const childNode = nodeMap.nodeMap.get(childKey);
               return childNode && childNode.disabled;
             });
 
@@ -483,6 +496,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
                 node.key,
                 false,
                 selectedKeys,
+                nodesData,
               );
               handleMultipleSelect(newKeys);
             } else {
@@ -491,6 +505,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
                 node.key,
                 true,
                 selectedKeys,
+                nodesData,
               );
               handleMultipleSelect(newKeys);
             }
@@ -500,6 +515,7 @@ const TreeCheckbox = <K extends string | number = string>(props: TreeCheckboxPro
               node.key,
               newChecked,
               selectedKeys,
+              nodesData,
             );
             handleMultipleSelect(newKeys);
           }

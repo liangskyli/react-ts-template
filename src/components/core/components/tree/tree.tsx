@@ -45,19 +45,32 @@ type FlattenNode<
   /** 所有后代节点keys */
   allDescendantKeys: K[];
 };
-
+type NodeMap<
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  /** 节点映射 */
+  nodeMap: Map<K, TreeNode<K, T>>;
+  /** 子节点映射 */
+  childrenMap: Map<K, K[]>;
+  /** 后代节点映射 */
+  descendantMap: Map<K, K[]>;
+};
+type NodesData<
+  K extends string | number = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  nodeMap: NodeMap<K, T>;
+  flattenNodes: FlattenNode<K, T>[];
+};
 export type TreeRef<
   K extends string | number = string,
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
   /** 获取所有扁平化树形数据 */
-  getFlattenNodes: () => FlattenNode<K,T>[];
+  getFlattenNodes: () => NodesData<K, T>['flattenNodes'];
   /** 获取节点映射 */
-  getNodeMap: () => {
-    nodeMap: Map<K, TreeNode<K, T>>;
-    childrenMap: Map<K, K[]>;
-    descendantMap: Map<K, K[]>;
-  };
+  getNodeMap: () => NodesData<K, T>['nodeMap'];
 };
 export type TreeProps<
   K extends string | number = string,
@@ -88,7 +101,10 @@ export type TreeProps<
     },
   ) => void;
   /** 自定义渲染节点标题 */
-  renderNode?: (node: FlattenNode<K, T>) => React.ReactNode | undefined;
+  renderNode?: (
+    node: FlattenNode<K, T>,
+    nodesData: NodesData<K, T>,
+  ) => React.ReactNode | undefined;
   /** 自定义类名 */
   className?: string;
 } & Pick<ListProps, 'virtualScroll' | 'infiniteScroll' | 'getPositionCache'>;
@@ -263,7 +279,7 @@ const Tree = <
 
           {/* 节点内容 */}
           <div className={classConfig.nodeContentConfig.wrap}>
-            {renderNode?.(node) ?? node.title}
+            {renderNode?.(node, { nodeMap, flattenNodes }) ?? node.title}
           </div>
         </div>
       );
@@ -275,6 +291,8 @@ const Tree = <
       collapseIcon,
       expandIcon,
       renderNode,
+      nodeMap,
+      flattenNodes,
       handleNodeExpand,
     ],
   );
@@ -301,7 +319,10 @@ const Tree = <
       getPositionCache={getPositionCache}
       list={flattenNodes}
     >
-      {(nodes) => nodes.map(innerRenderNode)}
+      {(nodes) => {
+        console.log('nodes count:',nodes.length)
+        return nodes.map(innerRenderNode);
+      }}
     </List>
   );
 

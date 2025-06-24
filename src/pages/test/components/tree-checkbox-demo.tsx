@@ -101,7 +101,7 @@ const TreeCheckboxDemo = () => {
       <h1 className="text-3xl font-bold text-gray-900">Tree checkbox 树形控件演示</h1>
 
       {/* 基础用法 */}
-      <section className="space-y-4">
+      {/*<section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">基础用法</h2>
         <div className="rounded-lg border bg-white p-6">
           <Tree.Checkbox
@@ -113,10 +113,10 @@ const TreeCheckboxDemo = () => {
             }}
           />
         </div>
-      </section>
+      </section>*/}
 
       {/* 只有叶子节点可选择 */}
-      <section className="space-y-4">
+      {/*<section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">
           只有叶子节点可选择
         </h2>
@@ -134,10 +134,10 @@ const TreeCheckboxDemo = () => {
             只有叶子节点可以选择
           </p>
         </div>
-      </section>
+      </section>*/}
 
       {/* 受控模式 */}
-      <section className="space-y-4">
+      {/*<section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">受控模式</h2>
         <div className="rounded-lg border bg-white p-6">
           <div className="mb-4 space-y-2">
@@ -167,10 +167,13 @@ const TreeCheckboxDemo = () => {
             expandedKeys={expandedKeys}
             onExpand={(keys) => setExpandedKeys(keys)}
             selectedKeys={selectedKeys}
-            onSelect={(key) => setSelectedKeys(key)}
+            onSelect={(selectedKeys, info) => {
+              console.log('info:', info);
+              setSelectedKeys(selectedKeys);
+            }}
           />
         </div>
-      </section>
+      </section>*/}
 
       {/* 虚拟滚动 */}
       <section className="space-y-4">
@@ -188,9 +191,10 @@ const TreeCheckboxDemo = () => {
           <Tree.Checkbox
             treeData={largeTreeData}
             virtualScroll
+            checkStrictly
             className="rounded-md border border-gray-200"
             selectedKeys={virtualScrollSelectedKeys}
-            onSelect={(key) => setVirtualScrollSelectedKeys(key)}
+            onSelect={(keys) => setVirtualScrollSelectedKeys(keys)}
           />
         </div>
       </section>
