@@ -101,23 +101,19 @@ const TreeCheckboxDemo = () => {
       <h1 className="text-3xl font-bold text-gray-900">Tree checkbox 树形控件演示</h1>
 
       {/* 基础用法 */}
-      <section className="space-y-4">
+      {/*<section className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">基础用法</h2>
         <div className="rounded-lg border bg-white p-6">
           <Tree.Checkbox
             treeData={basicTreeData}
             defaultExpandedKeys={['1', '2']}
             defaultSelectedKeys={['1-2']}
-            /*maxSelectCount={3}
-            onMaxSelectReached={(maxCount) => {
-              alert(`最多只能选择 ${maxCount} 个节点！`);
-            }}*/
             onSelect={(selectedKeys, info) => {
               console.log('选中的节点:', selectedKeys, info);
             }}
           />
         </div>
-      </section>
+      </section>*/}
 
       {/* 只有叶子节点可选择 */}
       {/*<section className="space-y-4">

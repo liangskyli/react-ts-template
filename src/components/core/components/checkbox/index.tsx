@@ -83,7 +83,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
   }
 
   const isDisabled = disabled || (isInGroup && group.disabled);
-
+  console.log('aaa:',children)
   return (
     <HeadlessCheckbox
       checked={checked}

@@ -1,6 +1,8 @@
-import { useCallback, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import Checkbox from '@/components/core/components/checkbox';
 import type {
+  FlattenNode,
+  NodesData,
   TreeProps,
   TreeRef,
 } from '@/components/core/components/tree/tree.tsx';
@@ -375,81 +377,21 @@ const TreeCheckbox = <K extends string | number = string>(
     node,
     nodesData,
   ) => {
-    const { nodeMap } = nodesData;
     // 如果节点不可选择或只有叶子节点可选择且当前节点不是叶子节点，则使用默认渲染
     if (node.selectable === false || (onlyLeafSelectable && !node.isLeaf)) {
       return;
     }
-    // 计算节点是否应该显示为disabled状态
-    const isNodeDisabled =
-      node.disabled ||
-      (maxSelectCount > 0 &&
-        selectedKeys.length >= maxSelectCount &&
-        !selectedKeys.includes(node.key));
-    // 计算选中和半选状态
-    const { checked, indeterminate } = getCheckState(
-      node.key,
-      selectedKeys,
-      nodesData,
-    );
 
     return (
-      <Checkbox
-        value={node.key}
-        disabled={isNodeDisabled}
-        checked={checked}
-        indeterminate={indeterminate}
-        onChange={(newChecked) => {
-          const now1 = +new Date();
-          // 如果节点被禁用，不处理点击
-          if (isNodeDisabled) return;
-
-          // 处理半选状态的点击逻辑
-          if (indeterminate) {
-            // 半选状态点击时的逻辑：
-            // 1. 如果存在禁用的子节点，点击后应该取消所有可选子节点的选中状态
-            // 2. 如果不存在禁用的子节点，点击后选中所有子节点
-            const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
-            const hasDisabledChildren = childrenKeys.some((childKey) => {
-              const childNode = nodeMap.nodeMap.get(childKey);
-              return childNode && childNode.disabled;
-            });
-
-            if (hasDisabledChildren) {
-              // 存在禁用子节点，取消所有可选子节点的选中状态
-              const newKeys = getUpdatedKeysWithCascade(
-                node.key,
-                false,
-                selectedKeys,
-                nodesData,
-              );
-              handleMultipleSelect(newKeys);
-            } else {
-              // 不存在禁用子节点，选中所有子节点
-              const newKeys = getUpdatedKeysWithCascade(
-                node.key,
-                true,
-                selectedKeys,
-                nodesData,
-              );
-              handleMultipleSelect(newKeys);
-            }
-          } else {
-            // 正常的选中/取消选中逻辑
-            const newKeys = getUpdatedKeysWithCascade(
-              node.key,
-              newChecked,
-              selectedKeys,
-              nodesData,
-            );
-            handleMultipleSelect(newKeys);
-          }
-          const now2 = +new Date();
-          console.log('耗时:', now2 - now1, indeterminate);
-        }}
-      >
-        {node.title}
-      </Checkbox>
+      <MemoizedTreeCheckbox<K>
+        node={node}
+        nodesData={nodesData}
+        selectedKeys={selectedKeys}
+        maxSelectCount={maxSelectCount}
+        getCheckState={getCheckState}
+        getUpdatedKeysWithCascade={getUpdatedKeysWithCascade}
+        handleMultipleSelect={handleMultipleSelect}
+      />
     );
   };
 
@@ -462,5 +404,133 @@ const TreeCheckbox = <K extends string | number = string>(
     />
   );
 };
+
+type MemoizedTreeCheckboxProps<K extends string | number> = {
+  node: FlattenNode<K, TreeExtendedProps>;
+  nodesData: NodesData<K, TreeExtendedProps>;
+  selectedKeys: K[];
+  maxSelectCount: number;
+  getCheckState: (
+    nodeKey: K,
+    checkedKeys: K[],
+    nodesData: NodesData<K, TreeExtendedProps>,
+  ) => { checked: boolean; indeterminate: boolean };
+  getUpdatedKeysWithCascade: (
+    targetKey: K,
+    checked: boolean,
+    currentKeys: K[],
+    nodesData: NodesData<K, TreeExtendedProps>,
+  ) => K[];
+  handleMultipleSelect: (newSelectedKeys: K[]) => void;
+};
+
+function TreeCheckboxComponent<K extends string | number>(
+  props: MemoizedTreeCheckboxProps<K>,
+) {
+  const {
+    node,
+    nodesData,
+    selectedKeys,
+    maxSelectCount,
+    getCheckState,
+    getUpdatedKeysWithCascade,
+    handleMultipleSelect,
+  } = props;
+  const { nodeMap } = nodesData;
+  const now1 = +new Date();
+
+  // 计算节点是否应该显示为disabled状态
+  const isNodeDisabled =
+    node.disabled ||
+    (maxSelectCount > 0 &&
+      selectedKeys.length >= maxSelectCount &&
+      !selectedKeys.includes(node.key));
+
+  // 计算选中和半选状态
+  const { checked, indeterminate } = getCheckState(
+    node.key,
+    selectedKeys,
+    nodesData,
+  );
+
+  const handleChange = useCallback(
+    (newChecked: boolean) => {
+      // 如果节点被禁用，不处理点击
+      if (isNodeDisabled) return;
+
+      // 处理半选状态的点击逻辑
+      if (indeterminate) {
+        // 半选状态点击时的逻辑：
+        // 1. 如果存在禁用的子节点，点击后应该取消所有可选子节点的选中状态
+        // 2. 如果不存在禁用的子节点，点击后选中所有子节点
+        const childrenKeys = nodeMap.childrenMap.get(node.key) || [];
+        const hasDisabledChildren = childrenKeys.some((childKey: K) => {
+          const childNode = nodeMap.nodeMap.get(childKey);
+          return childNode && childNode.disabled;
+        });
+
+        if (hasDisabledChildren) {
+          // 存在禁用子节点，取消所有可选子节点的选中状态
+          const newKeys = getUpdatedKeysWithCascade(
+            node.key,
+            false,
+            selectedKeys,
+            nodesData,
+          );
+          handleMultipleSelect(newKeys);
+        } else {
+          // 不存在禁用子节点，选中所有子节点
+          const newKeys = getUpdatedKeysWithCascade(
+            node.key,
+            true,
+            selectedKeys,
+            nodesData,
+          );
+          handleMultipleSelect(newKeys);
+        }
+      } else {
+        // 正常的选中/取消选中逻辑
+        const newKeys = getUpdatedKeysWithCascade(
+          node.key,
+          newChecked,
+          selectedKeys,
+          nodesData,
+        );
+        handleMultipleSelect(newKeys);
+      }
+    },
+    [
+      isNodeDisabled,
+      indeterminate,
+      node.key,
+      selectedKeys,
+      nodesData,
+      nodeMap.childrenMap,
+      getUpdatedKeysWithCascade,
+      handleMultipleSelect,
+    ],
+  );
+
+  const now2 = +new Date();
+  console.log('MemoizedTreeCheckbox耗时:', now2 - now1, node.title);
+
+  return (
+    <Checkbox
+      value={node.key}
+      disabled={isNodeDisabled}
+      checked={checked}
+      indeterminate={indeterminate}
+      onChange={handleChange}
+    >
+      {node.title}
+    </Checkbox>
+  );
+}
+
+const MemoizedTreeCheckbox = memo(TreeCheckboxComponent) as <
+  K extends string | number,
+>(
+  props: MemoizedTreeCheckboxProps<K>,
+) => React.ReactElement;
 
 export default TreeCheckbox;

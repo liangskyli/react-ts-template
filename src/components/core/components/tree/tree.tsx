@@ -30,7 +30,7 @@ export type TreeNode<
   disabled?: boolean;
 } & T;
 
-type FlattenNode<
+export type FlattenNode<
   K extends string | number = string,
   T extends Record<string, unknown> = Record<string, unknown>,
 > = TreeNode<K, T> & {
@@ -56,7 +56,7 @@ type NodeMap<
   /** 后代节点映射 */
   descendantMap: Map<K, K[]>;
 };
-type NodesData<
+export type NodesData<
   K extends string | number = string,
   T extends Record<string, unknown> = Record<string, unknown>,
 > = {
