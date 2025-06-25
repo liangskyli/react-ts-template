@@ -70,6 +70,7 @@ const TreeRadio = <K extends string | number = string>(
   // 处理单选节点选择
   const handleSingleSelect = useCallback(
     (newSelectedKey: K | undefined | null) => {
+      const now1 = +new Date();
       if (controlledSelectedKey === undefined) {
         setInternalSelectedKey(newSelectedKey);
       }
@@ -79,6 +80,8 @@ const TreeRadio = <K extends string | number = string>(
       if (selectedNode) {
         onSelect?.(newSelectedKey, { node: selectedNode });
       }
+      const now2 = +new Date();
+      console.log('handleSingleSelect耗时:', now2 - now1);
     },
     [controlledSelectedKey, onSelect],
   );

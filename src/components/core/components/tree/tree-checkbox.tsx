@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import Checkbox from '@/components/core/components/checkbox';
 import type {
-  TreeNode,
   TreeProps,
   TreeRef,
 } from '@/components/core/components/tree/tree.tsx';
@@ -31,8 +30,8 @@ export type TreeCheckboxProps<K extends string | number = string> = Omit<
     /** 所有完全选中的节点keys，不包括半选状态的节点 */
     selectedKeys: K[],
     info: {
-      /** 选中的节点对象，包括半选状态的节点 */
-      selectedNodes: TreeNode<K, TreeExtendedProps>[];
+      /** 选中的节点keys，包括半选状态的节点 */
+      allEffectivelySelectedKeys: K[];
       /** 完全选中的节点keys */
       checkedKeys: K[];
       /** 半选状态的节点keys */
@@ -86,7 +85,7 @@ const TreeCheckbox = <K extends string | number = string>(
         };
       }
 
-      // 从完整的节点映射中查找节点，而不是从flattenNodes
+      // 从完整的节点映射中查找节点
       const node = nodeMap.nodeMap.get(nodeKey);
       if (!node) {
         return {
@@ -175,50 +174,41 @@ const TreeCheckbox = <K extends string | number = string>(
       currentKeys: K[],
       nodesData: NodesData,
     ): K[] => {
-      const { allFlattenNodes } = nodesData;
+      const { allFlattenNodeMap } = nodesData;
       if (checkStrictly) {
         return checked
           ? [...currentKeys, targetKey]
           : currentKeys.filter((key) => key !== targetKey);
       }
 
-      let newKeys = [...currentKeys];
-      const targetNode = allFlattenNodes.find((n) => n.key === targetKey);
+      let newKeys = new Set(currentKeys);
+      const targetNode = allFlattenNodeMap.get(targetKey);
 
-      if (!targetNode) return newKeys;
+      if (!targetNode) return Array.from(newKeys);
 
       if (checked) {
         // 选中节点：选中自己和所有后代
-        if (!newKeys.includes(targetKey)) {
-          newKeys.push(targetKey);
-        }
+        newKeys.add(targetKey);
 
         // 选中所有后代节点（排除禁用的节点和不可选择的节点）
         targetNode.allDescendantKeys.forEach((descendantKey) => {
-          const descendantNode = allFlattenNodes.find(
-            (n) => n.key === descendantKey,
-          );
+          const descendantNode = allFlattenNodeMap.get(descendantKey);
           if (
             descendantNode &&
             !descendantNode.disabled &&
-            descendantNode.selectable !== false &&
-            !newKeys.includes(descendantKey)
+            descendantNode.selectable !== false
           ) {
-            newKeys.push(descendantKey);
+            newKeys.add(descendantKey);
           }
         });
 
         // 检查父节点是否应该被选中（当所有兄弟节点都被选中时）
         if (targetNode.parentKey) {
-          const parentNode = allFlattenNodes.find(
-            (n) => n.key === targetNode.parentKey,
-          );
+          const parentNode = allFlattenNodeMap.get(targetNode.parentKey);
           if (parentNode) {
             const enabledSiblings = parentNode.childrenKeys.filter(
               (siblingKey) => {
-                const siblingNode = allFlattenNodes.find(
-                  (n) => n.key === siblingKey,
-                );
+                const siblingNode = allFlattenNodeMap.get(siblingKey);
                 return (
                   siblingNode &&
                   !siblingNode.disabled &&
@@ -227,41 +217,39 @@ const TreeCheckbox = <K extends string | number = string>(
               },
             );
             const allEnabledSiblingsChecked = enabledSiblings.every(
-              (siblingKey) => newKeys.includes(siblingKey),
+              (siblingKey) => newKeys.has(siblingKey),
             );
             if (
               allEnabledSiblingsChecked &&
-              !newKeys.includes(targetNode.parentKey)
+              !newKeys.has(targetNode.parentKey)
             ) {
-              // 递归选中父节点
-              newKeys = getUpdatedKeysWithCascade(
-                targetNode.parentKey,
-                true,
-                newKeys,
-                nodesData,
+              // 递归选中父节点，但使用缓存的节点信息
+              newKeys = new Set(
+                getUpdatedKeysWithCascade(
+                  targetNode.parentKey,
+                  true,
+                  Array.from(newKeys),
+                  nodesData,
+                ),
               );
             }
           }
         }
       } else {
         // 取消选中：取消自己和所有后代
-        newKeys = newKeys.filter(
-          (key) =>
-            key !== targetKey && !targetNode.allDescendantKeys.includes(key),
-        );
+        newKeys.delete(targetKey);
+        targetNode.allDescendantKeys.forEach((key) => newKeys.delete(key));
 
         // 取消所有祖先节点的选中状态
         let currentParent = targetNode.parentKey;
         while (currentParent) {
-          newKeys = newKeys.filter((key) => key !== currentParent);
-          const parentNode = allFlattenNodes.find(
-            (n) => n.key === currentParent,
-          );
+          newKeys.delete(currentParent);
+          const parentNode = allFlattenNodeMap.get(currentParent);
           currentParent = parentNode?.parentKey;
         }
       }
 
-      return [...new Set(newKeys)]; // 去重
+      return Array.from(newKeys);
     },
     [checkStrictly],
   );
@@ -269,7 +257,11 @@ const TreeCheckbox = <K extends string | number = string>(
   // 处理多选节点选择
   const handleMultipleSelect = useCallback(
     (newSelectedKeys: K[]) => {
-      console.log('newSelectedKeys:',newSelectedKeys)
+      const now1 = +new Date();
+      const nodeMap = treeRef.current!.getNodeMap();
+      const flattenNodes = treeRef.current!.getFlattenNodes();
+      const allFlattenNodeMap = treeRef.current!.getAllFlattenNodeMap();
+
       // 计算所有实际选中的节点（包括因为父子联动而选中的节点）
       const allEffectivelySelectedKeys: K[] = [];
       const checkedKeys: K[] = [];
@@ -277,12 +269,47 @@ const TreeCheckbox = <K extends string | number = string>(
       const leafKeys: K[] = [];
       const nonLeafKeys: K[] = [];
 
-      const nodeMap = treeRef.current!.getNodeMap();
-      const flattenNodes = treeRef.current!.getFlattenNodes();
-      const allFlattenNodes = treeRef.current!.getAllFlattenNodes();
-      // 遍历所有节点（包括未展开的节点）
-      const now1 = +new Date();
-      nodeMap.nodeMap.forEach((node, nodeKey) => {
+      // 创建一个Set用于存储需要处理的节点
+      const nodesToProcess = new Set<K>();
+
+      // 获取节点的所有祖先节点
+      const getAncestors = (nodeKey: K): K[] => {
+        const ancestors: K[] = [];
+        let currentFlatNode = allFlattenNodeMap.get(nodeKey);
+        while (currentFlatNode && currentFlatNode.parentKey) {
+          const parentKey = currentFlatNode.parentKey;
+          ancestors.push(parentKey);
+          currentFlatNode = allFlattenNodeMap.get(parentKey);
+        }
+        return ancestors;
+      };
+
+      // 添加需要处理的节点
+      const addNodesToProcess = (nodeKey: K) => {
+        // 添加当前节点
+        nodesToProcess.add(nodeKey);
+
+        // 添加所有祖先节点
+        const ancestors = getAncestors(nodeKey);
+        ancestors.forEach((ancestor) => nodesToProcess.add(ancestor));
+
+        // 添加所有子孙节点
+        const currentFlatNode = allFlattenNodeMap.get(nodeKey);
+        if (currentFlatNode && currentFlatNode.allDescendantKeys) {
+          currentFlatNode.allDescendantKeys.forEach((descendant) =>
+            nodesToProcess.add(descendant),
+          );
+        }
+      };
+
+      // 处理新选中的节点
+      newSelectedKeys.forEach((key) => addNodesToProcess(key));
+
+      // 只处理需要处理的节点
+      nodesToProcess.forEach((nodeKey) => {
+        const node = nodeMap.nodeMap.get(nodeKey);
+        if (!node) return;
+
         // 跳过不可选择的节点
         const isLeaf = !node.children || node.children.length === 0;
         if (node.selectable === false || (onlyLeafSelectable && !isLeaf)) {
@@ -292,7 +319,7 @@ const TreeCheckbox = <K extends string | number = string>(
         const { checked, indeterminate } = getCheckState(
           nodeKey,
           newSelectedKeys,
-          { nodeMap, flattenNodes, allFlattenNodes },
+          { nodeMap, flattenNodes, allFlattenNodeMap },
         );
 
         if (checked) {
@@ -303,26 +330,19 @@ const TreeCheckbox = <K extends string | number = string>(
           allEffectivelySelectedKeys.push(nodeKey);
         }
 
-        // 区分叶子节点和非叶子节点（基于所有实际选中的节点）
+        // 区分叶子节点和非叶子节点
         if (checked || indeterminate) {
           const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
           if (childrenKeys.length === 0) {
-            // 叶子节点
             leafKeys.push(nodeKey);
           } else {
-            // 非叶子节点
             nonLeafKeys.push(nodeKey);
           }
         }
       });
-      const now2 = +new Date();
-      console.log('nodeMap.nodeMap耗时:', now2 - now1);
 
-      // 检查是否超过最大选择数量（基于所有实际选中的节点）
-      if (
-        maxSelectCount > 0 &&
-        checkedKeys.length > maxSelectCount
-      ) {
+      // 检查是否超过最大选择数量
+      if (maxSelectCount > 0 && checkedKeys.length > maxSelectCount) {
         onMaxSelectReached?.(maxSelectCount);
         return;
       }
@@ -331,20 +351,15 @@ const TreeCheckbox = <K extends string | number = string>(
         setInternalSelectedKeys(checkedKeys);
       }
 
-      // 获取选中的节点信息（基于所有实际选中的节点，排除不可选择的节点）
-      const selectedNodes = flattenNodes.filter(
-        (n) =>
-          allEffectivelySelectedKeys.includes(n.key) && n.selectable !== false,
-      );
-
-      // 返回所有实际选中的节点作为selectedKeys
       onSelect?.(checkedKeys, {
-        selectedNodes,
+        allEffectivelySelectedKeys,
         checkedKeys,
         halfCheckedKeys,
         leafKeys,
         nonLeafKeys,
       });
+      const now2 = +new Date();
+      console.log('handleMultipleSelect耗时:', now2 - now1);
     },
     [
       maxSelectCount,
@@ -385,7 +400,6 @@ const TreeCheckbox = <K extends string | number = string>(
         checked={checked}
         indeterminate={indeterminate}
         onChange={(newChecked) => {
-          console.log('begin:')
           const now1 = +new Date();
           // 如果节点被禁用，不处理点击
           if (isNodeDisabled) return;
@@ -431,7 +445,7 @@ const TreeCheckbox = <K extends string | number = string>(
             handleMultipleSelect(newKeys);
           }
           const now2 = +new Date();
-          console.log('耗时:', now2 - now1,indeterminate);
+          console.log('耗时:', now2 - now1, indeterminate);
         }}
       >
         {node.title}

@@ -62,7 +62,7 @@ type NodesData<
 > = {
   nodeMap: NodeMap<K, T>;
   flattenNodes: FlattenNode<K, T>[];
-  allFlattenNodes: FlattenNode<K, T>[];
+  allFlattenNodeMap: Map<K, FlattenNode<K, T>>;
 };
 export type TreeRef<
   K extends string | number = string,
@@ -70,8 +70,8 @@ export type TreeRef<
 > = {
   /** 获取展开的节点扁平化树形数据 */
   getFlattenNodes: () => NodesData<K, T>['flattenNodes'];
-  /** 获取所有扁平化树形数据 */
-  getAllFlattenNodes: () => NodesData<K, T>['allFlattenNodes'];
+  /** 获取所有扁平化节点映射 */
+  getAllFlattenNodeMap: () => NodesData<K, T>['allFlattenNodeMap'];
   /** 获取节点映射 */
   getNodeMap: () => NodesData<K, T>['nodeMap'];
 };
@@ -220,7 +220,7 @@ const Tree = <
   }, [treeData, expandedKeys, nodeMap]);
 
   // 所有的扁平化树形数据
-  const allFlattenNodes = useMemo(() => {
+  const allFlattenNodeMap = useMemo(() => {
     const flatten = (
       nodes: TreeNode<K, T>[],
       level = 0,
@@ -252,7 +252,7 @@ const Tree = <
       return result;
     };
 
-    return flatten(treeData);
+    return new Map(flatten(treeData).map((node) => [node.key, node]));
   }, [treeData, nodeMap]);
 
   // 处理展开/收起
@@ -318,7 +318,7 @@ const Tree = <
 
           {/* 节点内容 */}
           <div className={classConfig.nodeContentConfig.wrap}>
-            {renderNode?.(node, { nodeMap, flattenNodes, allFlattenNodes }) ??
+            {renderNode?.(node, { nodeMap, flattenNodes, allFlattenNodeMap }) ??
               node.title}
           </div>
         </div>
@@ -333,7 +333,7 @@ const Tree = <
       renderNode,
       nodeMap,
       flattenNodes,
-      allFlattenNodes,
+      allFlattenNodeMap,
       handleNodeExpand,
     ],
   );
@@ -341,10 +341,10 @@ const Tree = <
   useImperativeHandle(ref, () => {
     return {
       getFlattenNodes: () => flattenNodes,
-      getAllFlattenNodes: () => allFlattenNodes,
+      getAllFlattenNodeMap: () => allFlattenNodeMap,
       getNodeMap: () => nodeMap,
     } as TreeRef<K, T>;
-  }, [flattenNodes, nodeMap]);
+  }, [allFlattenNodeMap, flattenNodes, nodeMap]);
 
   const listContent = (
     <List<FlattenNode<K, T>>
