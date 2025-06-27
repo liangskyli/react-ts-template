@@ -95,7 +95,6 @@ const TreeCheckboxDemo = () => {
   const [virtualScrollSelectedKeys, setVirtualScrollSelectedKeys] = useState<string[]>(
     [],
   );
-  console.log('TreeCheckboxDemo')
 
   return (
     <div className="space-y-8 p-6">
@@ -192,7 +191,7 @@ const TreeCheckboxDemo = () => {
             className="rounded-md border border-gray-200"
             selectedKeys={virtualScrollSelectedKeys}
             onSelect={(keys,info) => {
-              console.log('虚拟滚动选择:', keys,info);
+              console.log('虚拟滚动选择:', keys,virtualScrollSelectedKeys);
               setVirtualScrollSelectedKeys(keys);
             }}
             /*maxSelectCount={100}
