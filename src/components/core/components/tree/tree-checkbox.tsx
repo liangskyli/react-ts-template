@@ -74,6 +74,7 @@ const TreeCheckbox = <K extends string | number = string>(
 
   // 使用受控或非受控状态
   const selectedKeys = controlledSelectedKeys || internalSelectedKeys;
+  console.log('selectedKeys render:',selectedKeys)
 
   // 计算半选状态 - 基于完整树结构而不是扁平化节点
   const getCheckState = useCallback(
@@ -256,18 +257,18 @@ const TreeCheckbox = <K extends string | number = string>(
     [checkStrictly],
   );
 
+  const checkedKeys = useRef<K[]>([]);
+  const halfCheckedKeys = useRef<K[]>([]);
+
   // 处理多选节点选择
   const handleMultipleSelect = useCallback(
-    (newSelectedKeys: K[]) => {
+    (newSelectedKeys: K[],targetKey: K) => {
       const now1 = +new Date();
       const nodeMap = treeRef.current!.getNodeMap();
       const flattenNodes = treeRef.current!.getFlattenNodes();
       const allFlattenNodeMap = treeRef.current!.getAllFlattenNodeMap();
 
       // 计算所有实际选中的节点（包括因为父子联动而选中的节点）
-      const allEffectivelySelectedKeys: K[] = [];
-      const checkedKeys: K[] = [];
-      const halfCheckedKeys: K[] = [];
       const leafKeys: K[] = [];
       const nonLeafKeys: K[] = [];
 
@@ -305,7 +306,8 @@ const TreeCheckbox = <K extends string | number = string>(
       };
 
       // 处理新选中的节点
-      newSelectedKeys.forEach((key) => addNodesToProcess(key));
+      // newSelectedKeys.forEach((key) => addNodesToProcess(key));
+      addNodesToProcess(targetKey);
 
       // 只处理需要处理的节点
       nodesToProcess.forEach((nodeKey) => {
@@ -325,38 +327,42 @@ const TreeCheckbox = <K extends string | number = string>(
         );
 
         if (checked) {
-          checkedKeys.push(nodeKey);
-          allEffectivelySelectedKeys.push(nodeKey);
+          checkedKeys.current.push(nodeKey);
         } else if (indeterminate) {
-          halfCheckedKeys.push(nodeKey);
-          allEffectivelySelectedKeys.push(nodeKey);
+          halfCheckedKeys.current.push(nodeKey);
+        } else {
+          checkedKeys.current = checkedKeys.current.filter((key) => key !== nodeKey);
+          halfCheckedKeys.current = halfCheckedKeys.current.filter(
+            (key) => key !== nodeKey,
+          );
         }
-
-        // 区分叶子节点和非叶子节点
-        if (checked || indeterminate) {
-          const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
-          if (childrenKeys.length === 0) {
-            leafKeys.push(nodeKey);
-          } else {
-            nonLeafKeys.push(nodeKey);
-          }
+      });
+      const allEffectivelySelectedKeys: K[] = [...checkedKeys.current, ...halfCheckedKeys.current];
+      allEffectivelySelectedKeys.forEach((key) => {
+        const node = nodeMap.nodeMap.get(key);
+        if (!node) return;
+        const isLeaf = !node.children || node.children.length === 0;
+        if (isLeaf) {
+          leafKeys.push(key);
+        } else {
+          nonLeafKeys.push(key);
         }
       });
 
       // 检查是否超过最大选择数量
-      if (maxSelectCount > 0 && checkedKeys.length > maxSelectCount) {
+      if (maxSelectCount > 0 && checkedKeys.current.length > maxSelectCount) {
         onMaxSelectReached?.(maxSelectCount);
         return;
       }
 
       if (!controlledSelectedKeys) {
-        setInternalSelectedKeys(checkedKeys);
+        setInternalSelectedKeys(checkedKeys.current);
       }
 
-      onSelect?.(checkedKeys, {
+      onSelect?.(checkedKeys.current, {
         allEffectivelySelectedKeys,
-        checkedKeys,
-        halfCheckedKeys,
+        checkedKeys: checkedKeys.current,
+        halfCheckedKeys: halfCheckedKeys.current,
         leafKeys,
         nonLeafKeys,
       });
@@ -372,7 +378,7 @@ const TreeCheckbox = <K extends string | number = string>(
       onMaxSelectReached,
     ],
   );
-
+console.log('render')
   const innerRenderNode: TreeCheckboxProps<K>['renderNode'] = (
     node,
     nodesData,
@@ -421,7 +427,7 @@ type MemoizedTreeCheckboxProps<K extends string | number> = {
     currentKeys: K[],
     nodesData: NodesData<K, TreeExtendedProps>,
   ) => K[];
-  handleMultipleSelect: (newSelectedKeys: K[]) => void;
+  handleMultipleSelect: (newSelectedKeys: K[],targetKey:K) => void;
 };
 
 function TreeCheckboxComponent<K extends string | number>(
@@ -452,7 +458,9 @@ function TreeCheckboxComponent<K extends string | number>(
     selectedKeys,
     nodesData,
   );
-
+  console.log('new selectedKeys:',selectedKeys)
+  const now22 = +new Date();
+  console.log('MemoizedTreeCheckbox耗时2:', now22 - now1, node.title);
   const handleChange = useCallback(
     (newChecked: boolean) => {
       // 如果节点被禁用，不处理点击
@@ -477,7 +485,7 @@ function TreeCheckboxComponent<K extends string | number>(
             selectedKeys,
             nodesData,
           );
-          handleMultipleSelect(newKeys);
+          handleMultipleSelect(newKeys, node.key);
         } else {
           // 不存在禁用子节点，选中所有子节点
           const newKeys = getUpdatedKeysWithCascade(
@@ -486,7 +494,7 @@ function TreeCheckboxComponent<K extends string | number>(
             selectedKeys,
             nodesData,
           );
-          handleMultipleSelect(newKeys);
+          handleMultipleSelect(newKeys, node.key);
         }
       } else {
         // 正常的选中/取消选中逻辑
@@ -496,17 +504,18 @@ function TreeCheckboxComponent<K extends string | number>(
           selectedKeys,
           nodesData,
         );
-        handleMultipleSelect(newKeys);
+        handleMultipleSelect(newKeys,node.key);
       }
     },
     [
       isNodeDisabled,
       indeterminate,
+      nodeMap.childrenMap,
+      nodeMap.nodeMap,
       node.key,
+      getUpdatedKeysWithCascade,
       selectedKeys,
       nodesData,
-      nodeMap.childrenMap,
-      getUpdatedKeysWithCascade,
       handleMultipleSelect,
     ],
   );

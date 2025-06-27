@@ -95,6 +95,7 @@ const TreeCheckboxDemo = () => {
   const [virtualScrollSelectedKeys, setVirtualScrollSelectedKeys] = useState<string[]>(
     [],
   );
+  console.log('TreeCheckboxDemo')
 
   return (
     <div className="space-y-8 p-6">
