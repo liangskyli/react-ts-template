@@ -66,7 +66,7 @@ const cache = createLRUCache<string, any>('app-cache', {
 });
 
 // 获取缓存实例
-const cacheInstance = getLRUCacheInstance('app-cache', 'app');
+const cacheInstance = getLRUCacheInstance<string, any>('app-cache', 'app');
 
 // 使用实例管理缓存
 if (cacheInstance) {

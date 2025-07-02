@@ -184,4 +184,14 @@ describe('Class Configuration Utilities', () => {
       );
     });
   });
+
+  describe('cn function cache', () => {
+    it('should merge class names correctly', () => {
+      const result = cn('btn', 'btn-primary', { 'btn-large': true });
+      expect(result).toBe('btn btn-primary btn-large');
+      // 再次调用，应该从缓存中读取
+      const result2 = cn('btn', 'btn-primary', { 'btn-large': true });
+      expect(result2).toBe('btn btn-primary btn-large');
+    });
+  });
 });

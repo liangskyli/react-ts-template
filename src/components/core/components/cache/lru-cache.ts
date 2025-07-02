@@ -156,6 +156,9 @@ export function getLRUCacheNamespaceInstance(namespace?: string) {
   return LRUCacheManager.getNamespaceInstance(namespace);
 }
 
-export function getLRUCacheInstance(instanceId: string, namespace?: string) {
-  return LRUCacheManager.getInstance(instanceId, namespace);
+export function getLRUCacheInstance<K extends {}, V extends {}, FC = unknown>(
+  instanceId: string,
+  namespace?: string,
+) {
+  return LRUCacheManager.getInstance<K, V, FC>(instanceId, namespace);
 }
