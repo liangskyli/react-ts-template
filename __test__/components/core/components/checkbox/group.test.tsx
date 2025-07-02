@@ -100,6 +100,27 @@ describe('Checkbox.Group', () => {
     expect(handleChange).toHaveBeenCalledWith(['2']);
   });
 
+  test('handles onChange event with no value', () => {
+    const handleChange = vi.fn();
+    const { container } = render(
+      <Checkbox.Group onChange={handleChange}>
+        <Checkbox value="1">Option 1</Checkbox>
+        <Checkbox>Option 2</Checkbox>
+      </Checkbox.Group>,
+    );
+
+    const checkboxes = container.querySelectorAll('[role="checkbox"]');
+
+    fireEvent.click(checkboxes[0]);
+    expect(handleChange).toHaveBeenCalledWith(['1']);
+
+    fireEvent.click(checkboxes[1]);
+    expect(handleChange).toHaveBeenCalledWith(['1']);
+
+    fireEvent.click(checkboxes[0]);
+    expect(handleChange).toHaveBeenCalledWith([]);
+  });
+
   test('handles custom className', () => {
     const { container } = render(
       <Checkbox.Group className="custom-group">

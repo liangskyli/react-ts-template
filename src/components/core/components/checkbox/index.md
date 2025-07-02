@@ -70,7 +70,7 @@ export default () => {
 
 | 属性                  | 说明                   | 类型                           | 默认值                            |
 |---------------------|----------------------|------------------------------|--------------------------------|
-| `value`             | 复选框的值                | `string \| number`           | -                              |
+| `value`             | 复选框的值，用于 Group 模式    | `string \| number`           | -                              |
 | `checked`           | 指定当前是否选中             | `boolean`                    | -                              |
 | `defaultChecked`    | 初始是否选中               | `boolean`                    | `false`                        |
 | `disabled`          | 禁用状态                 | `boolean`                    | `false`                        |

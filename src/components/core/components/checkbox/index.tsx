@@ -1,4 +1,5 @@
 import type { ElementType, ReactNode, Ref } from 'react';
+import { useEffect } from 'react';
 import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
@@ -12,7 +13,7 @@ import { DefaultCheckedIcon, DefaultIndeterminateIcon } from './icons.tsx';
 export type { CheckboxGroupProps };
 
 export type CheckboxProps<T extends ElementType = 'span'> = {
-  /** 复选框的值 */
+  /** 复选框的值，用于 Group 模式 */
   value?: string | number;
   /** 是否全部自定义 */
   isCustom?: boolean;
@@ -60,33 +61,37 @@ const CheckboxBase = <T extends ElementType = 'span'>(
   const group = useContext(CheckboxContext);
   const isInGroup = group.onChange !== undefined;
 
-  const [checkedState, setCheckedState] = useState(defaultChecked ?? false);
-
-  let checked: boolean;
-  let handleChange: (checked: boolean) => void;
-
-  if (isInGroup && value !== undefined) {
-    const groupValue = group.value;
-    checked = groupValue.includes(value);
-    handleChange = (checked: boolean) => {
+  //console.log('render checkbox')
+  const [innerChecked, setInnerChecked] = useState(defaultChecked ?? false);
+  const handleChange = (checked: boolean) => {
+    if (isInGroup) {
+      const groupValue = group.value;
       const newValue = checked
-        ? [...groupValue, value]
+        ? value
+          ? [...groupValue, value]
+          : [...groupValue]
         : groupValue.filter((v) => v !== value);
       group.onChange?.(newValue);
-    };
-  } else {
-    checked = checkedProp ?? checkedState;
-    handleChange = (newChecked: boolean) => {
-      setCheckedState(newChecked);
-      onChange?.(newChecked);
-    };
-  }
+    } else {
+      setInnerChecked(checked);
+      onChange?.(checked);
+    }
+  };
+
+  useEffect(() => {
+    if (isInGroup) {
+      const groupValue = group.value;
+      setInnerChecked(value ? groupValue.includes(value) : false);
+    } else {
+      setInnerChecked(checkedProp ?? innerChecked);
+    }
+  }, [checkedProp, group.value, innerChecked, isInGroup, value]);
 
   const isDisabled = disabled || (isInGroup && group.disabled);
 
   return (
     <HeadlessCheckbox
-      checked={checked}
+      checked={innerChecked}
       onChange={handleChange}
       disabled={isDisabled}
       className={cn(classConfig.checkboxConfig, className)}
@@ -104,7 +109,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
                   {indeterminateIcon}
                 </span>
               ) : (
-                checked && (
+                innerChecked && (
                   <span
                     className={cn(classConfig.checkedConfig, checkClassName)}
                   >
