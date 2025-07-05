@@ -61,7 +61,6 @@ const CheckboxBase = <T extends ElementType = 'span'>(
   const group = useContext(CheckboxContext);
   const isInGroup = group.onChange !== undefined;
 
-  //console.log('render checkbox')
   const [innerChecked, setInnerChecked] = useState(defaultChecked ?? false);
   const handleChange = (checked: boolean) => {
     if (isInGroup) {
