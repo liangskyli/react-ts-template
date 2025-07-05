@@ -12,7 +12,8 @@ vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
   return {
     default: function MockVirtualScrollList({
       cacheRef,
-      childrenArray,
+      rowCount,
+      renderItem,
       virtualScrollToIndex,
       ref,
       getPositionCache,
@@ -48,7 +49,7 @@ vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
           getPositionCache({
             scrollTop,
             startIndex: 0,
-            stopIndex: childrenArray.length - 1,
+            stopIndex: rowCount - 1,
           });
         }
       };
@@ -56,12 +57,14 @@ vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
       // 存储滚动处理函数供测试使用
       (global as any).__virtualScrollOnScroll = handleScroll;
 
+      const list = Array(rowCount).fill('');
+
       return (
         <div data-testid="virtual-scroll-list">
           <div data-testid="virtualScrollToIndex">{virtualScrollToIndex}</div>
-          {childrenArray.map((child: any, index: number) => (
-            <div key={index}>{child}</div>
-          ))}
+          {list.map((_child, index) => {
+            return <div key={index}>{renderItem(index)}</div>;
+          })}
         </div>
       );
     },
@@ -221,6 +224,34 @@ describe('List Component', () => {
     }));
 
     render(
+      <List virtualScroll list={items}>
+        {(listData) => {
+          return listData.map((item) => (
+            <List.Item
+              key={item.id}
+              title={item.title}
+              description={item.description}
+            />
+          ));
+        }}
+      </List>,
+    );
+
+    // 验证虚拟滚动列表被渲染
+    expect(screen.getByTestId('virtual-scroll-list')).toBeInTheDocument();
+
+    // 验证列表项被渲染
+    expect(screen.getByText('Item 1')).toBeInTheDocument();
+  });
+
+  it('renders virtualized list error with not children function', () => {
+    const items = Array.from({ length: 100 }, (_, i) => ({
+      id: i,
+      title: `Item ${i}`,
+      description: `Description ${i}`,
+    }));
+
+    render(
       <List virtualScroll>
         {items.map((item) => (
           <>
@@ -236,6 +267,9 @@ describe('List Component', () => {
 
     // 验证虚拟滚动列表被渲染
     expect(screen.getByTestId('virtual-scroll-list')).toBeInTheDocument();
+
+    // 验证列表项没有渲染
+    expect(screen.queryByText('Item 1')).toBeNull();
   });
 
   it('renders virtualized list with infinite scroll correctly', () => {

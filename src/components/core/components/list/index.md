@@ -105,15 +105,18 @@ export default () => {
     <List 
       virtualScroll
       className="border border-gray-200 rounded-md h-[216px]"
+      list={items}
     >
-      {items.map(item => (
-        <List.Item 
-          key={item.id}
-          title={item.title} 
-          description={item.description}
-          clickable
-        />
-      ))}
+      {(listData)=>{
+        return listData.map((item, index) => (
+          <List.Item
+            key={item.id}
+            title={item.title}
+            description={item.description}
+            clickable
+          />
+        ));
+      }}
     </List>
   );
 };
@@ -200,16 +203,16 @@ export default () => {
 
 ### List
 
-| 参数                 | 说明                                      | 类型                                                        | 默认值     |
-|--------------------|-----------------------------------------|-----------------------------------------------------------|---------|
-| `className`        | 自定义类名                                   | `string`                                                  | -       |
-| `children`         | 列表内容                                    | `ReactNode`                                               | -       |
-| `virtualScroll`    | 是否启用虚拟滚动,或虚拟滚动配置                        | `boolean \| VirtualScrollListProps['virtualConfig']`      | `false` |
-| `infiniteScroll`   | 无限滚动,分页加载数据,仅list属性配置后有效                | `InfiniteScroll`                                          | -       |
-| `children`         | 列表内容,函数方式需要配置list属性, ReactNode方式不支持无限滚动 | `((listData: T[]) => React.ReactNode) \| React.ReactNode` | -       |
-| `ref`              | 滚动列表的ref                                | `React.Ref<ListRef>`                                      | -       |
-| `list`             | 列表数据,仅函数方式需要配置                          | `T[]`                                                     | -       |
-| `getPositionCache` | 获取滚动位置，可用于缓存                            | `(cache: PositionCacheData) => void`                      | -       |
+| 参数                 | 说明                               | 类型                                                        | 默认值     |
+|--------------------|----------------------------------|-----------------------------------------------------------|---------|
+| `className`        | 自定义类名                            | `string`                                                  | -       |
+| `children`         | 列表内容                             | `ReactNode`                                               | -       |
+| `virtualScroll`    | 是否启用虚拟滚动,或虚拟滚动配置,仅children函数方式有效 | `boolean \| VirtualScrollListProps['virtualConfig']`      | `false` |
+| `infiniteScroll`   | 无限滚动,分页加载数据                      | `InfiniteScroll`                                          | -       |
+| `children`         | 列表内容,函数方式需要配置list属性              | `((listData: T[]) => React.ReactNode) \| React.ReactNode` | -       |
+| `ref`              | 滚动列表的ref                         | `React.Ref<ListRef>`                                      | -       |
+| `list`             | 列表数据,仅children函数方式需要配置           | `T[]`                                                     | -       |
+| `getPositionCache` | 获取滚动位置，可用于缓存                     | `(cache: PositionCacheData) => void`                      | -       |
 
 ### ListRef
 
@@ -284,4 +287,4 @@ List 使用 Tailwind CSS 进行样式设置，支持以下预设样式：
 1. 当使用虚拟滚动时，确保为每个列表项提供唯一的 `key` 属性
 2. 虚拟滚动模式下，列表项高度会根据内容自动调整，但初始渲染时会使用 `defaultHeight`
 3. 如果列表项高度变化频繁，可能会影响滚动体验，建议设置合适的 `defaultHeight` 值
-4. 使用无限滚动时，List组件的 children 必须是函数方式
+4. 使用虚拟滚动时，为了更好的性能，List组件的 children 必须是函数方式

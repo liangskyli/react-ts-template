@@ -30,8 +30,10 @@ export type VirtualScrollListProps = {
     /** 每项最小高度 */
     minHeight?: number;
   } & Pick<VirtualizedListProps, 'scrollToAlignment'>;
-  /** 列表项内容 */
-  childrenArray: React.ReactNode[];
+  /** 列表项总数 */
+  rowCount: number;
+  /** 渲染单个列表项的函数 */
+  renderItem: (index: number) => React.ReactNode;
   /** 获取滚动位置，可用于缓存 */
   getPositionCache?: (cache: PositionCacheData) => void;
   /** 滚动到指定索引 */
@@ -44,7 +46,8 @@ export type VirtualScrollListProps = {
 const VirtualScrollList = (props: VirtualScrollListProps) => {
   const {
     virtualConfig = {},
-    childrenArray,
+    rowCount,
+    renderItem,
     getPositionCache,
     virtualScrollToIndex,
     ref,
@@ -70,7 +73,7 @@ const VirtualScrollList = (props: VirtualScrollListProps) => {
   const rowRenderer: ListRowRenderer = (props) => {
     // eslint-disable-next-line react/prop-types
     const { key, index, style, parent } = props;
-    const child = childrenArray[index];
+    const child = renderItem(index);
     const itemRender = (opts: {
       registerChild: CellMeasurerChildProps['registerChild'];
     }) => {
@@ -119,7 +122,7 @@ const VirtualScrollList = (props: VirtualScrollListProps) => {
           <VirtualizedList
             width={width}
             height={height}
-            rowCount={childrenArray.length}
+            rowCount={rowCount}
             deferredMeasurementCache={cache}
             rowHeight={cache.rowHeight}
             rowRenderer={rowRenderer}

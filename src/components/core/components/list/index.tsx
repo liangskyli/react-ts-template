@@ -1,4 +1,10 @@
-import React, { Fragment, useImperativeHandle, useRef, useState } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/list/class-config.ts';
 import type { InfiniteScrollProps } from '@/components/core/components/list/infinite-scroll.tsx';
@@ -18,18 +24,19 @@ export type ListRef = {
   /** 滚动到指定索引,虚拟滚动模式下可用 */
   virtualScrollToIndex: (index: number) => void;
 };
+type childrenFunction<T = unknown> = (listData: T[]) => React.ReactNode;
 export type ListProps<T = unknown> = {
-  /** 是否启用虚拟滚动,或虚拟滚动配置 */
+  /** 是否启用虚拟滚动,或虚拟滚动配置,仅children是函数方式有效 */
   virtualScroll?: boolean | VirtualScrollListProps['virtualConfig'];
-  /** 无限滚动,分页加载数据,仅list属性配置后有效 */
+  /** 无限滚动,分页加载数据 */
   infiniteScroll?: Omit<InfiniteScrollProps, 'loadMoreFinally' | 'ref'>;
   /** 自定义类名 */
   className?: string;
-  /** 列表内容,函数方式需要配置list属性, ReactNode方式不支持无限滚动 */
-  children: ((listData: T[]) => React.ReactNode) | React.ReactNode;
+  /** 列表内容,函数方式需要配置list属性 */
+  children: childrenFunction<T> | React.ReactNode;
   /** 滚动列表的ref */
   ref?: React.Ref<ListRef>;
-  /** 列表数据,仅函数方式需要配置 */
+  /** 列表数据,children函数方式需要配置 */
   list?: T[];
 } & Pick<VirtualScrollListProps, 'getPositionCache'>;
 
@@ -69,30 +76,63 @@ const List = <T = unknown,>(props: ListProps<T>) => {
     };
   }, [virtualScroll]);
 
-  let childrenArray: React.ReactNode[] = [];
-  if (typeof children === 'function') {
-    if (list) {
-      const childrenNode = children(list);
-      // 将children转换为数组，以便在rowRenderer中使用
-      childrenArray = flattenChildren(childrenNode);
-      if (infiniteScroll && list.length > 0) {
+  const addInfiniteScroll = useCallback(
+    (array: React.ReactNode[], clearIndex?: number) => {
+      if (infiniteScroll && array.length > 0) {
         const { children: infiniteScrollChildren, ...otherProps } =
           infiniteScroll;
-        childrenArray.push(
+        array.push(
           <InfiniteScroll
             {...otherProps}
             loadMoreFinally={() => {
-              cacheRef.current?.clear(childrenArray.length - 1, 0);
+              const curClearIndex = clearIndex ?? array.length - 1;
+              cacheRef.current?.clear(curClearIndex, 0);
             }}
           >
             {infiniteScrollChildren}
           </InfiniteScroll>,
         );
       }
+    },
+    [infiniteScroll],
+  );
+
+  let childrenArray: React.ReactNode[] = [];
+  if (!virtualScroll) {
+    if (typeof children === 'function') {
+      if (list) {
+        const childrenNode = children(list);
+        // 将children转换为数组，以便在rowRenderer中使用
+        childrenArray = flattenChildren(childrenNode);
+      }
+    } else {
+      childrenArray = flattenChildren(children);
     }
-  } else {
-    childrenArray = flattenChildren(children);
+    addInfiniteScroll(childrenArray);
   }
+
+  let rowCount = list?.length ?? 0;
+  const isNeedVirtualInfiniteScroll = infiniteScroll && list && list.length > 0;
+  if (isNeedVirtualInfiniteScroll) {
+    rowCount++;
+  }
+
+  // 虚拟滚动模式下的单项渲染
+  const renderVirtualItem = useCallback(
+    (index: number) => {
+      let item: React.ReactNode;
+      if (isNeedVirtualInfiniteScroll && index === list!.length) {
+        const array: React.ReactNode[] = [<></>];
+        addInfiniteScroll(array, list!.length);
+        item = array[1];
+      } else {
+        item = (children as childrenFunction<T>)([list![index]]);
+      }
+
+      return item;
+    },
+    [addInfiniteScroll, children, isNeedVirtualInfiniteScroll, list],
+  );
 
   const onDivListScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop } = e.target as HTMLDivElement;
@@ -119,9 +159,10 @@ const List = <T = unknown,>(props: ListProps<T>) => {
           ref={virtualizedListRef}
           cacheRef={cacheRef}
           virtualConfig={virtualScroll === true ? undefined : virtualScroll}
-          childrenArray={childrenArray}
           virtualScrollToIndex={virtualScrollToIndex}
           getPositionCache={getPositionCache}
+          rowCount={rowCount}
+          renderItem={renderVirtualItem}
         />
       ) : (
         <>

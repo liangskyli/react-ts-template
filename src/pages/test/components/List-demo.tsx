@@ -27,7 +27,11 @@ const ListDemo = () => {
     description: 'Deserunt dolor ea eaque eos',
   };
   const [virtualPageData, setVirtualPageData] = useState(
-    Array(20).fill(virtualItem),
+    Array.from({ length: 20 }, (_, index) => ({
+      id: index,
+      title: `项目 ${index + 1}`,
+      description: `这是第 ${index + 1} 个列表项的详细描述`,
+    })),
   );
   const [hasVirtualPageMore, setHasVirtualPageMore] = useState(true);
 
@@ -38,7 +42,11 @@ const ListDemo = () => {
     }
     setVirtualPageData((val) => [
       ...val,
-      ...Array(append.length).fill(virtualItem),
+      ...Array.from({ length: append.length }, (_, index) => ({
+        id: index + val.length,
+        title: `项目 ${index + 1 + val.length}`,
+        description: `这是第 ${index + 1 + val.length} 个列表项的详细描述`,
+      })),
     ]);
     setHasVirtualPageMore(append.length > 0);
   };
@@ -214,10 +222,10 @@ const ListDemo = () => {
             list={virtualPageData}
           >
             {(listData) => {
-              return listData.map((item, index) => (
+              return listData.map((item) => (
                 <List.Item
-                  key={index}
-                  title={item.title + index}
+                  key={item.id}
+                  title={item.title}
                   description={item.description}
                   clickable
                   suffix={<span className="text-gray-400">›</span>}
@@ -238,17 +246,14 @@ const ListDemo = () => {
               loadMore: listPageLoadMore,
               hasMore: hasListPageMore,
             }}
-            list={listPageData}
           >
-            {(listData) => {
-              return listData.map((item, index) => (
-                <List.Item
-                  key={index}
-                  title={item.title + index}
-                  description={item.description}
-                />
-              ));
-            }}
+            {listPageData.map((item, index) => (
+              <List.Item
+                key={index}
+                title={item.title + index}
+                description={item.description}
+              />
+            ))}
           </List>
         </div>
       )}

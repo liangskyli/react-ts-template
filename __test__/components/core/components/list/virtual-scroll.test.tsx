@@ -67,15 +67,10 @@ vi.mock('react-virtualized', () => {
 
 describe('VirtualScrollList Component', () => {
   it('renders correctly with children array', () => {
-    const childrenArray = [
-      <div key="1">Item 1</div>,
-      <div key="2">Item 2</div>,
-      <div key="3">Item 3</div>,
-    ];
-
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={3}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
       />,
     );
@@ -87,14 +82,10 @@ describe('VirtualScrollList Component', () => {
   });
 
   it('handles scrollToIndex correctly', () => {
-    const childrenArray = [
-      <div key="1">Item 1</div>,
-      <div key="2">Item 2</div>,
-    ];
-
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={2}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={5}
       />,
     );
@@ -104,14 +95,11 @@ describe('VirtualScrollList Component', () => {
 
   it('calls getPositionCache when scrolling', async () => {
     const getPositionCache = vi.fn();
-    const childrenArray = [
-      <div key="1">Item 1</div>,
-      <div key="2">Item 2</div>,
-    ];
 
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={2}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
         getPositionCache={getPositionCache}
       />,
@@ -153,11 +141,11 @@ describe('VirtualScrollList Component', () => {
 
   it('sets up cacheRef correctly', () => {
     const cacheRef = createRef<any>();
-    const childrenArray = [<div key="1">Item 1</div>];
 
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
         cacheRef={cacheRef}
       />,
@@ -172,11 +160,11 @@ describe('VirtualScrollList Component', () => {
 
   it('calls cache clear method', async () => {
     const cacheRef = createRef<any>();
-    const childrenArray = [<div key="1">Item 1</div>];
 
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
         cacheRef={cacheRef}
       />,
@@ -201,11 +189,10 @@ describe('VirtualScrollList Component', () => {
       scrollToAlignment: 'start' as const,
     };
 
-    const childrenArray = [<div key="1">Item 1</div>];
-
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
         virtualConfig={virtualConfig}
       />,
@@ -216,11 +203,11 @@ describe('VirtualScrollList Component', () => {
 
   it('sets up virtualizedListRef correctly', () => {
     const virtualizedListRef = createRef<VirtualizedList>();
-    const childrenArray = [<div key="1">Item 1</div>];
 
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
         ref={virtualizedListRef}
       />,
@@ -235,11 +222,11 @@ describe('VirtualScrollList Component', () => {
 
   it('calls scrollToPosition method', async () => {
     const virtualizedListRef = createRef<VirtualizedList>();
-    const childrenArray = [<div key="1">Item 1</div>];
 
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
         ref={virtualizedListRef}
       />,
@@ -257,11 +244,10 @@ describe('VirtualScrollList Component', () => {
   });
 
   it('handles empty children array', () => {
-    const childrenArray: React.ReactNode[] = [];
-
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={0}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
       />,
     );
@@ -271,11 +257,10 @@ describe('VirtualScrollList Component', () => {
   });
 
   it('handles undefined virtualScrollToIndex', () => {
-    const childrenArray = [<div key="1">Item 1</div>];
-
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={undefined}
       />,
     );
@@ -284,11 +269,10 @@ describe('VirtualScrollList Component', () => {
   });
 
   it('handles zero virtualScrollToIndex', () => {
-    const childrenArray = [<div key="1">Item 1</div>];
-
     render(
       <VirtualScrollList
-        childrenArray={childrenArray}
+        rowCount={1}
+        renderItem={(index) => <div key={index}>Item {index + 1}</div>}
         virtualScrollToIndex={0}
       />,
     );
