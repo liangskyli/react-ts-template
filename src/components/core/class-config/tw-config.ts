@@ -389,8 +389,8 @@ const twConfig = {
     },
     itemInner: [
       'tw-flex',
-      'group-data-[is-clickable=true]:tw-cursor-pointer',
-      'group-data-[disabled=true]:tw-cursor-not-allowed',
+      'group-data-[clickable]:tw-cursor-pointer',
+      'group-data-[disabled]:tw-cursor-not-allowed',
       'group-data-[direction=horizontal]:tw-w-full',
       'group-data-[direction=horizontal]:tw-flex-col',
       'group-data-[direction=vertical]:tw-flex-grow',
@@ -440,7 +440,7 @@ const twConfig = {
       'group-data-[direction=vertical]:tw-flex-1',
       'group-data-[direction=vertical]:tw-pb-6',
       'group-data-[direction=vertical]:tw-text-left',
-      'group-data-[disabled=true]:tw-opacity-50',
+      'group-data-[disabled]:tw-opacity-50',
     ],
     title: [
       'tw-text-sm tw-font-medium tw-transition-colors tw-duration-200',

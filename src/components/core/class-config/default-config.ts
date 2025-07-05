@@ -385,8 +385,8 @@ const defaultConfig = {
     },
     itemInner: [
       'flex',
-      'group-data-[is-clickable=true]:cursor-pointer',
-      'group-data-[disabled=true]:cursor-not-allowed',
+      'group-data-[clickable]:cursor-pointer',
+      'group-data-[disabled]:cursor-not-allowed',
       'group-data-[direction=horizontal]:w-full',
       'group-data-[direction=horizontal]:flex-col',
       'group-data-[direction=vertical]:flex-grow',
@@ -436,7 +436,7 @@ const defaultConfig = {
       'group-data-[direction=vertical]:flex-1',
       'group-data-[direction=vertical]:pb-6',
       'group-data-[direction=vertical]:text-left',
-      'group-data-[disabled=true]:opacity-50',
+      'group-data-[disabled]:opacity-50',
     ],
     title: [
       'text-sm font-medium transition-colors duration-200',

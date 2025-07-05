@@ -157,8 +157,8 @@ const Steps = (props: StepsProps) => {
             data-previous-status={
               index > 0 ? getStepStatus(index - 1, items[index - 1]) : undefined
             }
-            data-is-clickable={isClickable}
-            data-disabled={item.disabled}
+            data-clickable={isClickable ? true : undefined}
+            data-disabled={item.disabled ? true : undefined}
             data-direction={direction}
           >
             <div

@@ -44,9 +44,9 @@ describe('Steps', () => {
     expect(icons.length).toBe(3);
 
     // 检查可点击状态
-    expect(steps[0]).toHaveAttribute('data-is-clickable', 'false');
-    expect(steps[1]).toHaveAttribute('data-is-clickable', 'false');
-    expect(steps[2]).toHaveAttribute('data-is-clickable', 'false');
+    expect(steps[0]).not.toHaveAttribute('data-clickable');
+    expect(steps[1]).not.toHaveAttribute('data-clickable');
+    expect(steps[2]).not.toHaveAttribute('data-clickable');
   });
 
   test('renders vertical direction correctly', () => {
@@ -83,7 +83,7 @@ describe('Steps', () => {
 
     // 查找第一个步骤的可点击区域
     const firstStepClickable = container.querySelector(
-      '[data-is-clickable="true"]',
+      '[data-clickable="true"]',
     );
     expect(firstStepClickable).toBeInTheDocument();
 
@@ -107,8 +107,8 @@ describe('Steps', () => {
     );
 
     // 检查步骤不可点击
-    const steps = container.querySelectorAll('[data-is-clickable="false"]');
-    expect(steps.length).toBe(mockItems.length);
+    const steps = container.querySelectorAll('[data-clickable="true"]');
+    expect(steps.length).toBe(0);
 
     const firstStepTitle = screen.getByText('步骤一');
     fireEvent.click(firstStepTitle);
@@ -173,7 +173,7 @@ describe('Steps', () => {
     // 查找包含禁用步骤的步骤项
     const disabledStep = container.querySelector('[data-disabled="true"]');
     expect(disabledStep).toBeInTheDocument();
-    expect(disabledStep).toHaveAttribute('data-is-clickable', 'false');
+    expect(disabledStep).not.toHaveAttribute('data-clickable');
 
     // 查找正常步骤应该可点击
     const allSteps = container.querySelectorAll('[data-disabled]');
@@ -183,7 +183,7 @@ describe('Steps', () => {
         step.getAttribute('data-disabled') === null,
     );
     if (normalStep) {
-      expect(normalStep).toHaveAttribute('data-is-clickable', 'true');
+      expect(normalStep).toHaveAttribute('data-clickable', 'true');
     }
 
     // 点击禁用步骤不应该触发onChange
