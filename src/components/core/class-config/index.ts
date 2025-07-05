@@ -26,7 +26,7 @@ let twMerge: ITwMerge = defaultTwMerge;
 // 创建LRU缓存实例
 const CN_CACHE_ID = 'cn-cache';
 const CN_CACHE_NAMESPACE = 'class-config';
-createLRUCache(CN_CACHE_ID, {
+const cache = createLRUCache<string, string>(CN_CACHE_ID, {
   namespace: CN_CACHE_NAMESPACE,
   managerOptions: {
     max: 1000, // 最大缓存数量
@@ -43,11 +43,6 @@ const updateTwMergeFunction = (twMergeFunction: ITwMerge) => {
 const cn = (...inputs: ClassValue[]) => {
   // 生成缓存 key
   const cacheKey = JSON.stringify(inputs);
-
-  const cache = getLRUCacheInstance<string, string>(
-    CN_CACHE_ID,
-    CN_CACHE_NAMESPACE,
-  )?.cache;
 
   // 检查缓存中是否存在结果
   const cachedResult = cache?.get(cacheKey);
