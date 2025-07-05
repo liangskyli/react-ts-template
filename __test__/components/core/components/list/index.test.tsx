@@ -252,6 +252,34 @@ describe('List Component', () => {
     }));
 
     render(
+      <List virtualScroll list={items}>
+        {(listData) => {
+          return listData.map((item) => (
+            <List.Item
+              key={item.id}
+              title={item.title}
+              description={item.description}
+            />
+          ));
+        }}
+      </List>,
+    );
+
+    // 验证虚拟滚动列表被渲染
+    expect(screen.getByTestId('virtual-scroll-list')).toBeInTheDocument();
+
+    // 验证列表项被渲染
+    expect(screen.getByText('Item 1')).toBeInTheDocument();
+  });
+
+  it('renders virtualized list error with not children function', () => {
+    const items = Array.from({ length: 100 }, (_, i) => ({
+      id: i,
+      title: `Item ${i}`,
+      description: `Description ${i}`,
+    }));
+
+    render(
       <List virtualScroll>
         {items.map((item) => (
           <>
