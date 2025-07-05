@@ -13,11 +13,17 @@ import StepsDemo from '@/pages/test/components/tw/steps-demo.tsx';
 import SwitchDemo from '@/pages/test/components/tw/switch-demo.tsx';
 import TextareaDemo from '@/pages/test/components/tw/textarea-demo.tsx';
 import ToastDemo from '@/pages/test/components/tw/toast-demo.tsx';
+import TreeCheckboxDemo from '@/pages/test/components/tw/tree-checkbox-demo.tsx';
+import TreeDemo from '@/pages/test/components/tw/tree-demo.tsx';
+import TreeRadioDemo from '@/pages/test/components/tw/tree-radio-demo.tsx';
 
 const Index = () => {
   return (
     <div className="tw-mt-[10px] tw-text-center">
       <title>UI</title>
+      <TreeCheckboxDemo />
+      <TreeRadioDemo />
+      <TreeDemo />
       <StepsDemo />
       <BadgeDemo />
       <SkeletonDemo />

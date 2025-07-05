@@ -457,5 +457,19 @@ const twConfig = {
       'group-data-[status=error]:tw-text-red-600',
     ],
   },
+  tree: {
+    node: [
+      'tw-flex tw-items-center',
+      'data-[disabled]:tw-cursor-not-allowed data-[disabled]:tw-opacity-40',
+    ],
+    nodeContent: {
+      wrap: 'tw-flex-1 tw-flex tw-items-center tw-py-1 tw-text-sm tw-text-gray-900 tw-select-none',
+      indent: 'tw-flex-shrink-0',
+      switcher:
+        'tw-flex-shrink-0 tw-size-6 tw-flex tw-items-center tw-justify-center tw-mr-1 data-[can-expand]:tw-cursor-pointer',
+    },
+    children: 'tw-ml-6',
+    treeRadio: 'tw-block',
+  },
 };
 export { twConfig };

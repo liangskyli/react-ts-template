@@ -453,5 +453,19 @@ const defaultConfig = {
       'group-data-[status=error]:text-red-600',
     ],
   },
+  tree: {
+    node: [
+      'flex items-center',
+      'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40',
+    ],
+    nodeContent: {
+      wrap: 'flex-1 flex items-center py-1 text-sm text-gray-900 select-none',
+      indent: 'flex-shrink-0',
+      switcher:
+        'flex-shrink-0 size-6 flex items-center justify-center mr-1 data-[can-expand]:cursor-pointer',
+    },
+    children: 'ml-6',
+    treeRadio: 'block',
+  },
 };
 export { defaultConfig };
