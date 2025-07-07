@@ -56,9 +56,6 @@ const Input = (props: InputProps) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
-    if (value === undefined) {
-      setInnerValue(newValue);
-    }
     if (inputMode === 'decimal') {
       // 移除非数字和小数点
       newValue = newValue.replace(/[^\d.]/g, '');
@@ -87,6 +84,8 @@ const Input = (props: InputProps) => {
       if (newValue.match(/^0+[1-9]+/)) {
         newValue = newValue.replace(/^0+/g, '');
       }
+      setInnerValue(newValue);
+    } else {
       setInnerValue(newValue);
     }
     onChange?.(newValue);
