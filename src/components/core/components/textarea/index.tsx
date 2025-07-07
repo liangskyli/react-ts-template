@@ -120,10 +120,7 @@ function TextArea(props: TextAreaProps) {
       return;
     }
 
-    if (value === undefined) {
-      setInnerValue(newValue);
-    }
-
+    setInnerValue(newValue);
     onChange?.(newValue);
   };
 
