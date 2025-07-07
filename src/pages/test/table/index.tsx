@@ -43,7 +43,7 @@ const TableDemo = () => {
       dataIndex: 'status',
       width: 100,
       align: 'center',
-      render: (status: string) => (
+      render: (status: any) => (
         <span
           className={`rounded px-2 py-1 text-xs ${
             status === 'active'
@@ -105,6 +105,7 @@ const TableDemo = () => {
 
   const rowSelection = {
     selectedRowKeys,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any[]) => {
       setSelectedRowKeys(selectedRowKeys);
       console.log('选中的行:', selectedRows);

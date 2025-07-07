@@ -4,10 +4,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import type { GridCellRenderer, MultiGridProps } from 'react-virtualized';
-import { AutoSizer, MultiGrid } from 'react-virtualized';
+import type { GridCellRenderer } from 'react-virtualized';
+import { AutoSizer, Grid } from 'react-virtualized';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/table/class-config.ts';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TableRecord = Record<string, any>;
 
 export type ColumnConfig = {
   /** 列的唯一标识 */
@@ -19,7 +22,7 @@ export type ColumnConfig = {
   /** 是否固定列 */
   fixed?: 'left' | 'right';
   /** 自定义渲染函数 */
-  render?: (value: any, record: any, index: number) => React.ReactNode;
+  render?: (value: TableRecord, record: TableRecord, index: number) => React.ReactNode;
   /** 数据字段名 */
   dataIndex?: string;
   /** 列对齐方式 */
@@ -41,7 +44,7 @@ export type VirtualTableProps = {
   /** 列配置 */
   columns: ColumnConfig[];
   /** 数据源 */
-  dataSource: any[];
+  dataSource: TableRecord[];
   /** 行高 */
   rowHeight?: number;
   /** 表头高度 */
@@ -53,20 +56,20 @@ export type VirtualTableProps = {
     selectedRowKeys?: (string | number)[];
     onChange?: (
       selectedRowKeys: (string | number)[],
-      selectedRows: any[],
+      selectedRows: TableRecord[],
     ) => void;
-    getCheckboxProps?: (record: any) => { disabled?: boolean };
+    getCheckboxProps?: (record: TableRecord) => { disabled?: boolean };
   };
   /** 行点击事件 */
-  onRowClick?: (record: any, index: number) => void;
+  onRowClick?: (record: TableRecord, index: number) => void;
   /** 行双击事件 */
-  onRowDoubleClick?: (record: any, index: number) => void;
+  onRowDoubleClick?: (record: TableRecord, index: number) => void;
   /** 自定义类名 */
   className?: string;
   /** 表格引用 */
   ref?: React.Ref<VirtualTableRef>;
   /** 获取行的key */
-  rowKey?: string | ((record: any, index: number) => string | number);
+  rowKey?: string | ((record: TableRecord, index: number) => string | number);
 };
 
 const VirtualTable = (props: VirtualTableProps) => {
@@ -84,49 +87,46 @@ const VirtualTable = (props: VirtualTableProps) => {
     rowKey = 'key',
   } = props;
 
-  const multiGridRef = useRef<MultiGrid>(null);
+  // 表头Grid引用
+  const leftHeaderGridRef = useRef<Grid>(null);
+  const centerHeaderGridRef = useRef<Grid>(null);
+  const rightHeaderGridRef = useRef<Grid>(null);
+
+  // 数据Grid引用
+  const leftBodyGridRef = useRef<Grid>(null);
+  const centerBodyGridRef = useRef<Grid>(null);
+  const rightBodyGridRef = useRef<Grid>(null);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
     rowSelection?.selectedRowKeys || [],
   );
 
+  // 跟踪滚动位置
+  const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
+
   // 计算固定列
   const leftFixedColumns = columns.filter((col) => col.fixed === 'left');
   const rightFixedColumns = columns.filter((col) => col.fixed === 'right');
-  const normalColumns = columns.filter((col) => !col.fixed);
+  const centerColumns = columns.filter((col) => !col.fixed);
 
-  const fixedColumnCount = leftFixedColumns.length;
-  const fixedRowCount = showHeader ? 1 : 0;
+  // 计算各区域的列数和宽度
+
+  const leftColumnCount = leftFixedColumns.length;
+  const centerColumnCount = centerColumns.length;
+  const rightColumnCount = rightFixedColumns.length;
+
+  const leftWidth = leftFixedColumns.reduce((sum, col) => sum + col.width, 0);
+  const rightWidth = rightFixedColumns.reduce((sum, col) => sum + col.width, 0);
 
   // 获取行的key值
   const getRowKey = useCallback(
-    (record: any, index: number) => {
+    (record: TableRecord, index: number) => {
       if (typeof rowKey === 'function') {
         return rowKey(record, index);
       }
       return record[rowKey] || index;
     },
     [rowKey],
-  );
-
-  // 处理行选择
-  const handleRowSelect = useCallback(
-    (record: any, index: number, selected: boolean) => {
-      const key = getRowKey(record, index);
-      let newSelectedKeys: (string | number)[];
-
-      if (selected) {
-        newSelectedKeys = [...selectedRowKeys, key];
-      } else {
-        newSelectedKeys = selectedRowKeys.filter((k) => k !== key);
-      }
-
-      setSelectedRowKeys(newSelectedKeys);
-      const selectedRows = dataSource.filter((item, idx) =>
-        newSelectedKeys.includes(getRowKey(item, idx)),
-      );
-      rowSelection?.onChange?.(newSelectedKeys, selectedRows);
-    },
-    [selectedRowKeys, dataSource, getRowKey, rowSelection],
   );
 
   // 同步外部传入的selectedRowKeys
@@ -136,115 +136,180 @@ const VirtualTable = (props: VirtualTableProps) => {
     }
   }, [rowSelection?.selectedRowKeys]);
 
-  // 单元格渲染器
-  const cellRenderer: GridCellRenderer = useCallback(
-    ({ columnIndex, rowIndex, style, key }) => {
-      const isHeader = rowIndex === 0 && showHeader;
-      const dataIndex = isHeader ? rowIndex : rowIndex - (showHeader ? 1 : 0);
-      const column = columns[columnIndex];
-      const record = isHeader ? null : dataSource[dataIndex];
-
+  // 创建表头单元格渲染器
+  const createHeaderCellRenderer = useCallback((columnsToRender: ColumnConfig[]) => {
+    const cellRenderer: GridCellRenderer = ({ columnIndex, style, key }) => {
+      const column = columnsToRender[columnIndex];
       if (!column) return null;
 
-      let content: React.ReactNode;
-      let cellClassName: string;
-      const cellStyle: React.CSSProperties = { ...style };
-
-      if (isHeader) {
-        content = column.title;
-        cellClassName = cn(
-          classConfig.headerCellConfig(),
-          column.headerAlign && `text-${column.headerAlign}`,
-        );
-      } else {
-        if (column.render) {
-          content = column.render(
-            column.dataIndex ? record?.[column.dataIndex] : record,
-            record,
-            dataIndex,
-          );
-        } else {
-          content = column.dataIndex ? record?.[column.dataIndex] : '';
-        }
-
-        const isSelected = record
-          ? selectedRowKeys.includes(getRowKey(record, dataIndex))
-          : false;
-        cellClassName = cn(
-          classConfig.bodyCellConfig(),
-          column.align && `text-${column.align}`,
-          isSelected && 'bg-blue-50',
-        );
-      }
+      const cellClassName = cn(
+        classConfig.headerCellConfig(),
+        column.headerAlign && `text-${column.headerAlign}`,
+      );
 
       return (
         <div
           key={key}
-          style={cellStyle}
+          style={style}
+          className={cellClassName}
+        >
+          {column.title}
+        </div>
+      );
+    };
+    return cellRenderer;
+  }, []);
+
+  // 创建数据单元格渲染器
+  const createBodyCellRenderer = useCallback((columnsToRender: ColumnConfig[]) => {
+    const cellRenderer: GridCellRenderer = ({ columnIndex, rowIndex, style, key }) => {
+      const column = columnsToRender[columnIndex];
+      const record = dataSource[rowIndex];
+
+      if (!column || !record) return null;
+
+      let content: React.ReactNode;
+      if (column.render) {
+        content = column.render(
+          column.dataIndex ? record[column.dataIndex] : record,
+          record,
+          rowIndex,
+        );
+      } else {
+        content = column.dataIndex ? record[column.dataIndex] : '';
+      }
+
+      const isSelected = selectedRowKeys.includes(getRowKey(record, rowIndex));
+      const cellClassName = cn(
+        classConfig.bodyCellConfig(),
+        column.align && `text-${column.align}`,
+        isSelected && 'bg-blue-50',
+      );
+
+      return (
+        <div
+          key={key}
+          style={style}
           className={cellClassName}
           onClick={() => {
-            if (!isHeader && onRowClick && record) {
-              onRowClick(record, dataIndex);
+            if (onRowClick) {
+              onRowClick(record, rowIndex);
             }
           }}
           onDoubleClick={() => {
-            if (!isHeader && onRowDoubleClick && record) {
-              onRowDoubleClick(record, dataIndex);
+            if (onRowDoubleClick) {
+              onRowDoubleClick(record, rowIndex);
             }
           }}
         >
           {content}
         </div>
       );
-    },
-    [
-      columns,
-      dataSource,
-      showHeader,
-      selectedRowKeys,
-      getRowKey,
-      onRowClick,
-      onRowDoubleClick,
-    ],
-  );
+    };
+    return cellRenderer;
+  }, [dataSource, selectedRowKeys, getRowKey, onRowClick, onRowDoubleClick]);
 
-  // 获取列宽
-  const getColumnWidth = useCallback(
-    ({ index }: { index: number }) => {
-      return columns[index]?.width || 100;
-    },
-    [columns],
-  );
+  // 获取列宽函数工厂
+  const createColumnWidthGetter = useCallback((columnsToUse: ColumnConfig[]) => {
+    return ({ index }: { index: number }) => {
+      return columnsToUse[index]?.width || 100;
+    };
+  }, []);
 
-  // 获取行高
-  const getRowHeight = useCallback(
-    ({ index }: { index: number }) => {
-      if (index === 0 && showHeader) {
-        return headerHeight;
-      }
-      return rowHeight;
-    },
-    [showHeader, headerHeight, rowHeight],
-  );
+  // 获取表头行高
+  const getHeaderRowHeight = useCallback(() => headerHeight, [headerHeight]);
+
+  // 获取数据行高
+  const getBodyRowHeight = useCallback(() => rowHeight, [rowHeight]);
+
+  // 垂直滚动同步处理 - 从中间区域同步到固定列
+  const handleCenterVerticalScroll = useCallback((params: { scrollTop: number; scrollLeft?: number }) => {
+    const { scrollTop, scrollLeft } = params;
+    scrollPositionRef.current.scrollTop = scrollTop;
+    if (scrollLeft !== undefined) {
+      scrollPositionRef.current.scrollLeft = scrollLeft;
+    }
+
+    // 同步所有数据Grid的垂直滚动
+    if (leftBodyGridRef.current) {
+      leftBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
+    }
+    if (rightBodyGridRef.current) {
+      rightBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
+    }
+  }, []);
+
+  // 垂直滚动同步处理 - 从左侧固定列同步到其他区域
+  const handleLeftVerticalScroll = useCallback((params: { scrollTop: number }) => {
+    const { scrollTop } = params;
+    scrollPositionRef.current.scrollTop = scrollTop;
+
+    // 同步中间和右侧数据Grid的垂直滚动
+    if (centerBodyGridRef.current) {
+      centerBodyGridRef.current.scrollToPosition({
+        scrollLeft: scrollPositionRef.current.scrollLeft,
+        scrollTop
+      });
+    }
+    if (rightBodyGridRef.current) {
+      rightBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
+    }
+  }, []);
+
+  // 垂直滚动同步处理 - 从右侧固定列同步到其他区域
+  const handleRightVerticalScroll = useCallback((params: { scrollTop: number }) => {
+    const { scrollTop } = params;
+    scrollPositionRef.current.scrollTop = scrollTop;
+
+    // 同步中间和左侧数据Grid的垂直滚动
+    if (centerBodyGridRef.current) {
+      centerBodyGridRef.current.scrollToPosition({
+        scrollLeft: scrollPositionRef.current.scrollLeft,
+        scrollTop
+      });
+    }
+    if (leftBodyGridRef.current) {
+      leftBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
+    }
+  }, []);
+
+  // 水平滚动同步处理
+  const handleHorizontalScroll = useCallback((params: { scrollLeft: number }) => {
+    const { scrollLeft } = params;
+    scrollPositionRef.current.scrollLeft = scrollLeft;
+
+    // 同步表头的水平滚动
+    if (centerHeaderGridRef.current) {
+      centerHeaderGridRef.current.scrollToPosition({ scrollLeft, scrollTop: 0 });
+    }
+  }, []);
 
   useImperativeHandle<VirtualTableRef, VirtualTableRef>(
     ref,
     () => ({
       scrollToRow: (rowIndex: number) => {
-        multiGridRef.current?.scrollToCell({ rowIndex, columnIndex: 0 });
+        centerBodyGridRef.current?.scrollToCell({ rowIndex, columnIndex: 0 });
+        leftBodyGridRef.current?.scrollToCell({ rowIndex, columnIndex: 0 });
+        rightBodyGridRef.current?.scrollToCell({ rowIndex, columnIndex: 0 });
       },
       scrollToColumn: (columnIndex: number) => {
-        multiGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
+        centerBodyGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
+        centerHeaderGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
       },
       recomputeGridSize: () => {
-        multiGridRef.current?.recomputeGridSize();
+        // 重新计算所有Grid的大小
+        leftHeaderGridRef.current?.recomputeGridSize();
+        centerHeaderGridRef.current?.recomputeGridSize();
+        rightHeaderGridRef.current?.recomputeGridSize();
+        leftBodyGridRef.current?.recomputeGridSize();
+        centerBodyGridRef.current?.recomputeGridSize();
+        rightBodyGridRef.current?.recomputeGridSize();
       },
     }),
     [],
   );
 
-  const totalRowCount = dataSource.length + (showHeader ? 1 : 0);
-  const totalColumnCount = columns.length;
+  const dataRowCount = dataSource.length;
 
   return (
     <div
@@ -254,31 +319,165 @@ const VirtualTable = (props: VirtualTableProps) => {
       )}
     >
       <AutoSizer>
-        {({ width, height }) => (
-          <MultiGrid
-            ref={multiGridRef}
-            width={width}
-            height={height}
-            columnCount={totalColumnCount}
-            rowCount={totalRowCount}
-            columnWidth={getColumnWidth}
-            rowHeight={getRowHeight}
-            fixedColumnCount={fixedColumnCount}
-            fixedRowCount={fixedRowCount}
-            cellRenderer={cellRenderer}
-            classNameBottomLeftGrid="bg-white"
-            classNameBottomRightGrid="bg-white"
-            classNameTopLeftGrid="bg-gray-50"
-            classNameTopRightGrid="bg-gray-50"
-            enableFixedColumnScroll
-            enableFixedRowScroll
-            hideTopRightGridScrollbar
-            hideBottomLeftGridScrollbar
-            style={{
-              outline: 'none',
-            }}
-          />
-        )}
+        {({ width, height }) => {
+          const centerWidth = width - leftWidth - rightWidth;
+          const bodyHeight = height - (showHeader ? headerHeight : 0);
+
+          return (
+            <div className="relative" style={{ width, height }}>
+              {/* 表头区域 */}
+              {showHeader && (
+                <div
+                  className="absolute top-0 left-0 right-0 z-30 bg-gray-50 border-b border-gray-200"
+                  style={{ height: headerHeight }}
+                >
+                  {/* 左固定表头 */}
+                  {leftColumnCount > 0 && (
+                    <div
+                      className="absolute left-0 top-0 z-20 bg-gray-50"
+                      style={{ width: leftWidth, height: headerHeight }}
+                    >
+                      <Grid
+                        ref={leftHeaderGridRef}
+                        width={leftWidth}
+                        height={headerHeight}
+                        columnCount={leftColumnCount}
+                        rowCount={1}
+                        columnWidth={createColumnWidthGetter(leftFixedColumns)}
+                        rowHeight={getHeaderRowHeight}
+                        cellRenderer={createHeaderCellRenderer(leftFixedColumns)}
+                        style={{ outline: 'none' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* 中间表头 */}
+                  {centerColumnCount > 0 && (
+                    <div
+                      className="absolute top-0 bg-gray-50"
+                      style={{
+                        left: leftWidth,
+                        width: centerWidth,
+                        height: headerHeight,
+                      }}
+                    >
+                      <Grid
+                        ref={centerHeaderGridRef}
+                        width={centerWidth}
+                        height={headerHeight}
+                        columnCount={centerColumnCount}
+                        rowCount={1}
+                        columnWidth={createColumnWidthGetter(centerColumns)}
+                        rowHeight={getHeaderRowHeight}
+                        cellRenderer={createHeaderCellRenderer(centerColumns)}
+                        style={{ outline: 'none' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* 右固定表头 */}
+                  {rightColumnCount > 0 && (
+                    <div
+                      className="absolute right-0 top-0 z-20 bg-gray-50"
+                      style={{ width: rightWidth, height: headerHeight }}
+                    >
+                      <Grid
+                        ref={rightHeaderGridRef}
+                        width={rightWidth}
+                        height={headerHeight}
+                        columnCount={rightColumnCount}
+                        rowCount={1}
+                        columnWidth={createColumnWidthGetter(rightFixedColumns)}
+                        rowHeight={getHeaderRowHeight}
+                        cellRenderer={createHeaderCellRenderer(rightFixedColumns)}
+                        style={{ outline: 'none' }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 数据体区域 */}
+              <div
+                className="absolute left-0 right-0 bg-white"
+                style={{
+                  top: showHeader ? headerHeight : 0,
+                  height: bodyHeight
+                }}
+              >
+                {/* 左固定数据列 */}
+                {leftColumnCount > 0 && (
+                  <div
+                    className="absolute left-0 top-0 z-10 bg-white shadow-md"
+                    style={{ width: leftWidth, height: bodyHeight }}
+                  >
+                    <Grid
+                      ref={leftBodyGridRef}
+                      width={leftWidth}
+                      height={bodyHeight}
+                      columnCount={leftColumnCount}
+                      rowCount={dataRowCount}
+                      columnWidth={createColumnWidthGetter(leftFixedColumns)}
+                      rowHeight={getBodyRowHeight}
+                      cellRenderer={createBodyCellRenderer(leftFixedColumns)}
+                      onScroll={handleLeftVerticalScroll}
+                      style={{ outline: 'none' }}
+                    />
+                  </div>
+                )}
+
+                {/* 中间数据列 */}
+                {centerColumnCount > 0 && (
+                  <div
+                    className="absolute top-0 bg-white"
+                    style={{
+                      left: leftWidth,
+                      width: centerWidth,
+                      height: bodyHeight,
+                    }}
+                  >
+                    <Grid
+                      ref={centerBodyGridRef}
+                      width={centerWidth}
+                      height={bodyHeight}
+                      columnCount={centerColumnCount}
+                      rowCount={dataRowCount}
+                      columnWidth={createColumnWidthGetter(centerColumns)}
+                      rowHeight={getBodyRowHeight}
+                      cellRenderer={createBodyCellRenderer(centerColumns)}
+                      onScroll={(params) => {
+                        handleCenterVerticalScroll(params);
+                        handleHorizontalScroll(params);
+                      }}
+                      style={{ outline: 'none' }}
+                    />
+                  </div>
+                )}
+
+                {/* 右固定数据列 */}
+                {rightColumnCount > 0 && (
+                  <div
+                    className="absolute right-0 top-0 z-10 bg-white shadow-md"
+                    style={{ width: rightWidth, height: bodyHeight }}
+                  >
+                    <Grid
+                      ref={rightBodyGridRef}
+                      width={rightWidth}
+                      height={bodyHeight}
+                      columnCount={rightColumnCount}
+                      rowCount={dataRowCount}
+                      columnWidth={createColumnWidthGetter(rightFixedColumns)}
+                      rowHeight={getBodyRowHeight}
+                      cellRenderer={createBodyCellRenderer(rightFixedColumns)}
+                      onScroll={handleRightVerticalScroll}
+                      style={{ outline: 'none' }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        }}
       </AutoSizer>
     </div>
   );

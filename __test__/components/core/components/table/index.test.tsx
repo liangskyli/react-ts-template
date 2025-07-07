@@ -6,6 +6,31 @@ import Table from '@/components/core/components/table';
 vi.mock('react-virtualized', () => {
   return {
     AutoSizer: ({ children }: any) => children({ width: 800, height: 400 }),
+    Grid: function MockGrid({
+      cellRenderer,
+      columnCount,
+      rowCount,
+    }: any) {
+      return (
+        <div data-testid="grid">
+          {Array.from({ length: rowCount }).map((_, rowIndex) =>
+            Array.from({ length: columnCount }).map((_, columnIndex) => {
+              const cell = cellRenderer({
+                columnIndex,
+                rowIndex,
+                key: `${rowIndex}-${columnIndex}`,
+                style: {},
+              });
+              return (
+                <div key={`${rowIndex}-${columnIndex}`} data-testid={`cell-${rowIndex}-${columnIndex}`}>
+                  {cell}
+                </div>
+              );
+            })
+          )}
+        </div>
+      );
+    },
     MultiGrid: function MockMultiGrid({
       cellRenderer,
       columnCount,
@@ -73,8 +98,10 @@ describe('Table', () => {
 
   it('should render table with basic props', () => {
     render(<Table columns={mockColumns} dataSource={mockDataSource} />);
-    
-    expect(screen.getByTestId('multi-grid')).toBeInTheDocument();
+
+    // 应该渲染多个 Grid 组件（表头+数据体）
+    const grids = screen.getAllByTestId('grid');
+    expect(grids.length).toBeGreaterThanOrEqual(2); // 至少有表头和数据体两个Grid
   });
 
   it('should render table headers', () => {
@@ -130,14 +157,18 @@ describe('Table', () => {
     ];
 
     render(<Table columns={columnsWithFixed} dataSource={mockDataSource} />);
-    
-    expect(screen.getByTestId('multi-grid')).toBeInTheDocument();
+
+    // 应该渲染多个 Grid 组件（表头+数据体，左固定+中间+右固定）
+    const grids = screen.getAllByTestId('grid');
+    expect(grids.length).toBeGreaterThanOrEqual(6); // 3个表头Grid + 3个数据Grid
   });
 
   it('should handle empty data source', () => {
     render(<Table columns={mockColumns} dataSource={[]} />);
-    
-    expect(screen.getByTestId('multi-grid')).toBeInTheDocument();
+
+    // 应该至少渲染表头Grid
+    const grids = screen.getAllByTestId('grid');
+    expect(grids.length).toBeGreaterThanOrEqual(1);
     // 只有表头，没有数据行
     expect(screen.getByText('姓名')).toBeInTheDocument();
   });
