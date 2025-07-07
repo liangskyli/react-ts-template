@@ -481,5 +481,48 @@ const defaultConfig = {
     ],
     input: ['data-[search-icon]:pl-8', 'data-[clear-icon]:pr-8'],
   },
+  table: {
+    container: {
+      base: 'relative bg-white border border-gray-200 rounded-lg overflow-hidden',
+      defaultHeight: 'h-[400px]',
+    },
+    header: {
+      base: 'bg-gray-50 border-b border-gray-200',
+      cell: [
+        'px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+        'border-r border-gray-200 last:border-r-0',
+      ],
+    },
+    body: {
+      base: 'bg-white',
+      row: {
+        base: 'border-b border-gray-100 last:border-b-0',
+        hover: 'hover:bg-gray-50',
+        selected: 'bg-blue-50',
+      },
+      cell: [
+        'px-4 py-3 text-sm text-gray-900',
+        'border-r border-gray-100 last:border-r-0',
+        'whitespace-nowrap overflow-hidden text-ellipsis',
+      ],
+    },
+    fixed: {
+      left: {
+        container: 'absolute left-0 top-0 z-10 bg-white shadow-md',
+        header: 'bg-gray-50',
+        body: 'bg-white',
+      },
+      right: {
+        container: 'absolute right-0 top-0 z-10 bg-white shadow-md',
+        header: 'bg-gray-50',
+        body: 'bg-white',
+      },
+    },
+    scrollbar: {
+      horizontal: 'absolute bottom-0 left-0 right-0 h-2 bg-gray-100',
+      vertical: 'absolute top-0 right-0 bottom-0 w-2 bg-gray-100',
+      thumb: 'bg-gray-400 rounded hover:bg-gray-500 transition-colors',
+    },
+  },
 };
 export { defaultConfig };
