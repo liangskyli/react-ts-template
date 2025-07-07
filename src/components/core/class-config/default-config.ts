@@ -467,5 +467,19 @@ const defaultConfig = {
     children: 'ml-6',
     treeRadio: 'block',
   },
+  searchBar: {
+    container: ['flex items-center'],
+    search: ['relative flex items-center w-full'],
+    searchIcon: [
+      'absolute z-0 left-3 top-1/2 transform -translate-y-1/2',
+      'size-4 text-gray-400 pointer-events-none',
+    ],
+    clearButton: [
+      'absolute z-0 right-3 top-1/2 transform -translate-y-1/2',
+      'size-4 text-gray-400 cursor-pointer',
+      'hover:text-gray-600 transition-colors duration-200',
+    ],
+    input: ['data-[search-icon]:pl-8', 'data-[clear-icon]:pr-8'],
+  },
 };
 export { defaultConfig };

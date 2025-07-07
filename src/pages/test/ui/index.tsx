@@ -8,6 +8,7 @@ import LoadingDemo from '@/pages/test/components/loading-demo.tsx';
 import PopoverDemo from '@/pages/test/components/popover-demo.tsx';
 import PopupDemo from '@/pages/test/components/popup-demo.tsx';
 import RadioDemo from '@/pages/test/components/radio-demo.tsx';
+import SearchBarDemo from '@/pages/test/components/search-bar-demo.tsx';
 import SkeletonDemo from '@/pages/test/components/skeleton-demo.tsx';
 import StepsDemo from '@/pages/test/components/steps-demo.tsx';
 import SwitchDemo from '@/pages/test/components/switch-demo.tsx';
@@ -21,6 +22,7 @@ const Index = () => {
   return (
     <div className="mt-[10px] text-center">
       <title>UI</title>
+      <SearchBarDemo />
       <TreeCheckboxDemo />
       <TreeRadioDemo />
       <TreeDemo />

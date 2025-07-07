@@ -471,5 +471,19 @@ const twConfig = {
     children: 'tw-ml-6',
     treeRadio: 'tw-block',
   },
+  searchBar: {
+    container: ['tw-flex tw-items-center'],
+    search: ['tw-relative tw-flex tw-items-center tw-w-full'],
+    searchIcon: [
+      'tw-absolute tw-z-0 tw-left-3 tw-top-1/2 tw-transform -tw-translate-y-1/2',
+      'tw-size-4 tw-text-gray-400 tw-pointer-events-none',
+    ],
+    clearButton: [
+      'tw-absolute tw-z-0 tw-right-3 tw-top-1/2 tw-transform -tw-translate-y-1/2',
+      'tw-size-4 tw-text-gray-400 tw-cursor-pointer',
+      'hover:tw-text-gray-600 tw-transition-colors tw-duration-200',
+    ],
+    input: ['data-[search-icon]:tw-pl-8', 'data-[clear-icon]:tw-pr-8'],
+  },
 };
 export { twConfig };
