@@ -76,7 +76,7 @@ const VirtualTable = (props: VirtualTableProps) => {
   const {
     columns,
     dataSource,
-    rowHeight = 48,
+    rowHeight = 44,
     headerHeight = 40,
     showHeader = true,
     rowSelection,

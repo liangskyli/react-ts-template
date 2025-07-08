@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Table from '@/components/core/components/table';
 import type { ColumnConfig } from '@/components/core/components/table';
+import GridExample from '@/pages/test/table/grid-example.tsx';
 
 const TableDemo = () => {
   // 基础数据
@@ -9,7 +10,7 @@ const TableDemo = () => {
       key: 'name',
       title: '姓名',
       dataIndex: 'name',
-      width: 120,
+      width: 80,
       fixed: 'left',
     },
     {
@@ -58,7 +59,7 @@ const TableDemo = () => {
     {
       key: 'action',
       title: '操作',
-      width: 120,
+      width: 100,
       fixed: 'right',
       render: (_, record) => (
         <div className="space-x-2">
@@ -115,7 +116,7 @@ const TableDemo = () => {
   return (
     <div className="p-6">
       <h1 className="mb-6 text-2xl font-bold">Table 表格组件演示</h1>
-
+      <GridExample />
       <div className="space-y-8">
         {/* 基础表格 */}
         <div>
