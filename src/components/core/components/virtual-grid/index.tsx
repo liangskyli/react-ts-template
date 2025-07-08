@@ -1,5 +1,5 @@
-import React, { useImperativeHandle, useRef } from 'react';
-import type { GridCellProps, GridProps } from 'react-virtualized';
+import React, { useImperativeHandle, useRef, useState } from 'react';
+import type { GridCellProps, GridProps, ScrollParams} from 'react-virtualized';
 import {
   AutoSizer,
   CellMeasurer,
@@ -7,14 +7,19 @@ import {
   Grid,
 } from 'react-virtualized';
 import type { CellMeasurerChildProps } from 'react-virtualized/dist/es/CellMeasurer';
+import type { SectionRenderedParams } from 'react-virtualized/dist/es/Grid';
 
+type PositionCacheData = {
+  params: ScrollParams;
+  virtualScrollInfo: SectionRenderedParams;
+};
 export type VirtualGridProps = {
   /** 单元格渲染函数 */
-  renderItem: (props: {
-    rowIndex: number;
-    columnIndex: number;
-    measure: CellMeasurerChildProps['measure'];
-  }) => React.ReactNode;
+  renderItem: (
+    props: Pick<GridCellProps, 'rowIndex' | 'columnIndex' | 'isScrolling'> & {
+      measure: CellMeasurerChildProps['measure'];
+    },
+  ) => React.ReactNode;
   /** 单元格默认宽度 */
   defaultWidth?: number;
   /** 单元格最小宽度 */
@@ -35,10 +40,10 @@ export type VirtualGridProps = {
   rowHeight?: (params: { index: number; gridHeight: number }) => number;
   /** 列宽函数 */
   columnWidth?: (params: { index: number; gridWidth: number }) => number;
+  /** 获取滚动位置，可用于缓存 */
+  getPositionCache?: (cache: PositionCacheData) => void;
 } & Pick<
   GridProps,
-  | 'onScroll'
-  | 'onSectionRendered'
   | 'scrollToAlignment'
   | 'scrollToRow'
   | 'scrollToColumn'
@@ -62,6 +67,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     autoContainerWidth,
     rowHeight,
     columnWidth,
+    getPositionCache,
     ...gridOtherProps
   } = props;
 
@@ -86,12 +92,12 @@ const VirtualGrid = (props: VirtualGridProps) => {
 
   // 包装单元格渲染函数
   const cellRenderer = (props: GridCellProps) => {
-    const { columnIndex, key, rowIndex, parent, style } = props;
+    const { columnIndex, key, rowIndex, parent, style, isScrolling } = props;
     const itemRender = (opts: CellMeasurerChildProps) => {
       const { registerChild, measure } = opts;
       return (
         <div ref={registerChild} style={style}>
-          {renderItem({ rowIndex, columnIndex, measure })}
+          {renderItem({ rowIndex, columnIndex, isScrolling, measure })}
         </div>
       );
     };
@@ -106,6 +112,22 @@ const VirtualGrid = (props: VirtualGridProps) => {
         {(cellMeasurerChildProps) => itemRender(cellMeasurerChildProps)}
       </CellMeasurer>
     );
+  };
+
+  const isVirtualizedScrollMounted = useRef(false);
+  const [virtualScrollInfo, setVirtualScrollInfo] =
+    useState<SectionRenderedParams>();
+  const onScroll: GridProps['onScroll'] = (params) => {
+    if (isVirtualizedScrollMounted.current && virtualScrollInfo) {
+      // first scroll, not use getCache
+      getPositionCache?.({
+        params,
+        virtualScrollInfo,
+      });
+    }
+    if (virtualScrollInfo) {
+      isVirtualizedScrollMounted.current = true;
+    }
   };
 
   return (
@@ -131,6 +153,10 @@ const VirtualGrid = (props: VirtualGridProps) => {
           columnCount={columnCount}
           autoContainerWidth={autoContainerWidth ?? isOneColumn}
           deferredMeasurementCache={cache.current}
+          onScroll={onScroll}
+          onSectionRendered={(info) => {
+            setVirtualScrollInfo(info);
+          }}
           {...gridOtherProps}
         />
       )}

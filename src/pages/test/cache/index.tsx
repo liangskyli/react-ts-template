@@ -5,6 +5,7 @@ import { useCreateLRUCache } from '@/components/core/components/cache';
 import Checkbox from '@/components/core/components/checkbox';
 import { useRouter } from '@/hooks/use-router.ts';
 import ListDemo from '@/pages/test/cache/components/list-demo.tsx';
+import VirtualGridDemo from '@/pages/test/cache/components/virtual-grid-demo.tsx';
 
 const Index = () => {
   const router = useRouter();
@@ -77,6 +78,7 @@ const Index = () => {
         前进2
       </Button>
       <div>
+        <VirtualGridDemo />
         <ListDemo />
       </div>
       <Button

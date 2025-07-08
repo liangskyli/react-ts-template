@@ -1,8 +1,7 @@
-import React from 'react';
-import type { VirtualGridProps } from '@/components/core/components/table/virtual-grid.tsx';
-import VirtualGrid from '@/components/core/components/table/virtual-grid.tsx';
+import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
+import VirtualGrid from '@/components/core/components/virtual-grid';
 
-const GridExample: React.FC = () => {
+const VirtualGridDemo = () => {
   // 单元格渲染函数
   const renderItem: VirtualGridProps['renderItem'] = (props) => {
     // eslint-disable-next-line react/prop-types
@@ -29,7 +28,8 @@ const GridExample: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="space-y-8 p-6">
+      <h1 className="text-3xl font-bold text-gray-900">VirtualGrid 控件演示</h1>
       <div className="h-[200px] w-full">
         <VirtualGrid columnCount={1} rowCount={100000} renderItem={renderItem} />
       </div>
@@ -58,8 +58,8 @@ const GridExample: React.FC = () => {
           defaultWidth={150}
         />
       </div>
-    </>
+    </div>
   );
 };
 
-export default GridExample;
+export default VirtualGridDemo;
