@@ -791,7 +791,10 @@ describe('List ref methods', () => {
     // Verify the virtual list's scrollToPosition was called
     expect(
       (global as any).__virtualizedListScrollToPosition,
-    ).toHaveBeenLastCalledWith(100);
+    ).toHaveBeenLastCalledWith({
+      scrollLeft: 0,
+      scrollTop: 100,
+    });
   });
 
   it('scrollToPosition works with virtualScroll disabled', async () => {

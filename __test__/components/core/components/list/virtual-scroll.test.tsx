@@ -1,8 +1,8 @@
 import React, { createRef } from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import type { VirtualScrollListProps } from '@/components/core/components/list/virtual-scroll.tsx';
 import VirtualScrollList from '@/components/core/components/list/virtual-scroll.tsx';
-import type { VirtualizedList } from '@/components/core/components/list/virtual-scroll.tsx';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -10,21 +10,32 @@ import type { VirtualizedList } from '@/components/core/components/list/virtual-
 vi.mock('react-virtualized', () => {
   return {
     AutoSizer: ({ children }: any) => children({ width: 400, height: 400 }),
-    List: function MockList({
-      onScroll,
-      rowRenderer,
+    Grid: function MockGrid({
+      cellRenderer,
+      columnCount,
       rowCount,
       ref,
-      scrollToIndex,
-      onRowsRendered,
+      onScroll,
+      onSectionRendered,
+      rowHeight,
+      columnWidth,
+      scrollToRow,
     }: any) {
-      // 存储 onScroll 回调，以便测试可以直接调用
-      (global as any).__virtualizedListOnScroll = onScroll;
-      (global as any).__virtualizedListOnRowsRendered = onRowsRendered;
+      // 存储回调函数，以便测试可以直接调用
+      (global as any).__virtualizedGridOnScroll = onScroll;
+      (global as any).__virtualizedGridOnSectionRendered = onSectionRendered;
+
+      // 调用 rowHeight 和 columnWidth 函数
+      if (typeof rowHeight === 'function') {
+        rowHeight({ index: 0 });
+      }
+      if (typeof columnWidth === 'function') {
+        columnWidth({ index: 0 });
+      }
 
       // 创建一个模拟的 scrollToPosition 方法
       const mockScrollToPosition = vi.fn();
-      (global as any).__virtualizedListScrollToPosition = mockScrollToPosition;
+      (global as any).__virtualizedGridScrollToPosition = mockScrollToPosition;
 
       // 使用 useImperativeHandle 来模拟 ref 的行为
       React.useImperativeHandle(
@@ -36,30 +47,43 @@ vi.mock('react-virtualized', () => {
       );
 
       return (
-        <div role="grid" data-testid="virtualized-list">
-          <>
-            <div data-testid="scrollToIndex">{scrollToIndex}</div>
-            {Array.from({ length: rowCount }).map((_, index) =>
-              rowRenderer({ index, key: index, style: {} }),
-            )}
-          </>
+        <div role="grid" data-testid="virtualized-grid">
+          <div data-testid="scrollToIndex">{scrollToRow}</div>
+          {Array.from({ length: rowCount }).map((_, rowIndex) =>
+            Array.from({ length: columnCount }).map((_, columnIndex) =>
+              cellRenderer({
+                columnIndex,
+                rowIndex,
+                key: `${rowIndex}-${columnIndex}`,
+                style: {},
+              }),
+            ),
+          )}
         </div>
       );
     },
     CellMeasurer: ({ children }: any) =>
-      children({ registerChild: (ref: unknown) => ref }),
+      children({ registerChild: (ref: unknown) => ref, measure: vi.fn() }),
     CellMeasurerCache: class MockCellMeasurerCache {
-      constructor() {
-        // 模拟构造函数
-      }
+      private keyMapperFn: (rowIndex: number, columnIndex: number) => string;
 
+      constructor(params: any) {
+        Object.assign(this, params);
+        this.keyMapperFn = params.keyMapper;
+      }
       clearAll() {}
       clear(rowIndex: number, columnIndex: number) {
-        // 模拟 clear 方法，可以在这里添加断言或记录调用
         (global as any).__lastClearCall = { rowIndex, columnIndex };
       }
       rowHeight() {
         return 50;
+      }
+      columnWidth() {
+        return 100;
+      }
+      // 暴露 keyMapper 方法以便测试
+      getKeyMapper() {
+        return this.keyMapperFn;
       }
     },
   };
@@ -75,7 +99,7 @@ describe('VirtualScrollList Component', () => {
       />,
     );
 
-    expect(screen.getByTestId('virtualized-list')).toBeInTheDocument();
+    expect(screen.getByTestId('virtualized-grid')).toBeInTheDocument();
     expect(screen.getByText('Item 1')).toBeInTheDocument();
     expect(screen.getByText('Item 2')).toBeInTheDocument();
     expect(screen.getByText('Item 3')).toBeInTheDocument();
@@ -105,17 +129,17 @@ describe('VirtualScrollList Component', () => {
       />,
     );
 
-    // 模拟 onRowsRendered 回调
+    // 模拟 OnSectionRendered 回调
     await act(async () => {
-      (global as any).__virtualizedListOnRowsRendered({
-        startIndex: 0,
-        stopIndex: 1,
+      (global as any).__virtualizedGridOnSectionRendered({
+        rowStartIndex: 0,
+        rowStopIndex: 1,
       });
     });
 
     // 模拟滚动事件
     await act(async () => {
-      (global as any).__virtualizedListOnScroll({
+      (global as any).__virtualizedGridOnScroll({
         scrollTop: 50,
         clientHeight: 400,
         scrollHeight: 1000,
@@ -124,7 +148,7 @@ describe('VirtualScrollList Component', () => {
 
     // 第二次滚动事件，这次应该会调用 getPositionCache
     await act(async () => {
-      (global as any).__virtualizedListOnScroll({
+      (global as any).__virtualizedGridOnScroll({
         scrollTop: 100,
         clientHeight: 400,
         scrollHeight: 1000,
@@ -198,11 +222,11 @@ describe('VirtualScrollList Component', () => {
       />,
     );
 
-    expect(screen.getByTestId('virtualized-list')).toBeInTheDocument();
+    expect(screen.getByTestId('virtualized-grid')).toBeInTheDocument();
   });
 
   it('sets up virtualizedListRef correctly', () => {
-    const virtualizedListRef = createRef<VirtualizedList>();
+    const virtualizedListRef: VirtualScrollListProps['ref'] = createRef();
 
     render(
       <VirtualScrollList
@@ -221,7 +245,7 @@ describe('VirtualScrollList Component', () => {
   });
 
   it('calls scrollToPosition method', async () => {
-    const virtualizedListRef = createRef<VirtualizedList>();
+    const virtualizedListRef: VirtualScrollListProps['ref'] = createRef();
 
     render(
       <VirtualScrollList
@@ -234,13 +258,19 @@ describe('VirtualScrollList Component', () => {
 
     // 调用 scrollToPosition 方法
     await act(async () => {
-      virtualizedListRef.current?.scrollToPosition(200);
+      virtualizedListRef.current?.scrollToPosition({
+        scrollTop: 200,
+        scrollLeft: 0,
+      });
     });
 
     // 验证 scrollToPosition 被调用
     expect(
-      (global as any).__virtualizedListScrollToPosition,
-    ).toHaveBeenCalledWith(200);
+      (global as any).__virtualizedGridScrollToPosition,
+    ).toHaveBeenCalledWith({
+      scrollLeft: 0,
+      scrollTop: 200,
+    });
   });
 
   it('handles empty children array', () => {
@@ -252,7 +282,7 @@ describe('VirtualScrollList Component', () => {
       />,
     );
 
-    expect(screen.getByTestId('virtualized-list')).toBeInTheDocument();
+    expect(screen.getByTestId('virtualized-grid')).toBeInTheDocument();
     expect(screen.getByTestId('scrollToIndex').textContent).toBe('');
   });
 

@@ -11,11 +11,7 @@ import type { InfiniteScrollProps } from '@/components/core/components/list/infi
 import InfiniteScroll from '@/components/core/components/list/infinite-scroll.tsx';
 import { ListItem } from '@/components/core/components/list/item.tsx';
 import { flattenChildren } from '@/components/core/components/list/util.ts';
-import type {
-  CellMeasurerCache,
-  VirtualScrollListProps,
-  VirtualizedList,
-} from '@/components/core/components/list/virtual-scroll.tsx';
+import type { VirtualScrollListProps } from '@/components/core/components/list/virtual-scroll.tsx';
 import VirtualScrollList from '@/components/core/components/list/virtual-scroll.tsx';
 
 export type ListRef = {
@@ -52,15 +48,18 @@ const List = <T = unknown,>(props: ListProps<T>) => {
   } = props;
 
   const listRef = useRef<HTMLDivElement>(null);
-  const virtualizedListRef = useRef<VirtualizedList>(null);
-  const cacheRef = useRef<CellMeasurerCache>(null);
+  const virtualizedListRef: VirtualScrollListProps['ref'] = useRef(null);
+  const cacheRef: VirtualScrollListProps['cacheRef'] = useRef(null);
   const [virtualScrollToIndex, setVirtualScrollToIndex] = useState<number>();
 
   useImperativeHandle<ListRef, ListRef>(ref, () => {
     return {
       scrollToPosition: (scrollTop: number) => {
         if (virtualScroll) {
-          virtualizedListRef.current?.scrollToPosition(scrollTop);
+          virtualizedListRef.current?.scrollToPosition({
+            scrollTop,
+            scrollLeft: 0,
+          });
         } else {
           // use setTimeout to make sure data is rendered
           setTimeout(() => {
