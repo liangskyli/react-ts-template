@@ -227,6 +227,29 @@ describe('VirtualGrid Component', () => {
     expect(columnWidth).toHaveBeenCalled();
   });
 
+  it('handles custom rowHeight and columnWidth numbers', () => {
+
+    render(
+      <VirtualGrid
+        rowCount={2}
+        columnCount={2}
+        renderItem={({ rowIndex, columnIndex }) => (
+          <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+        )}
+        rowHeight={50}
+        columnWidth={100}
+      />,
+    );
+
+    // 验证Grid组件接收到了正确的数字值
+    const gridElement = screen.getByTestId('virtualized-grid');
+    expect(gridElement).toBeInTheDocument();
+    expect(screen.getByText('Item 0-0')).toBeInTheDocument();
+    expect(screen.getByText('Item 0-1')).toBeInTheDocument();
+    expect(screen.getByText('Item 1-0')).toBeInTheDocument();
+    expect(screen.getByText('Item 1-1')).toBeInTheDocument();
+  });
+
   it('sets up gridRef correctly', () => {
     const gridRef = createRef<Grid>();
 

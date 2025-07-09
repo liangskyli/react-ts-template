@@ -117,26 +117,26 @@ export default () => {
 
 ### Props
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
+| 属性 | 说明 | 类型                                                                                                           | 默认值 |
+| --- | --- |--------------------------------------------------------------------------------------------------------------| --- |
 | `renderItem` | 单元格渲染函数 | `(props: { rowIndex: number; columnIndex: number; isScrolling: boolean; measure: () => void }) => ReactNode` | - |
-| `rowCount` | 行数 | `number` | - |
-| `columnCount` | 列数 | `number` | - |
-| `defaultWidth` | 单元格默认宽度 | `number` | - |
-| `minWidth` | 单元格最小宽度 | `number` | - |
-| `defaultHeight` | 单元格默认高度 | `number` | - |
-| `minHeight` | 单元格最小高度 | `number` | - |
-| `fixedWidth` | 是否固定宽度 | `boolean` | `false` |
-| `fixedHeight` | 是否固定高度 | `boolean` | `false` |
-| `ref` | Grid 组件的引用 | `Ref<Grid>` | - |
-| `cacheRef` | 缓存的引用 | `Ref<CellMeasurerCache>` | - |
-| `rowHeight` | 行高函数 | `(params: { index: number; gridHeight: number }) => number` | - |
-| `columnWidth` | 列宽函数 | `(params: { index: number; gridWidth: number }) => number` | - |
-| `getPositionCache` | 获取滚动位置缓存的回调函数 | `(cache: PositionCacheData) => void` | - |
-| `scrollToAlignment` | 滚动对齐方式 | `'auto' \| 'start' \| 'center' \| 'end'` | - |
-| `scrollToRow` | 滚动到指定行 | `number` | - |
-| `scrollToColumn` | 滚动到指定列 | `number` | - |
-| `autoContainerWidth` | 是否自动设置容器宽度 | `boolean` | - |
+| `rowCount` | 行数 | `number`                                                                                                     | - |
+| `columnCount` | 列数 | `number`                                                                                                     | - |
+| `defaultWidth` | 单元格默认宽度 | `number`                                                                                                     | - |
+| `minWidth` | 单元格最小宽度 | `number`                                                                                                     | - |
+| `defaultHeight` | 单元格默认高度 | `number`                                                                                                     | - |
+| `minHeight` | 单元格最小高度 | `number`                                                                                                     | - |
+| `fixedWidth` | 是否固定宽度 | `boolean`                                                                                                    | `false` |
+| `fixedHeight` | 是否固定高度 | `boolean`                                                                                                    | `false` |
+| `ref` | Grid 组件的引用 | `Ref<Grid>`                                                                                                  | - |
+| `cacheRef` | 缓存的引用 | `Ref<CellMeasurerCache>`                                                                                     | - |
+| `rowHeight` | 行高函数 | `number \| ((params: { index: number; gridHeight: number }) => number)`                                      | - |
+| `columnWidth` | 列宽函数 | `number \| ((params: { index: number; gridWidth: number }) => number)`                                       | - |
+| `getPositionCache` | 获取滚动位置缓存的回调函数 | `(cache: PositionCacheData) => void`                                                                         | - |
+| `scrollToAlignment` | 滚动对齐方式 | `'auto' \| 'start' \| 'center' \| 'end'`                                                                     | - |
+| `scrollToRow` | 滚动到指定行 | `number`                                                                                                     | - |
+| `scrollToColumn` | 滚动到指定列 | `number`                                                                                                     | - |
+| `autoContainerWidth` | 是否自动设置容器宽度 | `boolean`                                                                                                    | - |
 
 此外，组件还支持部分 react-virtualized Grid 组件的属性。
 

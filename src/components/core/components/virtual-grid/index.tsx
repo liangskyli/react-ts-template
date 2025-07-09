@@ -36,10 +36,10 @@ export type VirtualGridProps = {
   ref?: React.Ref<Grid>;
   /** 缓存的ref引用 */
   cacheRef?: React.Ref<CellMeasurerCache>;
-  /** 行高函数, 固定高度时使用*/
-  rowHeight?: (params: { index: number; gridHeight: number }) => number;
+  /** 行高函数*/
+  rowHeight?: number | ((params: { index: number; gridHeight: number }) => number);
   /** 列宽函数 */
-  columnWidth?: (params: { index: number; gridWidth: number }) => number;
+  columnWidth?: number | ((params: { index: number; gridWidth: number }) => number);
   /** 获取滚动位置，可用于缓存 */
   getPositionCache?: (cache: PositionCacheData) => void;
 } & Pick<
@@ -140,13 +140,21 @@ const VirtualGrid = (props: VirtualGridProps) => {
           height={height}
           rowHeight={({ index }) => {
             if (rowHeight) {
-              return rowHeight({ index, gridHeight: height });
+              if(typeof rowHeight === 'function') {
+                return rowHeight({ index, gridHeight: height });
+              } else {
+                return rowHeight;
+              }
             }
             return cache.current.rowHeight({ index });
           }}
           columnWidth={({ index }) => {
             if (columnWidth) {
-              return columnWidth({ index, gridWidth: width });
+              if(typeof columnWidth === 'function') {
+                return columnWidth({ index, gridWidth: width });
+              } else {
+                return columnWidth;
+              }
             }
             return isOneColumn ? width : cache.current.columnWidth({ index });
           }}
