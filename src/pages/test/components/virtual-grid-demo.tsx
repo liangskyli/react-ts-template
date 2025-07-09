@@ -1,5 +1,6 @@
 import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
+import VirtualMultiGrid from '@/components/core/components/virtual-grid/multi-grid.tsx';
 
 const VirtualGridDemo = () => {
   // 单元格渲染函数
@@ -56,6 +57,18 @@ const VirtualGridDemo = () => {
           renderItem={renderItem}
           fixedWidth
           defaultWidth={150}
+        />
+      </div>
+
+      <div className="h-[400px] w-full mt-10">
+        <VirtualMultiGrid
+          columnCount={10}
+          rowCount={100000}
+          renderItem={renderItem}
+          fixedWidth
+          defaultWidth={150}
+          fixedRowCount={1}
+          fixedColumnCount={1}
         />
       </div>
     </div>

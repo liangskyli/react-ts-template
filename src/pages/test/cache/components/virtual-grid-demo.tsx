@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useCreateLRUCache } from '@/components/core/components/cache';
 import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
+import type { VirtualMultiGridProps } from '@/components/core/components/virtual-grid/multi-grid.tsx';
+import VirtualMultiGrid from '@/components/core/components/virtual-grid/multi-grid.tsx';
 
 const VirtualGridDemo = () => {
   // 单元格渲染函数
@@ -36,14 +38,30 @@ const VirtualGridDemo = () => {
   const [virtualGridCacheValue, setVirtualGridCacheValue] =
     useState<Parameters<Required<VirtualGridProps>['getPositionCache']>[0]>();
 
+  const virtualMultiGridCache = useCreateLRUCache<
+    string,
+    Parameters<Required<VirtualMultiGridProps>['getPositionCache']>[0]
+  >('virtualMultiGrid');
+  const [virtualMultiGridCacheValue, setVirtualMultiGridValue] =
+    useState<
+      Parameters<Required<VirtualMultiGridProps>['getPositionCache']>[0]
+    >();
+
   useEffect(() => {
     const cachedValue = virtualGridCache.get('virtualGridCache');
     if (cachedValue) {
       setVirtualGridCacheValue(cachedValue);
     }
 
+    const cachedValue2 = virtualMultiGridCache.get('virtualMultiGridCache');
+    if (cachedValue2) {
+      setVirtualMultiGridValue(cachedValue2);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const fixedRowCount = 1;
+  const fixedColumnCount = 1;
 
   return (
     <div className="space-y-8 p-6">
@@ -62,6 +80,33 @@ const VirtualGridDemo = () => {
           scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
           scrollToColumn={
             virtualGridCacheValue?.virtualScrollInfo.columnStopIndex
+          }
+        />
+      </div>
+
+      <div className="h-[400px] w-full">
+        <VirtualMultiGrid
+          columnCount={10}
+          rowCount={100000}
+          renderItem={renderItem}
+          fixedWidth
+          defaultWidth={150}
+          fixedRowCount={fixedRowCount}
+          fixedColumnCount={fixedColumnCount}
+          getPositionCache={(cache) => {
+            virtualMultiGridCache.set('virtualMultiGridCache', cache);
+          }}
+          scrollToRow={
+            virtualMultiGridCacheValue
+              ? virtualMultiGridCacheValue.virtualScrollInfo.rowStopIndex +
+                fixedRowCount
+              : undefined
+          }
+          scrollToColumn={
+            virtualMultiGridCacheValue
+              ? virtualMultiGridCacheValue.virtualScrollInfo.columnStopIndex +
+                fixedColumnCount
+              : undefined
           }
         />
       </div>
