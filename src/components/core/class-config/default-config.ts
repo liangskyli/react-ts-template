@@ -483,37 +483,37 @@ const defaultConfig = {
   },
   table: {
     container: {
-      base: 'relative bg-white border border-gray-200 rounded-lg overflow-hidden',
+      base: 'relative bg-white border border-gray-200 overflow-hidden',
       defaultHeight: 'h-[400px]',
     },
     header: {
       base: 'bg-gray-50 border-b border-gray-200',
       cell: [
         'px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-        'border-r border-gray-200 last:border-r-0',
+        'border-r border-gray-200',
       ],
     },
     body: {
       base: 'bg-white',
       row: {
-        base: 'border-b border-gray-100 last:border-b-0',
+        base: 'border-b border-gray-200',
         hover: 'hover:bg-gray-50',
         selected: 'bg-blue-50',
       },
       cell: [
         'px-4 py-3 text-sm text-gray-900',
-        'border-r border-gray-100 last:border-r-0',
+        'border-r border-gray-200',
         'whitespace-nowrap overflow-hidden text-ellipsis',
       ],
     },
     fixed: {
       left: {
-        container: 'absolute left-0 top-0 z-10 bg-white shadow-md',
+        container: 'absolute left-0 top-0 z-10 bg-white',
         header: 'bg-gray-50',
         body: 'bg-white',
       },
       right: {
-        container: 'absolute right-0 top-0 z-10 bg-white shadow-md',
+        container: 'absolute right-0 top-0 z-10 bg-white',
         header: 'bg-gray-50',
         body: 'bg-white',
       },

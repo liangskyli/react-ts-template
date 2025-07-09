@@ -273,14 +273,25 @@ const VirtualTable = (props: VirtualTableProps) => {
     }
   }, []);
 
-  // 水平滚动同步处理
-  const handleHorizontalScroll = useCallback((params: { scrollLeft: number }) => {
+  // 水平滚动同步处理 - 从中间区域同步到表头
+  const handleCenterHorizontalScroll = useCallback((params: { scrollLeft: number }) => {
     const { scrollLeft } = params;
     scrollPositionRef.current.scrollLeft = scrollLeft;
 
     // 同步表头的水平滚动
     if (centerHeaderGridRef.current) {
       centerHeaderGridRef.current.scrollToPosition({ scrollLeft, scrollTop: 0 });
+    }
+  }, []);
+
+  // 水平滚动同步处理 - 从表头同步到数据区域
+  const handleHeaderHorizontalScroll = useCallback((params: { scrollLeft: number }) => {
+    const { scrollLeft } = params;
+    scrollPositionRef.current.scrollLeft = scrollLeft;
+
+    // 同步数据区域的水平滚动
+    if (centerBodyGridRef.current) {
+      centerBodyGridRef.current.scrollToPosition({ scrollLeft, scrollTop: scrollPositionRef.current.scrollTop });
     }
   }, []);
 
@@ -328,13 +339,13 @@ const VirtualTable = (props: VirtualTableProps) => {
               {/* 表头区域 */}
               {showHeader && (
                 <div
-                  className="absolute top-0 left-0 right-0 z-30 bg-gray-50 border-b border-gray-200"
+                  className="absolute top-0 left-0 right-0 z-0 bg-gray-50 border-b border-gray-200"
                   style={{ height: headerHeight }}
                 >
                   {/* 左固定表头 */}
                   {leftColumnCount > 0 && (
                     <div
-                      className="absolute left-0 top-0 z-20 bg-gray-50"
+                      className="absolute left-0 top-0 z-0"
                       style={{ width: leftWidth, height: headerHeight }}
                     >
                       <Grid
@@ -346,7 +357,6 @@ const VirtualTable = (props: VirtualTableProps) => {
                         columnWidth={createColumnWidthGetter(leftFixedColumns)}
                         rowHeight={getHeaderRowHeight}
                         cellRenderer={createHeaderCellRenderer(leftFixedColumns)}
-                        style={{ outline: 'none' }}
                       />
                     </div>
                   )}
@@ -354,7 +364,7 @@ const VirtualTable = (props: VirtualTableProps) => {
                   {/* 中间表头 */}
                   {centerColumnCount > 0 && (
                     <div
-                      className="absolute top-0 bg-gray-50"
+                      className="absolute top-0"
                       style={{
                         left: leftWidth,
                         width: centerWidth,
@@ -370,7 +380,7 @@ const VirtualTable = (props: VirtualTableProps) => {
                         columnWidth={createColumnWidthGetter(centerColumns)}
                         rowHeight={getHeaderRowHeight}
                         cellRenderer={createHeaderCellRenderer(centerColumns)}
-                        style={{ outline: 'none' }}
+                        onScroll={handleHeaderHorizontalScroll}
                       />
                     </div>
                   )}
@@ -378,7 +388,7 @@ const VirtualTable = (props: VirtualTableProps) => {
                   {/* 右固定表头 */}
                   {rightColumnCount > 0 && (
                     <div
-                      className="absolute right-0 top-0 z-20 bg-gray-50"
+                      className="absolute right-0 top-0 z-0 border-l border-gray-200"
                       style={{ width: rightWidth, height: headerHeight }}
                     >
                       <Grid
@@ -390,7 +400,6 @@ const VirtualTable = (props: VirtualTableProps) => {
                         columnWidth={createColumnWidthGetter(rightFixedColumns)}
                         rowHeight={getHeaderRowHeight}
                         cellRenderer={createHeaderCellRenderer(rightFixedColumns)}
-                        style={{ outline: 'none' }}
                       />
                     </div>
                   )}
@@ -408,7 +417,7 @@ const VirtualTable = (props: VirtualTableProps) => {
                 {/* 左固定数据列 */}
                 {leftColumnCount > 0 && (
                   <div
-                    className="absolute left-0 top-0 z-10 bg-white shadow-md"
+                    className="absolute left-0 top-0 z-0 bg-white"
                     style={{ width: leftWidth, height: bodyHeight }}
                   >
                     <Grid
@@ -421,7 +430,6 @@ const VirtualTable = (props: VirtualTableProps) => {
                       rowHeight={getBodyRowHeight}
                       cellRenderer={createBodyCellRenderer(leftFixedColumns)}
                       onScroll={handleLeftVerticalScroll}
-                      style={{ outline: 'none' }}
                     />
                   </div>
                 )}
@@ -447,9 +455,8 @@ const VirtualTable = (props: VirtualTableProps) => {
                       cellRenderer={createBodyCellRenderer(centerColumns)}
                       onScroll={(params) => {
                         handleCenterVerticalScroll(params);
-                        handleHorizontalScroll(params);
+                        handleCenterHorizontalScroll(params);
                       }}
-                      style={{ outline: 'none' }}
                     />
                   </div>
                 )}
@@ -457,7 +464,7 @@ const VirtualTable = (props: VirtualTableProps) => {
                 {/* 右固定数据列 */}
                 {rightColumnCount > 0 && (
                   <div
-                    className="absolute right-0 top-0 z-10 bg-white shadow-md"
+                    className="absolute right-0 top-0 z-0 bg-white border-l border-gray-200"
                     style={{ width: rightWidth, height: bodyHeight }}
                   >
                     <Grid
@@ -470,7 +477,6 @@ const VirtualTable = (props: VirtualTableProps) => {
                       rowHeight={getBodyRowHeight}
                       cellRenderer={createBodyCellRenderer(rightFixedColumns)}
                       onScroll={handleRightVerticalScroll}
-                      style={{ outline: 'none' }}
                     />
                   </div>
                 )}
