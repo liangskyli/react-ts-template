@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useCreateLRUCache } from '@/components/core/components/cache';
 import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
+import type { MultiGrid2Props } from '@/components/core/components/virtual-grid/multi2-grid.tsx';
+import MultiGrid2 from '@/components/core/components/virtual-grid/multi2-grid.tsx';
 import type { VirtualMultiGridProps } from '@/components/core/components/virtual-grid/multi-grid.tsx';
 import VirtualMultiGrid from '@/components/core/components/virtual-grid/multi-grid.tsx';
 
 const VirtualGridDemo = () => {
   // 单元格渲染函数
-  const renderItem: VirtualGridProps['renderItem'] = (props) => {
+  const renderItem: MultiGrid2Props['cellRenderer'] = (props) => {
     // eslint-disable-next-line react/prop-types
     const { rowIndex, columnIndex } = props;
     return (
@@ -60,52 +62,54 @@ const VirtualGridDemo = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const fixedRowCount = 1;
-  const fixedColumnCount = 1;
+  const fixedTopRowCount = 1;
+  const fixedLeftColumnCount = 1;
 
   return (
     <div className="space-y-8 p-6">
       <h1 className="text-3xl font-bold text-gray-900">VirtualGrid 控件演示</h1>
 
       <div className="h-[200px] w-full">
-        <VirtualGrid
+        <MultiGrid2
           columnCount={10}
           rowCount={100000}
-          renderItem={renderItem}
+          cellRenderer={renderItem}
           fixedWidth
           defaultWidth={150}
           getPositionCache={(cache) => {
             virtualGridCache.set('virtualGridCache', cache);
           }}
-          scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
+          scrollToRow={275}
+          scrollToColumn={8}
+          /*scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
           scrollToColumn={
             virtualGridCacheValue?.virtualScrollInfo.columnStopIndex
-          }
+          }*/
         />
       </div>
 
       <div className="h-[400px] w-full">
-        <VirtualMultiGrid
+        <MultiGrid2
           columnCount={10}
           rowCount={100000}
-          renderItem={renderItem}
+          cellRenderer={renderItem}
           fixedWidth
           defaultWidth={150}
-          fixedRowCount={fixedRowCount}
-          fixedColumnCount={fixedColumnCount}
+          fixedLeftColumnCount={fixedLeftColumnCount}
+          fixedTopRowCount={fixedTopRowCount}
           getPositionCache={(cache) => {
             virtualMultiGridCache.set('virtualMultiGridCache', cache);
           }}
           scrollToRow={
             virtualMultiGridCacheValue
               ? virtualMultiGridCacheValue.virtualScrollInfo.rowStopIndex +
-                fixedRowCount
+                fixedTopRowCount
               : undefined
           }
           scrollToColumn={
             virtualMultiGridCacheValue
               ? virtualMultiGridCacheValue.virtualScrollInfo.columnStopIndex +
-                fixedColumnCount
+                fixedLeftColumnCount
               : undefined
           }
         />

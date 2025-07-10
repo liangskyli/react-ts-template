@@ -1,10 +1,9 @@
-import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
-import VirtualGrid from '@/components/core/components/virtual-grid';
-import VirtualMultiGrid from '@/components/core/components/virtual-grid/multi-grid.tsx';
+import type { MultiGrid2Props } from '@/components/core/components/virtual-grid/multi2-grid.tsx';
+import MultiGrid2 from '@/components/core/components/virtual-grid/multi2-grid.tsx';
 
 const VirtualGridDemo = () => {
   // 单元格渲染函数
-  const renderItem: VirtualGridProps['renderItem'] = (props) => {
+  const renderItem: MultiGrid2Props['cellRenderer'] = (props) => {
     // eslint-disable-next-line react/prop-types
     const { rowIndex, columnIndex } = props;
     return (
@@ -32,14 +31,18 @@ const VirtualGridDemo = () => {
     <div className="space-y-8 p-6">
       <h1 className="text-3xl font-bold text-gray-900">VirtualGrid 控件演示</h1>
       <div className="h-[200px] w-full">
-        <VirtualGrid columnCount={1} rowCount={100000} renderItem={renderItem} />
+        <MultiGrid2
+          columnCount={1}
+          rowCount={100000}
+          cellRenderer={renderItem}
+        />
       </div>
 
-      <div className="h-[200px] w-full mt-10">
-        <VirtualGrid
+      <div className="mt-10 h-[200px] w-full">
+        <MultiGrid2
           columnCount={2}
           rowCount={100000}
-          renderItem={renderItem}
+          cellRenderer={renderItem}
           fixedWidth
           columnWidth={({ index, gridWidth }) => {
             if (index === 0) {
@@ -50,25 +53,25 @@ const VirtualGridDemo = () => {
         />
       </div>
 
-      <div className="h-[200px] w-full mt-10">
-        <VirtualGrid
+      <div className="mt-10 h-[200px] w-full">
+        <MultiGrid2
           columnCount={10}
           rowCount={100000}
-          renderItem={renderItem}
+          cellRenderer={renderItem}
           fixedWidth
           defaultWidth={150}
         />
       </div>
 
-      <div className="h-[400px] w-full mt-10">
-        <VirtualMultiGrid
+      <div className="mt-10 h-[400px] w-full">
+        <MultiGrid2
           columnCount={10}
           rowCount={100000}
-          renderItem={renderItem}
+          cellRenderer={renderItem}
           fixedWidth
           defaultWidth={150}
-          fixedRowCount={1}
-          fixedColumnCount={1}
+          fixedTopRowCount={1}
+          fixedLeftColumnCount={1}
         />
       </div>
     </div>

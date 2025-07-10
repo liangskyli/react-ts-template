@@ -13,7 +13,7 @@ import {
   Grid,
 } from 'react-virtualized';
 import { cn } from '@/components/core/class-config';
-import CellMeasurerCacheDecorator from '@/components/core/components/table/cell-measurer-cache-decorator.ts';
+import CellMeasurerCacheDecorator from '@/components/core/components/virtual-grid/cell-measurer-cache-decorator.ts';
 import classConfig from '@/components/core/components/table/class-config.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -207,7 +207,7 @@ const VirtualTable = (props: VirtualTableProps) => {
           column.align && `text-${column.align}`,
           isSelected && 'bg-blue-50',
         );
-
+//console.log('key:',key)
         return (
           <CellMeasurer
             cache={cache}
