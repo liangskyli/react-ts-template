@@ -64,6 +64,7 @@ const VirtualGridDemo = () => {
   }, []);
   const fixedTopRowCount = 1;
   const fixedLeftColumnCount = 1;
+  const fixedRightColumnCount = 1;
 
   return (
     <div className="space-y-8 p-6">
@@ -79,12 +80,10 @@ const VirtualGridDemo = () => {
           getPositionCache={(cache) => {
             virtualGridCache.set('virtualGridCache', cache);
           }}
-          scrollToRow={275}
-          scrollToColumn={8}
-          /*scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
+          scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
           scrollToColumn={
             virtualGridCacheValue?.virtualScrollInfo.columnStopIndex
-          }*/
+          }
         />
       </div>
 
@@ -97,6 +96,7 @@ const VirtualGridDemo = () => {
           defaultWidth={150}
           fixedLeftColumnCount={fixedLeftColumnCount}
           fixedTopRowCount={fixedTopRowCount}
+          fixedRightColumnCount={fixedRightColumnCount}
           getPositionCache={(cache) => {
             virtualMultiGridCache.set('virtualMultiGridCache', cache);
           }}

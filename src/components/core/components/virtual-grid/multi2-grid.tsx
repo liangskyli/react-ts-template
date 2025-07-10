@@ -2,9 +2,14 @@ import React, {
   useCallback,
   useImperativeHandle,
   useMemo,
-  useRef, useState,
+  useRef,
+  useState,
 } from 'react';
-import type { GridCellRenderer, GridProps, ScrollParams } from 'react-virtualized';
+import type {
+  GridCellRenderer,
+  GridProps,
+  ScrollParams,
+} from 'react-virtualized';
 import {
   AutoSizer,
   CellMeasurer,
@@ -12,8 +17,8 @@ import {
   Grid,
 } from 'react-virtualized';
 import type { SectionRenderedParams } from 'react-virtualized/dist/es/Grid';
-import CellMeasurerCacheDecorator from '@/components/core/components/virtual-grid/cell-measurer-cache-decorator.ts';
 import type { MultiGridProps as RVMultiGridProps } from 'react-virtualized/dist/es/MultiGrid';
+import CellMeasurerCacheDecorator from '@/components/core/components/virtual-grid/cell-measurer-cache-decorator.ts';
 
 /* eslint-disable react/prop-types */
 
@@ -115,7 +120,16 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
   const rightBodyGridRef = useRef<Grid>(null);
 
   // 跟踪滚动位置
-  const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
+  const [scrollPositionData, setScrollPositionData] = useState<{
+    scrollTop: number;
+    scrollLeft: number;
+    scrollPosition: Position;
+  }>({ scrollTop: 0, scrollLeft: 0, scrollPosition: 'CenterBody' });
+  const scrollPositionRef = useRef<{
+    scrollTop: number;
+    scrollLeft: number;
+    scrollPosition: Position;
+  }>({ scrollTop: 0, scrollLeft: 0, scrollPosition: 'CenterBody' });
 
   // 中间区域的列数
   const centerColumnCount = useMemo(() => {
@@ -125,7 +139,7 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
     );
   }, [columnCount, fixedLeftColumnCount, fixedRightColumnCount]);
 
-  // 垂直滚动同步处理 - 从中间区域同步到固定列
+  /*// 垂直滚动同步处理 - 从中间区域同步到固定列
   const handleCenterVerticalScroll = (params: {
     scrollTop: number;
     scrollLeft?: number;
@@ -143,10 +157,10 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
     if (rightBodyGridRef.current) {
       rightBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
     }
-  };
+  };*/
 
   // 垂直滚动同步处理 - 从左侧固定列同步到其他区域
-  const handleLeftVerticalScroll = (params: { scrollTop: number }) => {
+  /*const handleLeftVerticalScroll = (params: { scrollTop: number }) => {
     const { scrollTop } = params;
     scrollPositionRef.current.scrollTop = scrollTop;
 
@@ -205,7 +219,7 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
         scrollTop: scrollPositionRef.current.scrollTop,
       });
     }
-  };
+  };*/
 
   const isOneColumn = columnCount === 1;
 
@@ -375,9 +389,17 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
     useState<SectionRenderedParams>();
 
   const onCenterBodyScroll: GridProps['onScroll'] = (params) => {
-    console.log('onCenterBodyScroll:', virtualScrollInfo);
-    handleCenterVerticalScroll(params);
-    handleCenterHorizontalScroll(params);
+    const { scrollTop, scrollLeft } = params;
+    console.log('onCenterBodyScroll:', scrollLeft);
+
+    setScrollPositionData({
+      scrollTop,
+      scrollLeft,
+      scrollPosition: 'CenterBody',
+    });
+
+    //handleCenterVerticalScroll(params);
+    //handleCenterHorizontalScroll(params);
     if (isVirtualizedScrollMounted.current && virtualScrollInfo) {
       // first scroll, not use getCache
       getPositionCache?.({
@@ -389,6 +411,16 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
     if (virtualScrollInfo) {
       isVirtualizedScrollMounted.current = true;
     }
+  };
+  const onLeftBodyScroll : GridProps['onScroll'] = (params) => {
+    const { scrollTop } = params;
+    const scrollLeft = scrollPositionData.scrollLeft;
+    setScrollPositionData({
+      scrollTop,
+      scrollLeft,
+      scrollPosition: 'LeftBody',
+    });
+    //onCenterBodyScroll({ scrollTop, scrollLeft });
   };
 
   useImperativeHandle<MultiGrid2Ref, MultiGrid2Ref>(
@@ -509,7 +541,12 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                         'CenterHeader',
                       )}
                       cellRenderer={getGridCellRenderer('CenterHeader')}
-                      onScroll={handleHeaderHorizontalScroll}
+                      /*onScroll={handleHeaderHorizontalScroll}*/
+                      scrollLeft={
+                        scrollPositionData.scrollPosition === 'CenterHeader'
+                          ? undefined
+                          : scrollPositionData.scrollLeft
+                      }
                     />
                   </div>
                 )}
@@ -594,7 +631,12 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                       'LeftBody',
                     )}
                     cellRenderer={getGridCellRenderer('LeftBody')}
-                    onScroll={handleLeftVerticalScroll}
+                    onScroll={onLeftBodyScroll}
+                    scrollTop={
+                      scrollPositionData.scrollPosition === 'LeftBody'
+                        ? undefined
+                        : scrollPositionData.scrollTop
+                    }
                   />
                 </div>
               )}
@@ -634,6 +676,13 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                     )}
                     cellRenderer={getGridCellRenderer('CenterBody')}
                     onScroll={onCenterBodyScroll}
+                    scrollTop={
+                      scrollPositionData.scrollPosition === 'CenterBody'
+                        ? undefined
+                        : scrollPositionData.scrollTop
+                    }
+                    /*scrollTop={500}
+                    scrollLeft={200}*/
                     scrollToRow={scrollToRow - fixedTopRowCount}
                     scrollToColumn={scrollToColumn - fixedLeftColumnCount}
                     onSectionRendered={(info) => {
@@ -676,7 +725,12 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                       'RightBody',
                     )}
                     cellRenderer={getGridCellRenderer('RightBody')}
-                    onScroll={handleRightVerticalScroll}
+                    /*onScroll={handleRightVerticalScroll}*/
+                    scrollTop={
+                      scrollPositionData.scrollPosition === 'RightBody'
+                        ? undefined
+                        : scrollPositionData.scrollTop
+                    }
                   />
                 </div>
               )}
