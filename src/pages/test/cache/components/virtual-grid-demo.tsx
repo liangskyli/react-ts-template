@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCreateLRUCache } from '@/components/core/components/cache';
-import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
-import VirtualGrid from '@/components/core/components/virtual-grid';
-import type { MultiGrid2Props } from '@/components/core/components/virtual-grid/multi2-grid.tsx';
+import type {
+  MultiGrid2Props,
+  MultiGrid2Ref,
+} from '@/components/core/components/virtual-grid/multi2-grid.tsx';
 import MultiGrid2 from '@/components/core/components/virtual-grid/multi2-grid.tsx';
-import type { VirtualMultiGridProps } from '@/components/core/components/virtual-grid/multi-grid.tsx';
-import VirtualMultiGrid from '@/components/core/components/virtual-grid/multi-grid.tsx';
 
 const VirtualGridDemo = () => {
   // 单元格渲染函数
@@ -35,19 +34,21 @@ const VirtualGridDemo = () => {
 
   const virtualGridCache = useCreateLRUCache<
     string,
-    Parameters<Required<VirtualGridProps>['getPositionCache']>[0]
+    Parameters<Required<MultiGrid2Props>['getPositionCache']>[0]
   >('virtualGrid');
   const [virtualGridCacheValue, setVirtualGridCacheValue] =
-    useState<Parameters<Required<VirtualGridProps>['getPositionCache']>[0]>();
+    useState<Parameters<Required<MultiGrid2Props>['getPositionCache']>[0]>();
 
   const virtualMultiGridCache = useCreateLRUCache<
     string,
-    Parameters<Required<VirtualMultiGridProps>['getPositionCache']>[0]
+    Parameters<Required<MultiGrid2Props>['getPositionCache']>[0]
   >('virtualMultiGrid');
   const [virtualMultiGridCacheValue, setVirtualMultiGridValue] =
-    useState<
-      Parameters<Required<VirtualMultiGridProps>['getPositionCache']>[0]
-    >();
+    useState<Parameters<Required<MultiGrid2Props>['getPositionCache']>[0]>();
+  const multiGrid2Ref = useRef<MultiGrid2Ref>(null);
+  const fixedTopRowCount = 1;
+  const fixedLeftColumnCount = 1;
+  const fixedRightColumnCount = 1;
 
   useEffect(() => {
     const cachedValue = virtualGridCache.get('virtualGridCache');
@@ -62,9 +63,18 @@ const VirtualGridDemo = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const fixedTopRowCount = 1;
-  const fixedLeftColumnCount = 1;
-  const fixedRightColumnCount = 1;
+
+  /*useEffect(() => {
+    if (virtualMultiGridCacheValue && multiGrid2Ref.current) {
+      const {
+        virtualScrollInfo: { rowStopIndex, columnStopIndex },
+      } = virtualMultiGridCacheValue;
+      multiGrid2Ref.current.scrollToCell(
+        rowStopIndex + fixedTopRowCount,
+        columnStopIndex + fixedLeftColumnCount,
+      );
+    }
+  }, [virtualMultiGridCacheValue]);*/
 
   return (
     <div className="space-y-8 p-6">
@@ -89,11 +99,14 @@ const VirtualGridDemo = () => {
 
       <div className="h-[400px] w-full">
         <MultiGrid2
+          ref={multiGrid2Ref}
           columnCount={10}
           rowCount={100000}
           cellRenderer={renderItem}
           fixedWidth
           defaultWidth={150}
+          /*fixedHeight
+          defaultHeight={40}*/
           fixedLeftColumnCount={fixedLeftColumnCount}
           fixedTopRowCount={fixedTopRowCount}
           fixedRightColumnCount={fixedRightColumnCount}

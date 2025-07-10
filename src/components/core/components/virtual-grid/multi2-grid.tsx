@@ -17,7 +17,6 @@ import {
   Grid,
 } from 'react-virtualized';
 import type { SectionRenderedParams } from 'react-virtualized/dist/es/Grid';
-import type { MultiGridProps as RVMultiGridProps } from 'react-virtualized/dist/es/MultiGrid';
 import CellMeasurerCacheDecorator from '@/components/core/components/virtual-grid/cell-measurer-cache-decorator.ts';
 
 /* eslint-disable react/prop-types */
@@ -27,21 +26,23 @@ export type MultiGrid2Ref = {
   scrollToRow: (rowIndex: number) => void;
   /** 滚动到指定列 */
   scrollToColumn: (columnIndex: number) => void;
+  /** 滚动到指定单元格 */
+  scrollToCell: (rowIndex: number,columnIndex: number) => void;
   /** 重新计算网格大小 */
   recomputeGridSize: () => void;
   /** 缓存测量数据 */
   cacheRef: () => CellMeasurerCache;
 };
 type PositionCacheData = {
-  params: ScrollParams;
+  params: Pick<ScrollParams, 'scrollLeft' | 'scrollTop'>;
   virtualScrollInfo: SectionRenderedParams;
 };
 export type MultiGrid2Props = {
-  /** 单元格默认宽度 */
+  /** 单元格默认宽度, 默认100 */
   defaultWidth?: number;
   /** 单元格最小宽度 */
   minWidth?: number;
-  /** 单元格默认高度 */
+  /** 单元格默认高度， 默认30 */
   defaultHeight?: number;
   /** 单元格最小高度 */
   minHeight?: number;
@@ -67,9 +68,9 @@ export type MultiGrid2Props = {
   fixedLeftColumnCount?: number;
   /** 固定的右侧列数 */
   fixedRightColumnCount?: number;
-  /** 滚动到指定行 */
+  /** 滚动到指定行, 存在固定行或列使用scrollToCell方法 */
   scrollToRow?: number;
-  /** 滚动到指定列 */
+  /** 滚动到指定列, 存在固定行或列使用scrollToCell方法 */
   scrollToColumn?: number;
   /** 行数 */
   rowCount: number;
@@ -120,16 +121,11 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
   const rightBodyGridRef = useRef<Grid>(null);
 
   // 跟踪滚动位置
-  const [scrollPositionData, setScrollPositionData] = useState<{
-    scrollTop: number;
-    scrollLeft: number;
-    scrollPosition: Position;
-  }>({ scrollTop: 0, scrollLeft: 0, scrollPosition: 'CenterBody' });
-  const scrollPositionRef = useRef<{
-    scrollTop: number;
-    scrollLeft: number;
-    scrollPosition: Position;
-  }>({ scrollTop: 0, scrollLeft: 0, scrollPosition: 'CenterBody' });
+  const [scrollPositionData, setScrollPositionData] = useState<
+    PositionCacheData['params'] & {
+      scrollPosition: Position;
+    }
+  >({ scrollTop: 0, scrollLeft: 0, scrollPosition: 'CenterBody' });
 
   // 中间区域的列数
   const centerColumnCount = useMemo(() => {
@@ -138,88 +134,6 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
       0,
     );
   }, [columnCount, fixedLeftColumnCount, fixedRightColumnCount]);
-
-  /*// 垂直滚动同步处理 - 从中间区域同步到固定列
-  const handleCenterVerticalScroll = (params: {
-    scrollTop: number;
-    scrollLeft?: number;
-  }) => {
-    const { scrollTop, scrollLeft } = params;
-    scrollPositionRef.current.scrollTop = scrollTop;
-    if (scrollLeft !== undefined) {
-      scrollPositionRef.current.scrollLeft = scrollLeft;
-    }
-
-    // 同步所有数据Grid的垂直滚动
-    if (leftBodyGridRef.current) {
-      leftBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
-    }
-    if (rightBodyGridRef.current) {
-      rightBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
-    }
-  };*/
-
-  // 垂直滚动同步处理 - 从左侧固定列同步到其他区域
-  /*const handleLeftVerticalScroll = (params: { scrollTop: number }) => {
-    const { scrollTop } = params;
-    scrollPositionRef.current.scrollTop = scrollTop;
-
-    // 同步中间和右侧数据Grid的垂直滚动
-    if (centerBodyGridRef.current) {
-      centerBodyGridRef.current.scrollToPosition({
-        scrollLeft: scrollPositionRef.current.scrollLeft,
-        scrollTop,
-      });
-    }
-    if (rightBodyGridRef.current) {
-      rightBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
-    }
-  };
-
-  // 垂直滚动同步处理 - 从右侧固定列同步到其他区域
-  const handleRightVerticalScroll = (params: { scrollTop: number }) => {
-    const { scrollTop } = params;
-    scrollPositionRef.current.scrollTop = scrollTop;
-
-    // 同步中间和左侧数据Grid的垂直滚动
-    if (centerBodyGridRef.current) {
-      centerBodyGridRef.current.scrollToPosition({
-        scrollLeft: scrollPositionRef.current.scrollLeft,
-        scrollTop,
-      });
-    }
-    if (leftBodyGridRef.current) {
-      leftBodyGridRef.current.scrollToPosition({ scrollLeft: 0, scrollTop });
-    }
-  };
-
-  // 水平滚动同步处理 - 从中间区域同步到表头
-  const handleCenterHorizontalScroll = (params: { scrollLeft: number }) => {
-    const { scrollLeft } = params;
-    scrollPositionRef.current.scrollLeft = scrollLeft;
-
-    // 同步表头的水平滚动
-    if (centerHeaderGridRef.current) {
-      centerHeaderGridRef.current.scrollToPosition({
-        scrollLeft,
-        scrollTop: 0,
-      });
-    }
-  };
-
-  // 水平滚动同步处理 - 从表头同步到数据区域
-  const handleHeaderHorizontalScroll = (params: { scrollLeft: number }) => {
-    const { scrollLeft } = params;
-    scrollPositionRef.current.scrollLeft = scrollLeft;
-
-    // 同步数据区域的水平滚动
-    if (centerBodyGridRef.current) {
-      centerBodyGridRef.current.scrollToPosition({
-        scrollLeft,
-        scrollTop: scrollPositionRef.current.scrollTop,
-      });
-    }
-  };*/
 
   const isOneColumn = columnCount === 1;
 
@@ -232,7 +146,6 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
       minHeight: minHeight,
       fixedWidth: fixedWidth ?? isOneColumn,
       fixedHeight: fixedHeight,
-      keyMapper: (rowIndex, columnIndex) => `${rowIndex}-${columnIndex}`,
     }),
   );
 
@@ -388,18 +301,18 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
   const [virtualScrollInfo, setVirtualScrollInfo] =
     useState<SectionRenderedParams>();
 
-  const onCenterBodyScroll: GridProps['onScroll'] = (params) => {
-    const { scrollTop, scrollLeft } = params;
-    console.log('onCenterBodyScroll:', scrollLeft);
+  const onScroll = (opts: {
+    params: PositionCacheData['params'];
+    scrollPosition: Position;
+  }) => {
+    const { params, scrollPosition = 'CenterBody' } = opts;
+    console.log('onCenterBodyScroll:', params);
 
     setScrollPositionData({
-      scrollTop,
-      scrollLeft,
-      scrollPosition: 'CenterBody',
+      ...params,
+      scrollPosition,
     });
 
-    //handleCenterVerticalScroll(params);
-    //handleCenterHorizontalScroll(params);
     if (isVirtualizedScrollMounted.current && virtualScrollInfo) {
       // first scroll, not use getCache
       getPositionCache?.({
@@ -412,15 +325,45 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
       isVirtualizedScrollMounted.current = true;
     }
   };
-  const onLeftBodyScroll : GridProps['onScroll'] = (params) => {
+
+  const onCenterBodyScroll: GridProps['onScroll'] = (params) => {
+    onScroll({
+      params,
+      scrollPosition: 'CenterBody',
+    });
+  };
+  const onCenterHeaderScroll: GridProps['onScroll'] = (params) => {
+    const { scrollLeft } = params;
+    const scrollTop = scrollPositionData.scrollTop;
+    onScroll({
+      params: {
+        scrollTop,
+        scrollLeft,
+      },
+      scrollPosition: 'CenterHeader',
+    });
+  };
+  const onLeftBodyScroll: GridProps['onScroll'] = (params) => {
     const { scrollTop } = params;
     const scrollLeft = scrollPositionData.scrollLeft;
-    setScrollPositionData({
-      scrollTop,
-      scrollLeft,
+    onScroll({
+      params: {
+        scrollTop,
+        scrollLeft,
+      },
       scrollPosition: 'LeftBody',
     });
-    //onCenterBodyScroll({ scrollTop, scrollLeft });
+  };
+  const onRightBodyScroll: GridProps['onScroll'] = (params) => {
+    const { scrollTop } = params;
+    const scrollLeft = scrollPositionData.scrollLeft;
+    onScroll({
+      params: {
+        scrollTop,
+        scrollLeft,
+      },
+      scrollPosition: 'RightBody',
+    });
   };
 
   useImperativeHandle<MultiGrid2Ref, MultiGrid2Ref>(
@@ -434,6 +377,17 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
       scrollToColumn: (columnIndex: number) => {
         centerBodyGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
         centerHeaderGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
+      },
+      scrollToCell: (rowIndex: number,columnIndex: number) => {
+        console.log('scrollToCell:',rowIndex,columnIndex);
+        setTimeout(()=>{
+          centerBodyGridRef.current!.scrollToCell({ rowIndex, columnIndex });
+
+        },50);
+
+        //centerHeaderGridRef.current!.scrollToCell({ rowIndex: 0, columnIndex });
+        //leftBodyGridRef.current!.scrollToCell({ rowIndex, columnIndex: 0 });
+        //rightBodyGridRef.current!.scrollToCell({ rowIndex, columnIndex: 0 });
       },
       recomputeGridSize: () => {
         // 清除缓存
@@ -472,121 +426,106 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
           <div className="relative" style={{ width, height }}>
             {/* head区域 */}
             {
-              <div
-                className="absolute left-0 right-0 top-0 z-0"
-                style={{ height: getGridHeight(height).headerGridHeight }}
-              >
+              <div className="absolute left-0 right-0 top-0 z-0">
                 {/* 左固定 */}
-                {fixedLeftColumnCount > 0 && (
-                  <div className="absolute left-0 top-0 z-0">
-                    <Grid
-                      ref={leftHeaderGridRef}
-                      width={getGridWidth(width).leftGridWidth}
-                      height={getGridHeight(height).headerGridHeight}
-                      columnCount={fixedLeftColumnCount}
-                      rowCount={fixedTopRowCount}
-                      columnWidth={({ index }) => {
-                        return getGridColumnWidth({
-                          index,
-                          gridWidth: width,
-                          position: 'LeftHeader',
-                        });
-                      }}
-                      rowHeight={({ index }) => {
-                        return getGridRowHeight({
-                          index,
-                          gridHeight: height,
-                          position: 'LeftHeader',
-                        });
-                      }}
-                      deferredMeasurementCache={deferredMeasurementCacheGrid(
-                        'LeftHeader',
-                      )}
-                      cellRenderer={getGridCellRenderer('LeftHeader')}
-                    />
-                  </div>
-                )}
+                <div className="absolute left-0 top-0 z-0">
+                  <Grid
+                    ref={leftHeaderGridRef}
+                    width={getGridWidth(width).leftGridWidth}
+                    height={getGridHeight(height).headerGridHeight}
+                    columnCount={fixedLeftColumnCount}
+                    rowCount={fixedTopRowCount}
+                    columnWidth={({ index }) => {
+                      return getGridColumnWidth({
+                        index,
+                        gridWidth: width,
+                        position: 'LeftHeader',
+                      });
+                    }}
+                    rowHeight={({ index }) => {
+                      return getGridRowHeight({
+                        index,
+                        gridHeight: height,
+                        position: 'LeftHeader',
+                      });
+                    }}
+                    deferredMeasurementCache={deferredMeasurementCacheGrid(
+                      'LeftHeader',
+                    )}
+                    cellRenderer={getGridCellRenderer('LeftHeader')}
+                  />
+                </div>
 
                 {/* 中间 */}
-                {centerColumnCount > 0 && (
-                  <div
-                    className="absolute top-0"
-                    style={{
-                      left: getGridWidth(width).leftGridWidth,
-                      width: getGridWidth(width).centerGridWidth,
-                      height: getGridHeight(height).headerGridHeight,
+                <div
+                  className="absolute top-0"
+                  style={{
+                    left: getGridWidth(width).leftGridWidth,
+                  }}
+                >
+                  <Grid
+                    ref={centerHeaderGridRef}
+                    width={getGridWidth(width).centerGridWidth}
+                    height={getGridHeight(height).headerGridHeight}
+                    columnCount={centerColumnCount}
+                    rowCount={fixedTopRowCount}
+                    columnWidth={({ index }) => {
+                      return getGridColumnWidth({
+                        index,
+                        gridWidth: width,
+                        position: 'CenterHeader',
+                      });
                     }}
-                  >
-                    <Grid
-                      ref={centerHeaderGridRef}
-                      width={getGridWidth(width).centerGridWidth}
-                      height={getGridHeight(height).headerGridHeight}
-                      columnCount={centerColumnCount}
-                      rowCount={fixedTopRowCount}
-                      columnWidth={({ index }) => {
-                        return getGridColumnWidth({
-                          index,
-                          gridWidth: width,
-                          position: 'CenterHeader',
-                        });
-                      }}
-                      rowHeight={({ index }) => {
-                        return getGridRowHeight({
-                          index,
-                          gridHeight: height,
-                          position: 'CenterHeader',
-                        });
-                      }}
-                      deferredMeasurementCache={deferredMeasurementCacheGrid(
-                        'CenterHeader',
-                      )}
-                      cellRenderer={getGridCellRenderer('CenterHeader')}
-                      /*onScroll={handleHeaderHorizontalScroll}*/
-                      scrollLeft={
-                        scrollPositionData.scrollPosition === 'CenterHeader'
-                          ? undefined
-                          : scrollPositionData.scrollLeft
-                      }
-                    />
-                  </div>
-                )}
+                    rowHeight={({ index }) => {
+                      return getGridRowHeight({
+                        index,
+                        gridHeight: height,
+                        position: 'CenterHeader',
+                      });
+                    }}
+                    deferredMeasurementCache={deferredMeasurementCacheGrid(
+                      'CenterHeader',
+                    )}
+                    cellRenderer={getGridCellRenderer('CenterHeader')}
+                    onScroll={onCenterHeaderScroll}
+                    scrollLeft={
+                      scrollPositionData.scrollPosition === 'CenterHeader'
+                        ? undefined
+                        : scrollPositionData.scrollLeft
+                    }
+                    scrollToRow={scrollToRow - fixedTopRowCount}
+                    scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                  />
+                </div>
 
                 {/* 右固定 */}
-                {fixedRightColumnCount > 0 && (
-                  <div
-                    className="absolute right-0 top-0 z-0"
-                    style={{
-                      width: getGridWidth(width).rightGridWidth,
-                      height: getGridHeight(height).headerGridHeight,
+                <div className="absolute right-0 top-0 z-0">
+                  <Grid
+                    ref={rightHeaderGridRef}
+                    width={getGridWidth(width).rightGridWidth}
+                    height={getGridHeight(height).headerGridHeight}
+                    columnCount={fixedRightColumnCount}
+                    rowCount={fixedTopRowCount}
+                    columnWidth={({ index }) => {
+                      return getGridColumnWidth({
+                        index,
+                        gridWidth: width,
+                        position: 'RightHeader',
+                      });
                     }}
-                  >
-                    <Grid
-                      ref={rightHeaderGridRef}
-                      width={getGridWidth(width).rightGridWidth}
-                      height={getGridHeight(height).headerGridHeight}
-                      columnCount={fixedRightColumnCount}
-                      rowCount={fixedTopRowCount}
-                      columnWidth={({ index }) => {
-                        return getGridColumnWidth({
-                          index,
-                          gridWidth: width,
-                          position: 'RightHeader',
-                        });
-                      }}
-                      rowHeight={({ index }) => {
-                        return getGridRowHeight({
-                          index,
-                          gridHeight: height,
-                          position: 'RightHeader',
-                        });
-                      }}
-                      deferredMeasurementCache={deferredMeasurementCacheGrid(
-                        'RightHeader',
-                      )}
-                      cellRenderer={getGridCellRenderer('RightHeader')}
-                    />
-                  </div>
-                )}
+                    rowHeight={({ index }) => {
+                      return getGridRowHeight({
+                        index,
+                        gridHeight: height,
+                        position: 'RightHeader',
+                      });
+                    }}
+                    deferredMeasurementCache={deferredMeasurementCacheGrid(
+                      'RightHeader',
+                    )}
+                    cellRenderer={getGridCellRenderer('RightHeader')}
+                  />
+                </div>
               </div>
             }
 
@@ -595,145 +534,131 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
               className="absolute left-0 right-0 bg-white"
               style={{
                 top: getGridHeight(height).headerGridHeight,
-                height: getGridHeight(height).bodyGridHeight,
               }}
             >
               {/* 左固定 */}
-              {fixedLeftColumnCount > 0 && (
-                <div
-                  className="absolute left-0 top-0 z-0"
-                  style={{
-                    width: getGridWidth(width).leftGridWidth,
-                    height: getGridHeight(height).bodyGridHeight,
+              <div className="absolute left-0 top-0 z-0">
+                <Grid
+                  ref={leftBodyGridRef}
+                  width={getGridWidth(width).leftGridWidth}
+                  height={getGridHeight(height).bodyGridHeight}
+                  columnCount={fixedLeftColumnCount}
+                  rowCount={rowCount - fixedTopRowCount}
+                  columnWidth={({ index }) => {
+                    return getGridColumnWidth({
+                      index,
+                      gridWidth: width,
+                      position: 'LeftBody',
+                    });
                   }}
-                >
-                  <Grid
-                    ref={leftBodyGridRef}
-                    width={getGridWidth(width).leftGridWidth}
-                    height={getGridHeight(height).bodyGridHeight}
-                    columnCount={fixedLeftColumnCount}
-                    rowCount={rowCount - fixedTopRowCount}
-                    columnWidth={({ index }) => {
-                      return getGridColumnWidth({
-                        index,
-                        gridWidth: width,
-                        position: 'LeftBody',
-                      });
-                    }}
-                    rowHeight={({ index }) => {
-                      return getGridRowHeight({
-                        index,
-                        gridHeight: height,
-                        position: 'LeftBody',
-                      });
-                    }}
-                    deferredMeasurementCache={deferredMeasurementCacheGrid(
-                      'LeftBody',
-                    )}
-                    cellRenderer={getGridCellRenderer('LeftBody')}
-                    onScroll={onLeftBodyScroll}
-                    scrollTop={
-                      scrollPositionData.scrollPosition === 'LeftBody'
-                        ? undefined
-                        : scrollPositionData.scrollTop
-                    }
-                  />
-                </div>
-              )}
+                  rowHeight={({ index }) => {
+                    return getGridRowHeight({
+                      index,
+                      gridHeight: height,
+                      position: 'LeftBody',
+                    });
+                  }}
+                  deferredMeasurementCache={deferredMeasurementCacheGrid(
+                    'LeftBody',
+                  )}
+                  cellRenderer={getGridCellRenderer('LeftBody')}
+                  onScroll={onLeftBodyScroll}
+                  scrollTop={
+                    scrollPositionData.scrollPosition === 'LeftBody'
+                      ? undefined
+                      : scrollPositionData.scrollTop
+                  }
+                  scrollToRow={scrollToRow - fixedTopRowCount}
+                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                />
+              </div>
 
               {/* 中间 */}
-              {centerColumnCount > 0 && (
-                <div
-                  className="absolute top-0 bg-white"
-                  style={{
-                    left: getGridWidth(width).leftGridWidth,
-                    width: getGridWidth(width).centerGridWidth,
-                    height: getGridHeight(height).bodyGridHeight,
+              <div
+                className="absolute top-0 bg-white"
+                style={{
+                  left: getGridWidth(width).leftGridWidth,
+                }}
+              >
+                <Grid
+                  ref={centerBodyGridRef}
+                  width={getGridWidth(width).centerGridWidth}
+                  height={getGridHeight(height).bodyGridHeight}
+                  columnCount={centerColumnCount}
+                  rowCount={rowCount - fixedTopRowCount}
+                  columnWidth={({ index }) => {
+                    return getGridColumnWidth({
+                      index,
+                      gridWidth: width,
+                      position: 'CenterBody',
+                    });
                   }}
-                >
-                  <Grid
-                    ref={centerBodyGridRef}
-                    width={getGridWidth(width).centerGridWidth}
-                    height={getGridHeight(height).bodyGridHeight}
-                    columnCount={centerColumnCount}
-                    rowCount={rowCount - fixedTopRowCount}
-                    columnWidth={({ index }) => {
-                      return getGridColumnWidth({
-                        index,
-                        gridWidth: width,
-                        position: 'CenterBody',
-                      });
-                    }}
-                    rowHeight={({ index }) => {
-                      return getGridRowHeight({
-                        index,
-                        gridHeight: height,
-                        position: 'CenterBody',
-                      });
-                    }}
-                    deferredMeasurementCache={deferredMeasurementCacheGrid(
-                      'CenterBody',
-                    )}
-                    cellRenderer={getGridCellRenderer('CenterBody')}
-                    onScroll={onCenterBodyScroll}
-                    scrollTop={
+                  rowHeight={({ index }) => {
+                    return getGridRowHeight({
+                      index,
+                      gridHeight: height,
+                      position: 'CenterBody',
+                    });
+                  }}
+                  deferredMeasurementCache={deferredMeasurementCacheGrid(
+                    'CenterBody',
+                  )}
+                  cellRenderer={getGridCellRenderer('CenterBody')}
+                  onScroll={onCenterBodyScroll}
+                  scrollTop={
                       scrollPositionData.scrollPosition === 'CenterBody'
                         ? undefined
                         : scrollPositionData.scrollTop
                     }
-                    /*scrollTop={500}
-                    scrollLeft={200}*/
-                    scrollToRow={scrollToRow - fixedTopRowCount}
-                    scrollToColumn={scrollToColumn - fixedLeftColumnCount}
-                    onSectionRendered={(info) => {
-                      setVirtualScrollInfo(info);
-                    }}
-                  />
-                </div>
-              )}
+                    scrollLeft={
+                      scrollPositionData.scrollPosition === 'CenterBody'
+                        ? undefined
+                        : scrollPositionData.scrollLeft
+                    }
+                  scrollToRow={scrollToRow - fixedTopRowCount}
+                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                  onSectionRendered={(info) => {
+                    setVirtualScrollInfo(info);
+                  }}
+                />
+              </div>
 
               {/* 右固定 */}
-              {fixedRightColumnCount > 0 && (
-                <div
-                  className="absolute right-0 top-0 z-0"
-                  style={{
-                    width: getGridWidth(width).rightGridWidth,
-                    height: getGridHeight(height).bodyGridHeight,
+              <div className="absolute right-0 top-0 z-0">
+                <Grid
+                  ref={rightBodyGridRef}
+                  width={getGridWidth(width).rightGridWidth}
+                  height={getGridHeight(height).bodyGridHeight}
+                  columnCount={fixedRightColumnCount}
+                  rowCount={rowCount - fixedTopRowCount}
+                  columnWidth={({ index }) => {
+                    return getGridColumnWidth({
+                      index,
+                      gridWidth: width,
+                      position: 'RightBody',
+                    });
                   }}
-                >
-                  <Grid
-                    ref={rightBodyGridRef}
-                    width={getGridWidth(width).rightGridWidth}
-                    height={getGridHeight(height).bodyGridHeight}
-                    columnCount={fixedRightColumnCount}
-                    rowCount={rowCount - fixedTopRowCount}
-                    columnWidth={({ index }) => {
-                      return getGridColumnWidth({
-                        index,
-                        gridWidth: width,
-                        position: 'RightBody',
-                      });
-                    }}
-                    rowHeight={({ index }) => {
-                      return getGridRowHeight({
-                        index,
-                        gridHeight: height,
-                        position: 'RightBody',
-                      });
-                    }}
-                    deferredMeasurementCache={deferredMeasurementCacheGrid(
-                      'RightBody',
-                    )}
-                    cellRenderer={getGridCellRenderer('RightBody')}
-                    /*onScroll={handleRightVerticalScroll}*/
-                    scrollTop={
-                      scrollPositionData.scrollPosition === 'RightBody'
-                        ? undefined
-                        : scrollPositionData.scrollTop
-                    }
-                  />
-                </div>
-              )}
+                  rowHeight={({ index }) => {
+                    return getGridRowHeight({
+                      index,
+                      gridHeight: height,
+                      position: 'RightBody',
+                    });
+                  }}
+                  deferredMeasurementCache={deferredMeasurementCacheGrid(
+                    'RightBody',
+                  )}
+                  cellRenderer={getGridCellRenderer('RightBody')}
+                  onScroll={onRightBodyScroll}
+                  scrollTop={
+                    scrollPositionData.scrollPosition === 'RightBody'
+                      ? undefined
+                      : scrollPositionData.scrollTop
+                  }
+                  scrollToRow={scrollToRow - fixedTopRowCount}
+                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                />
+              </div>
             </div>
           </div>
         );
