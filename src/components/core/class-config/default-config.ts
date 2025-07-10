@@ -503,7 +503,7 @@ const defaultConfig = {
       cell: [
         'px-4 py-3 text-sm text-gray-900',
         'border-r border-gray-200',
-        'whitespace-nowrap overflow-hidden text-ellipsis',
+        //'whitespace-nowrap overflow-hidden text-ellipsis',
       ],
     },
     fixed: {

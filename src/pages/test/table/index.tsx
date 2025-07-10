@@ -89,7 +89,7 @@ const TableDemo = () => {
   const generateData = (count: number) => {
     return Array.from({ length: count }, (_, index) => ({
       key: index,
-      name: `用户${index}`,
+      name: `用户${index} ${index ===1 ? '很长很长很长很长很长': ''}`,
       age: 20 + (index % 50),
       email: `user${index}@example.com`,
       phone: `138${String(index).padStart(8, '0')}`,
