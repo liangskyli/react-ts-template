@@ -75,6 +75,14 @@ const VirtualGridDemo = () => {
       );
     }
   }, [virtualMultiGridCacheValue]);*/
+  useEffect(() => {
+  if (multiGrid2Ref.current) {
+    multiGrid2Ref.current.scrollToCell(
+      211,
+      5,
+    );
+  }
+}, []);
 
   return (
     <div className="space-y-8 p-6">
@@ -105,12 +113,12 @@ const VirtualGridDemo = () => {
           cellRenderer={renderItem}
           fixedWidth
           defaultWidth={150}
-          /*fixedHeight
-          defaultHeight={40}*/
+          fixedHeight
+          defaultHeight={40}
           fixedLeftColumnCount={fixedLeftColumnCount}
           fixedTopRowCount={fixedTopRowCount}
           fixedRightColumnCount={fixedRightColumnCount}
-          getPositionCache={(cache) => {
+          /*getPositionCache={(cache) => {
             virtualMultiGridCache.set('virtualMultiGridCache', cache);
           }}
           scrollToRow={
@@ -124,7 +132,9 @@ const VirtualGridDemo = () => {
               ? virtualMultiGridCacheValue.virtualScrollInfo.columnStopIndex +
                 fixedLeftColumnCount
               : undefined
-          }
+          }*/
+          /*scrollToRow={211}
+          scrollToColumn={5}*/
         />
       </div>
     </div>

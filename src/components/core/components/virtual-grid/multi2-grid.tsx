@@ -27,7 +27,7 @@ export type MultiGrid2Ref = {
   /** 滚动到指定列 */
   scrollToColumn: (columnIndex: number) => void;
   /** 滚动到指定单元格 */
-  scrollToCell: (rowIndex: number,columnIndex: number) => void;
+  scrollToCell: (rowIndex: number, columnIndex: number) => void;
   /** 重新计算网格大小 */
   recomputeGridSize: () => void;
   /** 缓存测量数据 */
@@ -305,7 +305,7 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
     params: PositionCacheData['params'];
     scrollPosition: Position;
   }) => {
-    const { params, scrollPosition = 'CenterBody' } = opts;
+    const { params, scrollPosition } = opts;
     console.log('onCenterBodyScroll:', params);
 
     setScrollPositionData({
@@ -378,16 +378,57 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
         centerBodyGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
         centerHeaderGridRef.current?.scrollToCell({ rowIndex: 0, columnIndex });
       },
-      scrollToCell: (rowIndex: number,columnIndex: number) => {
-        console.log('scrollToCell:',rowIndex,columnIndex);
-        setTimeout(()=>{
-          centerBodyGridRef.current!.scrollToCell({ rowIndex, columnIndex });
+      scrollToCell: (rowIndex: number, columnIndex: number) => {
+        console.log('scrollToCell:', rowIndex, columnIndex);
 
-        },50);
+        // 确保所有相关区域的单元格都被测量
+        centerBodyGridRef.current!.measureAllCells();
+        centerHeaderGridRef.current?.measureAllCells();
+        leftBodyGridRef.current?.measureAllCells();
+        rightBodyGridRef.current?.measureAllCells();
 
-        //centerHeaderGridRef.current!.scrollToCell({ rowIndex: 0, columnIndex });
-        //leftBodyGridRef.current!.scrollToCell({ rowIndex, columnIndex: 0 });
-        //rightBodyGridRef.current!.scrollToCell({ rowIndex, columnIndex: 0 });
+        setTimeout(() => {
+          // 计算实际的行列索引（考虑固定区域的偏移）
+          const actualRowIndex = rowIndex - fixedTopRowCount;
+          const actualColumnIndex = columnIndex - fixedLeftColumnCount;
+
+          // 获取目标单元格的位置信息
+          const centerGrid = centerBodyGridRef.current;
+          if (centerGrid) {
+            const scrollLeft = centerGrid.getOffsetForCell({
+              rowIndex: actualRowIndex,
+              columnIndex: actualColumnIndex,
+              alignment: 'start'
+            }).scrollLeft;
+
+            const scrollTop = centerGrid.getOffsetForCell({
+              rowIndex: actualRowIndex,
+              columnIndex: actualColumnIndex,
+              alignment: 'start'
+            }).scrollTop;
+            console.log('dd:',scrollLeft, scrollTop);
+            // 滚动中间区域
+            //centerGrid.scrollToPosition({ scrollLeft, scrollTop });
+
+            // 同步头部区域的水平滚动
+            /*centerHeaderGridRef.current?.scrollToPosition({
+              scrollLeft,
+              scrollTop: 0
+            });*/
+
+            // 同步左侧区域的垂直滚动
+            /*leftBodyGridRef.current?.scrollToPosition({
+              scrollLeft: 0,
+              scrollTop
+            });*/
+
+            // 同步右侧区域的垂直滚动
+            rightBodyGridRef.current?.scrollToPosition({
+              scrollLeft: 0,
+              scrollTop
+            });
+          }
+        }, 0);
       },
       recomputeGridSize: () => {
         // 清除缓存
@@ -493,8 +534,8 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                         ? undefined
                         : scrollPositionData.scrollLeft
                     }
-                    scrollToRow={scrollToRow - fixedTopRowCount}
-                    scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                    /*scrollToRow={scrollToRow - fixedTopRowCount}
+                    scrollToColumn={scrollToColumn - fixedLeftColumnCount}*/
                   />
                 </div>
 
@@ -568,8 +609,8 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                       ? undefined
                       : scrollPositionData.scrollTop
                   }
-                  scrollToRow={scrollToRow - fixedTopRowCount}
-                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                  /*scrollToRow={scrollToRow - fixedTopRowCount}
+                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}*/
                 />
               </div>
 
@@ -606,15 +647,15 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                   cellRenderer={getGridCellRenderer('CenterBody')}
                   onScroll={onCenterBodyScroll}
                   scrollTop={
-                      scrollPositionData.scrollPosition === 'CenterBody'
-                        ? undefined
-                        : scrollPositionData.scrollTop
-                    }
-                    scrollLeft={
-                      scrollPositionData.scrollPosition === 'CenterBody'
-                        ? undefined
-                        : scrollPositionData.scrollLeft
-                    }
+                    scrollPositionData.scrollPosition === 'CenterBody'
+                      ? undefined
+                      : scrollPositionData.scrollTop
+                  }
+                  scrollLeft={
+                    scrollPositionData.scrollPosition === 'CenterBody'
+                      ? undefined
+                      : scrollPositionData.scrollLeft
+                  }
                   scrollToRow={scrollToRow - fixedTopRowCount}
                   scrollToColumn={scrollToColumn - fixedLeftColumnCount}
                   onSectionRendered={(info) => {
@@ -655,8 +696,8 @@ const MultiGrid2 = (props: MultiGrid2Props) => {
                       ? undefined
                       : scrollPositionData.scrollTop
                   }
-                  scrollToRow={scrollToRow - fixedTopRowCount}
-                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}
+                  /*scrollToRow={scrollToRow - fixedTopRowCount}
+                  scrollToColumn={scrollToColumn - fixedLeftColumnCount}*/
                 />
               </div>
             </div>
