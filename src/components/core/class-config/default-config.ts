@@ -481,6 +481,19 @@ const defaultConfig = {
     ],
     input: ['data-[search-icon]:pl-8', 'data-[clear-icon]:pr-8'],
   },
+  virtualGrid: {
+    multiGrid:{
+      container: 'relative',
+      header: 'absolute left-0 right-0 top-0 z-0',
+      leftHeader: '"absolute left-0 top-0 z-0',
+      centerHeader: 'absolute top-0',
+      rightHeader: 'absolute right-0 top-0 z-0',
+      body:'absolute left-0 right-0',
+      leftBody: 'absolute left-0 top-0 z-0',
+      centerBody: 'absolute top-0 z-0',
+      rightBody: 'absolute right-0 top-0 z-0',
+    },
+  },
   table: {
     container: {
       base: 'relative bg-white border border-gray-200 overflow-hidden',

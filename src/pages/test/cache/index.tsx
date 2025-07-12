@@ -6,6 +6,7 @@ import Checkbox from '@/components/core/components/checkbox';
 import { useRouter } from '@/hooks/use-router.ts';
 import ListDemo from '@/pages/test/cache/components/list-demo.tsx';
 import VirtualGridDemo from '@/pages/test/cache/components/virtual-grid-demo.tsx';
+import MultiGridDemo from '@/pages/test/cache/components/multi-grid-demo.tsx';
 
 const Index = () => {
   const router = useRouter();
@@ -78,6 +79,7 @@ const Index = () => {
         前进2
       </Button>
       <div>
+        <MultiGridDemo />
         <VirtualGridDemo />
         <ListDemo />
       </div>

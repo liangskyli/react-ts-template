@@ -1,9 +1,9 @@
-import type { MultiGrid2Props } from '@/components/core/components/virtual-grid/multi2-grid.tsx';
-import MultiGrid2 from '@/components/core/components/virtual-grid/multi2-grid.tsx';
+import type { MultiGridProps } from '@/components/core/components/virtual-grid/multi-grid.tsx';
+import MultiGrid from '@/components/core/components/virtual-grid/multi-grid.tsx';
 
 const VirtualGridDemo = () => {
   // 单元格渲染函数
-  const renderItem: MultiGrid2Props['cellRenderer'] = (props) => {
+  const renderItem: MultiGridProps['cellRenderer'] = (props) => {
     // eslint-disable-next-line react/prop-types
     const { rowIndex, columnIndex } = props;
     return (
@@ -15,7 +15,7 @@ const VirtualGridDemo = () => {
         }}
       >
         <div>{`R${rowIndex}, C${columnIndex}`}</div>
-        {rowIndex === 0 && columnIndex === 0 && (
+        {rowIndex % 10 === 0 && columnIndex === 0 && (
           <div>
             <div>more data1</div>
             <div>more data2</div>
@@ -31,7 +31,7 @@ const VirtualGridDemo = () => {
     <div className="space-y-8 p-6">
       <h1 className="text-3xl font-bold text-gray-900">VirtualGrid 控件演示</h1>
       <div className="h-[200px] w-full">
-        <MultiGrid2
+        <MultiGrid
           columnCount={1}
           rowCount={100000}
           cellRenderer={renderItem}
@@ -39,7 +39,7 @@ const VirtualGridDemo = () => {
       </div>
 
       <div className="mt-10 h-[200px] w-full">
-        <MultiGrid2
+        <MultiGrid
           columnCount={2}
           rowCount={100000}
           cellRenderer={renderItem}
@@ -54,7 +54,7 @@ const VirtualGridDemo = () => {
       </div>
 
       <div className="mt-10 h-[200px] w-full">
-        <MultiGrid2
+        <MultiGrid
           columnCount={10}
           rowCount={100000}
           cellRenderer={renderItem}
@@ -64,7 +64,7 @@ const VirtualGridDemo = () => {
       </div>
 
       <div className="mt-10 h-[400px] w-full">
-        <MultiGrid2
+        <MultiGrid
           columnCount={10}
           rowCount={100000}
           cellRenderer={renderItem}
