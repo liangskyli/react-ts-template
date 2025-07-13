@@ -17,11 +17,13 @@ import ToastDemo from '@/pages/test/components/tw/toast-demo.tsx';
 import TreeCheckboxDemo from '@/pages/test/components/tw/tree-checkbox-demo.tsx';
 import TreeDemo from '@/pages/test/components/tw/tree-demo.tsx';
 import TreeRadioDemo from '@/pages/test/components/tw/tree-radio-demo.tsx';
+import VirtualGridDemo from '@/pages/test/components/tw/virtual-grid-demo.tsx';
 
 const Index = () => {
   return (
     <div className="tw-mt-[10px] tw-text-center">
       <title>UI</title>
+      <VirtualGridDemo />
       <SearchBarDemo />
       <TreeCheckboxDemo />
       <TreeRadioDemo />

@@ -39,6 +39,7 @@ vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
         ref,
         () => ({
           scrollToPosition: mockScrollToPosition,
+          getCache: () => mockCache,
         }),
         [],
       );
@@ -597,6 +598,8 @@ describe('List InfiniteScroll', () => {
   });
 
   it('clears cache after successful load more', async () => {
+    // 清除之前的调用记录
+    (global as any).__lastClearCall = undefined;
     const loadMore = vi.fn().mockResolvedValue(undefined);
 
     // 创建一个模拟的滚动容器
@@ -620,7 +623,7 @@ describe('List InfiniteScroll', () => {
           hasMore: true,
           threshold: 100,
         }}
-        list={['Item 1']}
+        list={['Item 1', 'Item 2']}
       >
         {(listData) => {
           return listData.map((i) => <List.Item key={i} title={i} />);
@@ -648,7 +651,7 @@ describe('List InfiniteScroll', () => {
 
     // 验证 cache clear 是否被调用
     expect((global as any).__lastClearCall).toEqual({
-      rowIndex: 1, // childrenArray.length - 1 = 2 - 1 = 1
+      rowIndex: 2, // childrenArray.length = 2
       columnIndex: 0,
     });
   });
@@ -791,7 +794,10 @@ describe('List ref methods', () => {
     // Verify the virtual list's scrollToPosition was called
     expect(
       (global as any).__virtualizedListScrollToPosition,
-    ).toHaveBeenLastCalledWith(100);
+    ).toHaveBeenLastCalledWith({
+      scrollLeft: 0,
+      scrollTop: 100,
+    });
   });
 
   it('scrollToPosition works with virtualScroll disabled', async () => {

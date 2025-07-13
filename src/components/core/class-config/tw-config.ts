@@ -485,5 +485,16 @@ const twConfig = {
     ],
     input: ['data-[search-icon]:tw-pl-8', 'data-[clear-icon]:tw-pr-8'],
   },
+  virtualGrid: {
+    container: 'tw-relative',
+    header: 'tw-absolute tw-left-0 tw-right-0 tw-top-0',
+    leftHeader: '"tw-absolute tw-left-0 tw-top-0',
+    centerHeader: 'tw-absolute tw-top-0',
+    rightHeader: 'tw-absolute tw-right-0 tw-top-0',
+    body: 'tw-absolute tw-left-0 tw-right-0',
+    leftBody: 'tw-absolute tw-left-0 tw-top-0',
+    centerBody: 'tw-absolute tw-top-0',
+    rightBody: 'tw-absolute tw-right-0 tw-top-0',
+  },
 };
 export { twConfig };
