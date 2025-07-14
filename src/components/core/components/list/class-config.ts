@@ -25,6 +25,7 @@ const classConfig = {
   itemContentConfig: currentConfig.itemContent,
   defaultInfiniteScrollContentConfig:
     currentConfig.defaultInfiniteScrollContentConfig,
+  virtualGridConfig: currentConfig.virtualGrid,
 };
 
 export default classConfig;

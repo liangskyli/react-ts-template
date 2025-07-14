@@ -10,15 +10,14 @@
 import VirtualGrid from '@/components/core/components/virtual-grid';
 
 export default () => (
-  <div style={{ height: '400px' }}>
-    <VirtualGrid
-      rowCount={100}
-      columnCount={100}
-      cellRenderer={({ rowIndex, columnIndex }) => (
-        <div>{`单元格 ${rowIndex}-${columnIndex}`}</div>
-      )}
-    />
-  </div>
+  <VirtualGrid
+    className="h-[400px]"
+    rowCount={100}
+    columnCount={100}
+    cellRenderer={({ rowIndex, columnIndex }) => (
+      <div>{`单元格 ${rowIndex}-${columnIndex}`}</div>
+    )}
+  />
 );
 ```
 
@@ -28,17 +27,16 @@ export default () => (
 import VirtualGrid from '@/components/core/components/virtual-grid';
 
 export default () => (
-  <div style={{ height: '400px' }}>
-    <VirtualGrid
-      rowCount={100}
-      columnCount={1}
-      fixedWidth={true}
-      defaultWidth={200}
-      cellRenderer={({ rowIndex }) => (
-        <div>{`单元格 ${rowIndex}`}</div>
-      )}
-    />
-  </div>
+  <VirtualGrid
+    className="h-[400px]"
+    rowCount={100}
+    columnCount={1}
+    fixedWidth={true}
+    defaultWidth={200}
+    cellRenderer={({ rowIndex }) => (
+      <div>{`单元格 ${rowIndex}`}</div>
+    )}
+  />
 );
 ```
 
@@ -48,17 +46,16 @@ export default () => (
 import VirtualGrid from '@/components/core/components/virtual-grid';
 
 export default () => (
-  <div style={{ height: '400px' }}>
-    <VirtualGrid
-      rowCount={100}
-      columnCount={3}
-      rowHeight={({ index, gridHeight }) => (index % 2 === 0 ? 60 : 40)}
-      columnWidth={({ index, gridWidth }) => gridWidth / 3}
-      cellRenderer={({ rowIndex, columnIndex }) => (
-        <div>{`单元格 ${rowIndex}-${columnIndex}`}</div>
-      )}
-    />
-  </div>
+  <VirtualGrid
+    className="h-[400px]"
+    rowCount={100}
+    columnCount={3}
+    rowHeight={({ index, gridHeight }) => (index % 2 === 0 ? 60 : 40)}
+    columnWidth={({ index, gridWidth }) => gridWidth / 3}
+    cellRenderer={({ rowIndex, columnIndex }) => (
+      <div>{`单元格 ${rowIndex}-${columnIndex}`}</div>
+    )}
+  />
 );
 ```
 
@@ -72,16 +69,15 @@ export default () => {
   const [scrollCache, setScrollCache] = useState(null);
 
   return (
-    <div style={{ height: '400px' }}>
-      <VirtualGrid
-        rowCount={100}
-        columnCount={100}
-        cellRenderer={({ rowIndex, columnIndex }) => (
-          <div>{`单元格 ${rowIndex}-${columnIndex}`}</div>
-        )}
-        getPositionCache={(cache) => setScrollCache(cache)}
-      />
-    </div>
+    <VirtualGrid
+      className="h-[400px]"
+      rowCount={100}
+      columnCount={100}
+      cellRenderer={({ rowIndex, columnIndex }) => (
+        <div>{`单元格 ${rowIndex}-${columnIndex}`}</div>
+      )}
+      getPositionCache={(cache) => setScrollCache(cache)}
+    />
   );
 };
 ```
@@ -92,24 +88,23 @@ export default () => {
 import VirtualGrid from '@/components/core/components/virtual-grid';
 
 export default () => (
-  <div style={{ height: '400px' }}>
-    <VirtualGrid
-      rowCount={100}
-      columnCount={100}
-      cellRenderer={({ rowIndex, columnIndex }) => (
-        <div style={{
-          backgroundColor: rowIndex < 2 || columnIndex < 2 ? '#f0f0f0' : 'white',
-          border: '1px solid #ddd',
-          padding: '8px'
-        }}>
-          {`单元格 ${rowIndex}-${columnIndex}`}
-        </div>
-      )}
-      fixedTopRowCount={2}
-      fixedLeftColumnCount={2}
-      fixedRightColumnCount={1}
-    />
-  </div>
+  <VirtualGrid
+    className="h-[400px]"
+    rowCount={100}
+    columnCount={100}
+    cellRenderer={({ rowIndex, columnIndex }) => (
+      <div style={{
+        backgroundColor: rowIndex < 2 || columnIndex < 2 ? '#f0f0f0' : 'white',
+        border: '1px solid #ddd',
+        padding: '8px'
+      }}>
+        {`单元格 ${rowIndex}-${columnIndex}`}
+      </div>
+    )}
+    fixedTopRowCount={2}
+    fixedLeftColumnCount={2}
+    fixedRightColumnCount={1}
+  />
 );
 ```
 
@@ -128,9 +123,10 @@ export default () => {
   };
 
   return (
-    <div style={{ height: '400px' }}>
+    <div>
       <button onClick={handleScrollToCell}>滚动到单元格 (50, 50)</button>
       <VirtualGrid
+        className="h-[400px]"
         ref={gridRef}
         rowCount={100}
         columnCount={100}
@@ -168,6 +164,7 @@ export default () => {
 | `hideCenterHeaderGridScrollbar` | 是否隐藏中间表头区域的滚动条    | `boolean`                                                               | `false` |
 | `hideLeftBodyGridScrollbar`     | 是否隐藏左侧区域的滚动条      | `boolean`                                                               | `false` |
 | `hideRightBodyGridScrollbar`    | 是否隐藏右侧区域的滚动条      | `boolean`                                                               | `false` |
+| `className`                     | 容器的类名             | `string`                                                                | -       |
 | `leftHeaderClass`               | 左上角表头的类名          | `string`                                                                | -       |
 | `centerHeaderClass`             | 中间表头的类名           | `string`                                                                | -       |
 | `rightHeaderClass`              | 右上角表头的类名          | `string`                                                                | -       |
@@ -202,7 +199,7 @@ VirtualGrid 组件使用了以下策略来优化性能：
 
 ## 注意事项
 
-1. 组件必须包裹在具有确定高度的容器中
+1. 组件必须使用ClassName设置高度
 2. 如果单元格高度不固定，建议提供合适的 `defaultHeight` 和 `minHeight` 值
 3. 单列模式下会自动启用 `fixedWidth` 和 `autoContainerWidth`
 4. 如果需要手动控制网格滚动，可以使用 `ref` 获取 Grid 实例

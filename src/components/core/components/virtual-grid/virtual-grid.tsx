@@ -83,6 +83,8 @@ export type VirtualGridProps = {
   hideLeftBodyGridScrollbar?: boolean;
   /** 是否隐藏右下角的滚动条 */
   hideRightBodyGridScrollbar?: boolean;
+  /** 容器的类名 */
+  className?: string;
   /** 左上角的表头的类名 */
   leftHeaderClass?: string;
   /** 中间表头的类名 */
@@ -137,6 +139,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     hideLeftBodyGridScrollbar = false,
     hideRightBodyGridScrollbar = false,
     autoContainerWidth,
+    className,
     leftHeaderClass,
     centerHeaderClass,
     rightHeaderClass,
@@ -806,47 +809,49 @@ const VirtualGrid = (props: VirtualGridProps) => {
   };
 
   return (
-    <AutoSizer>
-      {({ width, height }) => {
-        return (
-          <div
-            className={classConfig.containerConfig}
-            style={{ width, height }}
-          >
-            {/* head区域 */}
-            {
-              <div className={classConfig.headerConfig}>
+    <div className={className}>
+      <AutoSizer>
+        {({ width, height }) => {
+          return (
+            <div
+              className={classConfig.containerConfig}
+              style={{ width, height }}
+            >
+              {/* head区域 */}
+              {
+                <div className={classConfig.headerConfig}>
+                  {/* 左固定 */}
+                  {renderLeftHeaderGrid({ width, height })}
+
+                  {/* 中间 */}
+                  {renderCenterHeaderGrid({ width, height })}
+
+                  {/* 右固定 */}
+                  {renderRightHeaderGrid({ width, height })}
+                </div>
+              }
+
+              {/* body区域 */}
+              <div
+                className={classConfig.bodyConfig}
+                style={{
+                  top: getGridHeight(height).headerGridHeight,
+                }}
+              >
                 {/* 左固定 */}
-                {renderLeftHeaderGrid({ width, height })}
+                {renderLeftBodyGrid({ width, height })}
 
                 {/* 中间 */}
-                {renderCenterHeaderGrid({ width, height })}
+                {renderCenterBodyGrid({ width, height })}
 
                 {/* 右固定 */}
-                {renderRightHeaderGrid({ width, height })}
+                {renderRightBodyGrid({ width, height })}
               </div>
-            }
-
-            {/* body区域 */}
-            <div
-              className={classConfig.bodyConfig}
-              style={{
-                top: getGridHeight(height).headerGridHeight,
-              }}
-            >
-              {/* 左固定 */}
-              {renderLeftBodyGrid({ width, height })}
-
-              {/* 中间 */}
-              {renderCenterBodyGrid({ width, height })}
-
-              {/* 右固定 */}
-              {renderRightBodyGrid({ width, height })}
             </div>
-          </div>
-        );
-      }}
-    </AutoSizer>
+          );
+        }}
+      </AutoSizer>
+    </div>
   );
 };
 

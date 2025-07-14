@@ -1,6 +1,7 @@
 import React from 'react';
 import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
+import classConfig from '@/components/core/components/list/class-config.ts';
 
 type PositionCacheData = {
   /** 滚动条顶部位置 */
@@ -43,6 +44,7 @@ const VirtualScrollList = (props: VirtualScrollListProps) => {
 
   return (
     <VirtualGrid
+      className={classConfig.virtualGridConfig.className}
       ref={ref}
       columnCount={1}
       rowCount={rowCount}

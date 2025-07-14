@@ -317,6 +317,9 @@ const defaultConfig = {
       wrap: 'h-[30px] text-center text-sm leading-[30px] text-gray-500',
       retry: 'text-blue-500 ml-2 cursor-pointer',
     },
+    virtualGrid: {
+      className: 'h-full w-full',
+    },
   },
   mask: {
     transition: {

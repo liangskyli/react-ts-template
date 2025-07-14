@@ -30,51 +30,47 @@ const VirtualGridDemo = () => {
   return (
     <div className="space-y-8 p-6">
       <h1 className="text-3xl font-bold text-gray-900">VirtualGrid 控件演示</h1>
-      <div className="h-[200px] w-full">
-        <VirtualGrid
-          columnCount={1}
-          rowCount={100000}
-          cellRenderer={renderItem}
-        />
-      </div>
+      <VirtualGrid
+        className="h-[200px]"
+        columnCount={1}
+        rowCount={100000}
+        cellRenderer={renderItem}
+      />
 
-      <div className="mt-10 h-[200px] w-full">
-        <VirtualGrid
-          columnCount={2}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          columnWidth={({ index, gridWidth }) => {
-            if (index === 0) {
-              return 150;
-            }
-            return gridWidth - 150;
-          }}
-        />
-      </div>
+      <VirtualGrid
+        className="mt-10 h-[200px]"
+        columnCount={2}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        columnWidth={({ index, gridWidth }) => {
+          if (index === 0) {
+            return 150;
+          }
+          return gridWidth - 150;
+        }}
+      />
 
-      <div className="mt-10 h-[200px] w-full">
-        <VirtualGrid
-          columnCount={10}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          defaultWidth={150}
-        />
-      </div>
+      <VirtualGrid
+        className="mt-10 h-[200px]"
+        columnCount={10}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        defaultWidth={150}
+      />
 
-      <div className="mt-10 h-[400px] w-full">
-        <VirtualGrid
-          columnCount={10}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          defaultWidth={150}
-          fixedTopRowCount={1}
-          fixedLeftColumnCount={1}
-          fixedRightColumnCount={1}
-        />
-      </div>
+      <VirtualGrid
+        className="mt-10 h-[400px]"
+        columnCount={10}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        defaultWidth={150}
+        fixedTopRowCount={1}
+        fixedLeftColumnCount={1}
+        fixedRightColumnCount={1}
+      />
     </div>
   );
 };

@@ -311,6 +311,7 @@ describe('VirtualGrid Component', () => {
         cellRenderer={({ rowIndex, columnIndex }) => (
           <div>{`Item ${rowIndex}-${columnIndex}`}</div>
         )}
+        className="className"
         leftHeaderClass="custom-left-header"
         centerHeaderClass="custom-center-header"
         rightHeaderClass="custom-right-header"

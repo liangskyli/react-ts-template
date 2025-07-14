@@ -82,58 +82,56 @@ const MultiGridDemo = () => {
     <div className="space-y-8 p-6">
       <h1 className="text-3xl font-bold text-gray-900">VirtualGrid 控件演示</h1>
 
-      <div className="h-[200px] w-full">
-        <VirtualGrid
-          ref={multiGrid1Ref}
-          columnCount={10}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          defaultWidth={150}
-          defaultHeight={40}
-          getPositionCache={(cache) => {
-            virtualGridCache.set('virtualGridCache', cache);
-          }}
-          scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
-          scrollToColumn={
-            virtualGridCacheValue?.virtualScrollInfo.columnStopIndex
-          }
-        />
-      </div>
+      <VirtualGrid
+        className="h-[200px] w-full"
+        ref={multiGrid1Ref}
+        columnCount={10}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        defaultWidth={150}
+        defaultHeight={40}
+        getPositionCache={(cache) => {
+          virtualGridCache.set('virtualGridCache', cache);
+        }}
+        scrollToRow={virtualGridCacheValue?.virtualScrollInfo.rowStopIndex}
+        scrollToColumn={
+          virtualGridCacheValue?.virtualScrollInfo.columnStopIndex
+        }
+      />
       <div className="flex justify-center space-x-4">
         <div onClick={() => goToGridPosition()}>滚动定位</div>
         <div onClick={() => goToGridCell()}>滚动定位单元</div>
       </div>
-      <div className="h-[400px] w-full">
-        <VirtualGrid
-          ref={multiGrid2Ref}
-          columnCount={10}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          defaultWidth={150}
-          /*fixedHeight*/
-          defaultHeight={40}
-          fixedLeftColumnCount={fixedLeftColumnCount}
-          fixedTopRowCount={fixedTopRowCount}
-          fixedRightColumnCount={fixedRightColumnCount}
-          getPositionCache={(cache) => {
-            virtualMultiGridCache.set('virtualMultiGridCache', cache);
-          }}
-          scrollToRow={
-            virtualMultiGridCacheValue
-              ? virtualMultiGridCacheValue.virtualScrollInfo.rowStopIndex +
-                fixedTopRowCount
-              : undefined
-          }
-          scrollToColumn={
-            virtualMultiGridCacheValue
-              ? virtualMultiGridCacheValue.virtualScrollInfo.columnStopIndex +
-                fixedLeftColumnCount
-              : undefined
-          }
-        />
-      </div>
+      <VirtualGrid
+        className="h-[400px] w-full"
+        ref={multiGrid2Ref}
+        columnCount={10}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        defaultWidth={150}
+        /*fixedHeight*/
+        defaultHeight={40}
+        fixedLeftColumnCount={fixedLeftColumnCount}
+        fixedTopRowCount={fixedTopRowCount}
+        fixedRightColumnCount={fixedRightColumnCount}
+        getPositionCache={(cache) => {
+          virtualMultiGridCache.set('virtualMultiGridCache', cache);
+        }}
+        scrollToRow={
+          virtualMultiGridCacheValue
+            ? virtualMultiGridCacheValue.virtualScrollInfo.rowStopIndex +
+              fixedTopRowCount
+            : undefined
+        }
+        scrollToColumn={
+          virtualMultiGridCacheValue
+            ? virtualMultiGridCacheValue.virtualScrollInfo.columnStopIndex +
+              fixedLeftColumnCount
+            : undefined
+        }
+      />
     </div>
   );
 };
