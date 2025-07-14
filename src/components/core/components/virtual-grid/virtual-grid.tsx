@@ -455,12 +455,12 @@ const VirtualGrid = (props: VirtualGridProps) => {
   };
 
   const measureAllCells = () => {
-    leftHeaderGridRef.current?.recomputeGridSize();
-    centerHeaderGridRef.current?.recomputeGridSize();
-    rightHeaderGridRef.current?.recomputeGridSize();
-    leftBodyGridRef.current?.recomputeGridSize();
-    centerBodyGridRef.current?.recomputeGridSize();
-    rightBodyGridRef.current?.recomputeGridSize();
+    leftHeaderGridRef.current?.measureAllCells();
+    centerHeaderGridRef.current?.measureAllCells();
+    rightHeaderGridRef.current?.measureAllCells();
+    leftBodyGridRef.current?.measureAllCells();
+    centerBodyGridRef.current?.measureAllCells();
+    rightBodyGridRef.current?.measureAllCells();
   };
 
   const recomputeGridSize = useCallback(

@@ -52,12 +52,14 @@ vi.mock('react-virtualized', () => {
       const mockScrollToPosition = vi.fn();
       const mockScrollToCell = vi.fn();
       const mockRecomputeGridSize = vi.fn();
+      const mockMeasureAllCells = vi.fn();
 
       // 存储到全局以便测试验证
       (global as any).__virtualizedGridScrollToPosition = mockScrollToPosition;
       (global as any).__virtualizedGridScrollToCell = mockScrollToCell;
       (global as any).__virtualizedGridRecomputeGridSize =
         mockRecomputeGridSize;
+      (global as any).__virtualizedGridMeasureAllCells = mockMeasureAllCells;
 
       // 使用 useImperativeHandle 来模拟 ref 的行为
       React.useImperativeHandle(
@@ -66,6 +68,7 @@ vi.mock('react-virtualized', () => {
           scrollToPosition: mockScrollToPosition,
           scrollToCell: mockScrollToCell,
           recomputeGridSize: mockRecomputeGridSize,
+          measureAllCells: mockMeasureAllCells,
         }),
         [],
       );
