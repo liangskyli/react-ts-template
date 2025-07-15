@@ -28,6 +28,11 @@ const testRoutes: ExtendRouteObjectWith[] = [
         element: LazyLoad(lazy(() => import('@/pages/test/cache'))),
         title: 'cache',
       },
+      {
+        path: '/test/cache2',
+        element: LazyLoad(lazy(() => import('@/pages/test/cache/index2.tsx'))),
+        title: 'cache',
+      },
     ],
   },
 ];

@@ -65,7 +65,7 @@ const Index = () => {
       <Button onClick={onClickGet}>获取缓存</Button>
       <Button
         onClick={() => {
-          router.push('/test/ui');
+          router.push('/test/cache2');
         }}
       >
         前进
