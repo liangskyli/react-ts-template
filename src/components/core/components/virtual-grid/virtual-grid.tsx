@@ -405,16 +405,6 @@ const VirtualGrid = (props: VirtualGridProps) => {
       ...params,
       scrollPosition,
     });
-
-    if (
-      !(fixedWidth && fixedHeight) &&
-      (fixedLeftColumnCount > 0 ||
-        fixedRightColumnCount > 0 ||
-        fixedTopRowCount > 0)
-    ) {
-      // 动态高宽，多个grid时，重新计算网格大小
-      recomputeGridSize();
-    }
   };
 
   const onCenterBodyScroll: GridProps['onScroll'] = (params) => {
