@@ -445,16 +445,6 @@ const VirtualGrid = (props: VirtualGridProps) => {
       scrollPosition,
       isUserScroll,
     });
-
-    if (
-      !(fixedWidth && fixedHeight) &&
-      (fixedLeftColumnCount > 0 ||
-        fixedRightColumnCount > 0 ||
-        fixedTopRowCount > 0)
-    ) {
-      // 动态高宽，多个grid时，重新计算网格大小
-      recomputeGridSize();
-    }
   };
 
   const onCenterBodyScroll: GridProps['onScroll'] = (params) => {
@@ -588,6 +578,12 @@ const VirtualGrid = (props: VirtualGridProps) => {
     [recomputeGridSize, scrollToCell, scrollToPosition],
   );
 
+  const [headerGridHeight, setHeaderGridHeight] = useState(0);
+
+  useEffect(() => {
+    recomputeGridSize();
+  }, [headerGridHeight, recomputeGridSize]);
+
   const renderLeftHeaderGrid = (opts: { width: number; height: number }) => {
     const { width, height } = opts;
     if (fixedTopRowCount <= 0 || fixedLeftColumnCount <= 0) {
@@ -598,7 +594,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
         <Grid
           ref={leftHeaderGridRef}
           width={getGridWidth(width).leftGridWidth}
-          height={getGridHeight(height).headerGridHeight}
+          height={
+            headerGridHeight > 0
+              ? headerGridHeight
+              : getGridHeight(height).headerGridHeight
+          }
           columnCount={fixedLeftColumnCount}
           rowCount={fixedTopRowCount}
           columnWidth={({ index }) => {
@@ -618,6 +618,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
           deferredMeasurementCache={deferredMeasurementCacheGrid('LeftHeader')}
           scrollToAlignment={scrollToAlignment}
           cellRenderer={getGridCellRenderer('LeftHeader')}
+          onSectionRendered={() => {
+            setHeaderGridHeight(getGridHeight(height).headerGridHeight);
+          }}
         />
       </div>
     );
@@ -638,7 +641,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
         <Grid
           ref={centerHeaderGridRef}
           width={getGridWidth(width).centerGridWidth}
-          height={getGridHeight(height).headerGridHeight}
+          height={
+            headerGridHeight > 0
+              ? headerGridHeight
+              : getGridHeight(height).headerGridHeight
+          }
           columnCount={centerColumnCount}
           rowCount={fixedTopRowCount}
           columnWidth={({ index }) => {
@@ -665,6 +672,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
             hideCenterHeaderGridScrollbar ? { overflow: 'hidden' } : undefined
           }
           scrollLeft={scrollPositionData.scrollLeft}
+          onSectionRendered={() => {
+            setHeaderGridHeight(getGridHeight(height).headerGridHeight);
+          }}
         />
       </div>
     );
@@ -680,7 +690,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
         <Grid
           ref={rightHeaderGridRef}
           width={getGridWidth(width).rightGridWidth}
-          height={getGridHeight(height).headerGridHeight}
+          height={
+            headerGridHeight > 0
+              ? headerGridHeight
+              : getGridHeight(height).headerGridHeight
+          }
           columnCount={fixedRightColumnCount}
           rowCount={fixedTopRowCount}
           columnWidth={({ index }) => {
@@ -700,6 +714,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
           deferredMeasurementCache={deferredMeasurementCacheGrid('RightHeader')}
           scrollToAlignment={scrollToAlignment}
           cellRenderer={getGridCellRenderer('RightHeader')}
+          onSectionRendered={() => {
+            setHeaderGridHeight(getGridHeight(height).headerGridHeight);
+          }}
         />
       </div>
     );
@@ -819,6 +836,15 @@ const VirtualGrid = (props: VirtualGridProps) => {
               },
               virtualScrollInfo: info,
             });
+            if (
+              !(fixedWidth && fixedHeight) &&
+              (fixedLeftColumnCount > 0 ||
+                fixedRightColumnCount > 0 ||
+                fixedTopRowCount > 0)
+            ) {
+              // 动态高宽，多个grid时，重新计算网格大小
+              recomputeGridSize();
+            }
           }}
           autoContainerWidth={autoContainerWidth}
         />

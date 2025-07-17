@@ -51,6 +51,7 @@ const VirtualGridDemo = () => {
           }
           return gridWidth - 150;
         }}
+        defaultHeight={40}
       />
 
       <VirtualGrid
@@ -60,6 +61,7 @@ const VirtualGridDemo = () => {
         cellRenderer={renderItem}
         fixedWidth
         defaultWidth={150}
+        defaultHeight={40}
       />
 
       <VirtualGrid
@@ -72,6 +74,7 @@ const VirtualGridDemo = () => {
         fixedTopRowCount={1}
         fixedLeftColumnCount={1}
         fixedRightColumnCount={1}
+        defaultHeight={40}
       />
     </div>
   );
