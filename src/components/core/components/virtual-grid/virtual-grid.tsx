@@ -104,7 +104,12 @@ export type VirtualGridProps = {
    * 此组件目前不适用于设置fixed行列
    * 此组件目前不适用于水平滚动网格，因为水平滚动会重置内部滚动顶部
    * */
-  isWindowScroller?: boolean;
+  windowScroller?:
+    | boolean
+    | {
+        /** 滚动元素,用于附加滚动事件侦听器的元素。默认为window */
+        scrollElement?: typeof window | Element | undefined;
+      };
 } & Pick<
   GridProps,
   | 'scrollToAlignment'
@@ -155,15 +160,16 @@ const VirtualGrid = (props: VirtualGridProps) => {
     centerBodyClass,
     rightBodyClass,
   } = props;
-  let { isWindowScroller } = props;
+  let { windowScroller = false } = props;
   if (
     fixedTopRowCount > 0 ||
     fixedLeftColumnCount > 0 ||
     fixedRightColumnCount > 0
   ) {
     // 设置fixed行列下无效
-    isWindowScroller = false;
+    windowScroller = false;
   }
+  const isWindowScroller = Boolean(windowScroller);
   const isOneColumn = columnCount === 1;
   const fixedWidth = props.fixedWidth ?? isOneColumn;
 
@@ -426,8 +432,8 @@ const VirtualGrid = (props: VirtualGridProps) => {
     }
     let isUserScroll = true;
     if (
-        centerBodyScrollToRow !== undefined ||
-        centerBodyScrollToColumn !== undefined
+      centerBodyScrollToRow !== undefined ||
+      centerBodyScrollToColumn !== undefined
     ) {
       isUserScroll = false;
       setCenterBodyScrollToRow(undefined);
@@ -863,7 +869,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
 
   const renderMain = (windowScrollerChildProps?: WindowScrollerChildProps) => {
     const windowScrollerHeight = windowScrollerChildProps?.height;
-    console.log('windowScrollerHeight:',windowScrollerHeight)
+
     return (
       <div className={className}>
         <AutoSizer disableHeight={isWindowScroller}>
@@ -921,7 +927,13 @@ const VirtualGrid = (props: VirtualGridProps) => {
   return (
     <>
       {isWindowScroller ? (
-        <WindowScroller scrollElement={document.getElementById('#my-id')!}>
+        <WindowScroller
+          scrollElement={
+            typeof windowScroller === 'boolean'
+              ? undefined
+              : windowScroller.scrollElement
+          }
+        >
           {(windowScrollerChildProps) => {
             return renderMain(windowScrollerChildProps);
           }}

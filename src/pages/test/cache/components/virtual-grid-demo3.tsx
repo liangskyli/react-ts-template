@@ -6,7 +6,7 @@ import type {
 } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
 
-const MultiGridDemo2 = () => {
+const MultiGridDemo3 = () => {
   // 单元格渲染函数
   const renderItem: VirtualGridProps['cellRenderer'] = (props) => {
     // eslint-disable-next-line react/prop-types
@@ -57,12 +57,17 @@ const MultiGridDemo2 = () => {
     multiGrid1Ref.current?.scrollToCell(458, 5);
   };
 
+  const [scrollElement, setScrollElement] = useState<HTMLElement | undefined>(
+    undefined,
+  );
+
   return (
     <div
-      className="space-y-8 p-6"
+      ref={(e) => setScrollElement(e ?? undefined)}
+      className="flex-auto space-y-8 overflow-auto p-6"
     >
       <h1 className="text-3xl font-bold text-gray-900">
-        VirtualGrid WindowScroller 控件演示
+        VirtualGrid WindowScroller scrollElement 控件演示
       </h1>
       <div className="flex justify-center space-x-4">
         <div onClick={() => goToGridPosition()}>滚动定位</div>
@@ -84,10 +89,10 @@ const MultiGridDemo2 = () => {
         scrollToColumn={
           virtualGridCacheValue?.virtualScrollInfo.columnStopIndex
         }
-        windowScroller
+        windowScroller={{ scrollElement: scrollElement }}
       />
     </div>
   );
 };
 
-export default MultiGridDemo2;
+export default MultiGridDemo3;

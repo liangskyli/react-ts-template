@@ -68,14 +68,21 @@ const Index = () => {
           router.push('/test/cache2');
         }}
       >
-        前进
+        前进cache2
+      </Button>
+      <Button
+        onClick={() => {
+          router.push('/test/cache3');
+        }}
+      >
+        前进cache3
       </Button>
       <Button
         onClick={() => {
           window.location.href = '/sub/test/ui';
         }}
       >
-        前进2
+        非路由前进
       </Button>
       <div>
         <VirtualGridDemo />
