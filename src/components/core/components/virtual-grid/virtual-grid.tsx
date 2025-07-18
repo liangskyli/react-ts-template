@@ -592,6 +592,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.leftHeaderConfig, leftHeaderClass)}>
         <Grid
+          data-testid="leftHeaderGrid"
           ref={leftHeaderGridRef}
           width={getGridWidth(width).leftGridWidth}
           height={
@@ -639,6 +640,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
         }}
       >
         <Grid
+          data-testid="centerHeaderGrid"
           ref={centerHeaderGridRef}
           width={getGridWidth(width).centerGridWidth}
           height={
@@ -688,6 +690,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.rightHeaderConfig, rightHeaderClass)}>
         <Grid
+          data-testid="rightHeaderGrid"
           ref={rightHeaderGridRef}
           width={getGridWidth(width).rightGridWidth}
           height={
@@ -731,6 +734,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.leftBodyConfig, leftBodyClass)}>
         <Grid
+          data-testid="leftBodyGrid"
           ref={leftBodyGridRef}
           width={getGridWidth(width).leftGridWidth}
           height={getGridHeight(height).bodyGridHeight}
@@ -793,6 +797,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
         }}
       >
         <Grid
+          data-testid="centerBodyGrid"
           ref={centerBodyGridRef}
           width={getGridWidth(width).centerGridWidth}
           height={getGridHeight(height).bodyGridHeight}
@@ -861,6 +866,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.rightBodyConfig, rightBodyClass)}>
         <Grid
+          data-testid="rightBodyGrid"
           ref={rightBodyGridRef}
           width={getGridWidth(width).rightGridWidth}
           height={getGridHeight(height).bodyGridHeight}

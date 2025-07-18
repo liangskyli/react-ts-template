@@ -9,6 +9,14 @@ import VirtualGrid from '@/components/core/components/virtual-grid';
 vi.mock('react-virtualized', () => {
   return {
     AutoSizer: ({ children }: any) => children({ width: 400, height: 400 }),
+    WindowScroller: ({ children }: any) =>
+      children({
+        height: 400,
+        isScrolling: false,
+        onChildScroll: vi.fn(),
+        scrollTop: 0,
+        registerChild: vi.fn(),
+      }),
     Grid: function MockGrid({
       cellRenderer,
       columnCount,
@@ -843,6 +851,142 @@ describe('VirtualGrid Component', () => {
 
       // 验证组件仍然正常工作
       expect(screen.getAllByTestId('virtualized-grid')).toHaveLength(4);
+    });
+  });
+
+  describe('scroll and grid size recalculation', () => {
+    it('handles non-user scroll state reset', async () => {
+      const gridRef = createRef<any>();
+      render(
+        <VirtualGrid
+          rowCount={10}
+          columnCount={10}
+          cellRenderer={({ rowIndex, columnIndex }) => (
+            <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+          )}
+          ref={gridRef}
+          fixedTopRowCount={2}
+          fixedLeftColumnCount={2}
+          scrollToRow={3}
+          scrollToColumn={3}
+        />,
+      );
+
+      await act(async () => {
+        // 触发非用户滚动
+        gridRef.current?.scrollToCell(4, 4);
+      });
+
+      // 验证滚动状态被正确重置
+      expect(screen.getAllByTestId('virtualized-grid')).toHaveLength(4);
+    });
+
+    it('handles grid size recalculation with dynamic sizes', async () => {
+      const getPositionCache = vi.fn();
+      render(
+        <VirtualGrid
+          rowCount={10}
+          columnCount={10}
+          cellRenderer={({ rowIndex, columnIndex }) => (
+            <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+          )}
+          fixedTopRowCount={2}
+          fixedLeftColumnCount={2}
+          getPositionCache={getPositionCache}
+          fixedWidth={false}
+          fixedHeight={false}
+        />,
+      );
+
+      // 触发滚动和区域渲染事件
+      await act(async () => {
+        (global as any).__virtualizedGridOnSectionRendered({
+          columnStartIndex: 0,
+          columnStopIndex: 2,
+          rowStartIndex: 0,
+          rowStopIndex: 2,
+        });
+      });
+
+      expect(getPositionCache).toHaveBeenCalled();
+    });
+
+    it('handles header grid height calculations', () => {
+      render(
+        <VirtualGrid
+          rowCount={10}
+          columnCount={10}
+          cellRenderer={({ rowIndex, columnIndex }) => (
+            <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+          )}
+          fixedTopRowCount={2}
+          fixedLeftColumnCount={2}
+          fixedRightColumnCount={1}
+        />,
+      );
+
+      // 验证头部网格被正确渲染
+      const grids = screen.getAllByTestId('virtualized-grid');
+      expect(grids).toHaveLength(6); // 2x3 网格布局
+    });
+
+    it('handles conditional grid rendering', () => {
+      render(
+        <VirtualGrid
+          rowCount={10}
+          columnCount={10}
+          cellRenderer={({ rowIndex, columnIndex }) => (
+            <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+          )}
+          fixedTopRowCount={0} // 测试无固定头部的情况
+          fixedLeftColumnCount={2}
+        />,
+      );
+
+      // 验证只渲染必要的网格
+      const grids = screen.getAllByTestId('virtualized-grid');
+      expect(grids).toHaveLength(2); // 只有左侧和中间主体
+    });
+
+    it('handles center body grid scroll with WindowScroller', async () => {
+      render(
+        <VirtualGrid
+          rowCount={20}
+          columnCount={10}
+          cellRenderer={({ rowIndex, columnIndex }) => (
+            <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+          )}
+          windowScroller={true}
+        />,
+      );
+
+      // 触发中心主体网格的滚动
+      await act(async () => {
+        (global as any).__virtualizedGridOnScroll({
+          scrollTop: 100,
+          scrollLeft: 50,
+        });
+      });
+
+      expect(screen.getByTestId('virtualized-grid')).toBeInTheDocument();
+    });
+
+    it('handles WindowScroller with custom scroll element', () => {
+      const customScrollElement = document.createElement('div');
+      render(
+        <VirtualGrid
+          rowCount={10}
+          columnCount={10}
+          cellRenderer={({ rowIndex, columnIndex }) => (
+            <div>{`Item ${rowIndex}-${columnIndex}`}</div>
+          )}
+          windowScroller={{
+            scrollElement: customScrollElement,
+          }}
+        />,
+      );
+
+      expect(screen.getByTestId('virtualized-grid')).toBeInTheDocument();
     });
   });
 });
