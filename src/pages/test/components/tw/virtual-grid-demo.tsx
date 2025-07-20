@@ -32,51 +32,47 @@ const VirtualGridDemo = () => {
       <h1 className="tw-text-3xl tw-font-bold tw-text-gray-900">
         VirtualGrid 控件演示
       </h1>
-      <div className="tw-h-[200px] tw-w-full">
-        <VirtualGrid
-          columnCount={1}
-          rowCount={100000}
-          cellRenderer={renderItem}
-        />
-      </div>
+      <VirtualGrid
+        className="tw-h-[200px]"
+        columnCount={1}
+        rowCount={100000}
+        cellRenderer={renderItem}
+      />
 
-      <div className="tw-mt-10 tw-h-[200px] tw-w-full">
-        <VirtualGrid
-          columnCount={2}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          columnWidth={({ index, gridWidth }) => {
-            if (index === 0) {
-              return 150;
-            }
-            return gridWidth - 150;
-          }}
-        />
-      </div>
+      <VirtualGrid
+        className="tw-mt-10 tw-h-[200px]"
+        columnCount={2}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        columnWidth={({ index, gridWidth }) => {
+          if (index === 0) {
+            return 150;
+          }
+          return gridWidth - 150;
+        }}
+      />
 
-      <div className="tw-mt-10 tw-h-[200px] tw-w-full">
-        <VirtualGrid
-          columnCount={10}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          defaultWidth={150}
-        />
-      </div>
+      <VirtualGrid
+        className="tw-mt-10 tw-h-[200px]"
+        columnCount={10}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        defaultWidth={150}
+      />
 
-      <div className="tw-mt-10 tw-h-[400px] tw-w-full">
-        <VirtualGrid
-          columnCount={10}
-          rowCount={100000}
-          cellRenderer={renderItem}
-          fixedWidth
-          defaultWidth={150}
-          fixedTopRowCount={1}
-          fixedLeftColumnCount={1}
-          fixedRightColumnCount={1}
-        />
-      </div>
+      <VirtualGrid
+        className="tw-mt-10 tw-h-[400px]"
+        columnCount={10}
+        rowCount={100000}
+        cellRenderer={renderItem}
+        fixedWidth
+        defaultWidth={150}
+        fixedTopRowCount={1}
+        fixedLeftColumnCount={1}
+        fixedRightColumnCount={1}
+      />
     </div>
   );
 };

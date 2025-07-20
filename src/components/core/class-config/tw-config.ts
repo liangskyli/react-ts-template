@@ -320,6 +320,9 @@ const twConfig = {
       wrap: 'tw-h-[30px] tw-text-center tw-text-sm tw-leading-[30px] tw-text-gray-500',
       retry: 'tw-text-blue-500 tw-ml-2 tw-cursor-pointer',
     },
+    virtualGrid: {
+      className: 'tw-h-full tw-w-full',
+    },
   },
   mask: {
     transition: {

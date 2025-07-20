@@ -1,4 +1,5 @@
 import React from 'react';
+import classConfig from '@/components/core/components/list/class-config.ts';
 import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
 
@@ -43,6 +44,7 @@ const VirtualScrollList = (props: VirtualScrollListProps) => {
 
   return (
     <VirtualGrid
+      className={classConfig.virtualGridConfig.className}
       ref={ref}
       columnCount={1}
       rowCount={rowCount}
