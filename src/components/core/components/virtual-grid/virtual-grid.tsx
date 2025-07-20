@@ -11,6 +11,7 @@ import type {
   GridProps,
   ScrollParams,
 } from 'react-virtualized';
+import { WindowScroller } from 'react-virtualized';
 import {
   AutoSizer,
   CellMeasurer,
@@ -21,6 +22,7 @@ import type {
   GridCellProps,
   SectionRenderedParams,
 } from 'react-virtualized/dist/es/Grid';
+import type { WindowScrollerChildProps } from 'react-virtualized/dist/es/WindowScroller';
 import { cn } from '@/components/core/class-config';
 import CellMeasurerCacheDecorator from './cell-measurer-cache-decorator.ts';
 import classConfig from './class-config.ts';
@@ -44,6 +46,12 @@ type PositionCacheData = {
   params: Pick<ScrollParams, 'scrollLeft' | 'scrollTop'>;
   virtualScrollInfo: SectionRenderedParams;
 };
+type IWindowScroller =
+  | boolean
+  | {
+      /** 滚动元素,用于附加滚动事件侦听器的元素。默认为window */
+      scrollElement?: typeof window | Element | undefined;
+    };
 export type VirtualGridProps = {
   /** 单元格默认宽度, 默认100 */
   defaultWidth?: number;
@@ -97,6 +105,12 @@ export type VirtualGridProps = {
   centerBodyClass?: string;
   /** 右边区域的类名 */
   rightBodyClass?: string;
+  /**
+   * 是否使用WindowScroller
+   * 此组件目前不适用于设置fixed行列
+   * 此组件目前不适用于水平滚动网格，因为水平滚动会重置内部滚动顶部
+   * */
+  windowScroller?: IWindowScroller;
 } & Pick<
   GridProps,
   | 'scrollToAlignment'
@@ -147,6 +161,16 @@ const VirtualGrid = (props: VirtualGridProps) => {
     centerBodyClass,
     rightBodyClass,
   } = props;
+  let { windowScroller = false } = props;
+  if (
+    fixedTopRowCount > 0 ||
+    fixedLeftColumnCount > 0 ||
+    fixedRightColumnCount > 0
+  ) {
+    // 设置fixed行列下无效
+    windowScroller = false;
+  }
+  const isWindowScroller = Boolean(windowScroller);
   const isOneColumn = columnCount === 1;
   const fixedWidth = props.fixedWidth ?? isOneColumn;
 
@@ -186,8 +210,15 @@ const VirtualGrid = (props: VirtualGridProps) => {
   const [scrollPositionData, setScrollPositionData] = useState<
     PositionCacheData['params'] & {
       scrollPosition: Position;
+      /** 是否用户使用滚动条滚动 */
+      isUserScroll: boolean;
     }
-  >({ scrollTop: 0, scrollLeft: 0, scrollPosition: 'CenterBody' });
+  >({
+    scrollTop: 0,
+    scrollLeft: 0,
+    scrollPosition: 'CenterBody',
+    isUserScroll: false,
+  });
 
   // 中间区域的列数
   const centerColumnCount = useMemo(() => {
@@ -400,10 +431,20 @@ const VirtualGrid = (props: VirtualGridProps) => {
       setCenterBodyScrollToRow(undefined);
       setCenterBodyScrollToColumn(undefined);
     }
+    let isUserScroll = true;
+    if (
+      centerBodyScrollToRow !== undefined ||
+      centerBodyScrollToColumn !== undefined
+    ) {
+      isUserScroll = false;
+      setCenterBodyScrollToRow(undefined);
+      setCenterBodyScrollToColumn(undefined);
+    }
 
     setScrollPositionData({
       ...params,
       scrollPosition,
+      isUserScroll,
     });
   };
 
@@ -501,6 +542,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
       setScrollPositionData({
         ...scrollPositionData,
         scrollPosition: 'CenterBody',
+        isUserScroll: false,
       });
 
       centerBodyGridRef.current?.scrollToCell({
@@ -516,6 +558,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
       setScrollPositionData({
         ...params,
         scrollPosition: 'CenterBody',
+        isUserScroll: false,
       });
       centerBodyGridRef.current?.scrollToPosition(params);
     },
@@ -550,6 +593,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.leftHeaderConfig, leftHeaderClass)}>
         <Grid
+          data-testid="leftHeaderGrid"
           ref={leftHeaderGridRef}
           width={getGridWidth(width).leftGridWidth}
           height={
@@ -597,6 +641,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
         }}
       >
         <Grid
+          data-testid="centerHeaderGrid"
           ref={centerHeaderGridRef}
           width={getGridWidth(width).centerGridWidth}
           height={
@@ -646,6 +691,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.rightHeaderConfig, rightHeaderClass)}>
         <Grid
+          data-testid="rightHeaderGrid"
           ref={rightHeaderGridRef}
           width={getGridWidth(width).rightGridWidth}
           height={
@@ -689,6 +735,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.leftBodyConfig, leftBodyClass)}>
         <Grid
+          data-testid="leftBodyGrid"
           ref={leftBodyGridRef}
           width={getGridWidth(width).leftGridWidth}
           height={getGridHeight(height).bodyGridHeight}
@@ -719,11 +766,28 @@ const VirtualGrid = (props: VirtualGridProps) => {
     );
   };
 
-  const renderCenterBodyGrid = (opts: { width: number; height: number }) => {
+  const renderCenterBodyGrid = (opts: {
+    width: number;
+    height: number;
+    windowScrollerChildProps?: WindowScrollerChildProps;
+  }) => {
     const { width, height } = opts;
+    const { windowScrollerChildProps } = opts;
     const centerRowCount = Math.max(0, rowCount - fixedTopRowCount);
     if (centerRowCount === 0 || centerColumnCount === 0) {
       return null;
+    }
+
+    let innerScrollTop =
+      scrollPositionData.scrollPosition === 'CenterBody'
+        ? undefined
+        : scrollPositionData.scrollTop;
+    if (
+      windowScrollerChildProps &&
+      scrollPositionData.scrollPosition === 'CenterBody' &&
+      scrollPositionData.isUserScroll
+    ) {
+      innerScrollTop = windowScrollerChildProps.scrollTop;
     }
 
     return (
@@ -734,9 +798,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
         }}
       >
         <Grid
+          data-testid="centerBodyGrid"
           ref={centerBodyGridRef}
           width={getGridWidth(width).centerGridWidth}
           height={getGridHeight(height).bodyGridHeight}
+          autoHeight={isWindowScroller}
           columnCount={centerColumnCount}
           rowCount={centerRowCount}
           columnWidth={({ index }) => {
@@ -756,12 +822,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
           deferredMeasurementCache={deferredMeasurementCacheGrid('CenterBody')}
           scrollToAlignment={scrollToAlignment}
           cellRenderer={getGridCellRenderer('CenterBody')}
-          onScroll={onCenterBodyScroll}
-          scrollTop={
-            scrollPositionData.scrollPosition === 'CenterBody'
-              ? undefined
-              : scrollPositionData.scrollTop
-          }
+          onScroll={(params) => {
+            windowScrollerChildProps?.onChildScroll(params);
+            onCenterBodyScroll(params);
+          }}
+          scrollTop={innerScrollTop}
           scrollLeft={
             scrollPositionData.scrollPosition === 'CenterBody'
               ? undefined
@@ -802,6 +867,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     return (
       <div className={cn(classConfig.rightBodyConfig, rightBodyClass)}>
         <Grid
+          data-testid="rightBodyGrid"
           ref={rightBodyGridRef}
           width={getGridWidth(width).rightGridWidth}
           height={getGridHeight(height).bodyGridHeight}
@@ -834,50 +900,81 @@ const VirtualGrid = (props: VirtualGridProps) => {
     );
   };
 
-  return (
-    <div className={className}>
-      <AutoSizer>
-        {({ width, height }) => {
-          return (
-            <div
-              className={classConfig.containerConfig}
-              style={{ width, height }}
-            >
-              {/* head区域 */}
-              {
-                <div className={classConfig.headerConfig}>
+  const renderMain = (windowScrollerChildProps?: WindowScrollerChildProps) => {
+    const windowScrollerHeight = windowScrollerChildProps?.height;
+
+    return (
+      <div className={className}>
+        <AutoSizer disableHeight={isWindowScroller}>
+          {({ width, height: autoSizerHeight }) => {
+            const height = isWindowScroller
+              ? windowScrollerHeight!
+              : autoSizerHeight;
+            return (
+              <div
+                className={classConfig.containerConfig}
+                style={{ width, height }}
+              >
+                {/* head区域 */}
+                {
+                  <div className={classConfig.headerConfig}>
+                    {/* 左固定 */}
+                    {renderLeftHeaderGrid({ width, height })}
+
+                    {/* 中间 */}
+                    {renderCenterHeaderGrid({ width, height })}
+
+                    {/* 右固定 */}
+                    {renderRightHeaderGrid({ width, height })}
+                  </div>
+                }
+
+                {/* body区域 */}
+                <div
+                  className={classConfig.bodyConfig}
+                  style={{
+                    top: getGridHeight(height).headerGridHeight,
+                  }}
+                >
                   {/* 左固定 */}
-                  {renderLeftHeaderGrid({ width, height })}
+                  {renderLeftBodyGrid({ width, height })}
 
                   {/* 中间 */}
-                  {renderCenterHeaderGrid({ width, height })}
+                  {renderCenterBodyGrid({
+                    width,
+                    height,
+                    windowScrollerChildProps,
+                  })}
 
                   {/* 右固定 */}
-                  {renderRightHeaderGrid({ width, height })}
+                  {renderRightBodyGrid({ width, height })}
                 </div>
-              }
-
-              {/* body区域 */}
-              <div
-                className={classConfig.bodyConfig}
-                style={{
-                  top: getGridHeight(height).headerGridHeight,
-                }}
-              >
-                {/* 左固定 */}
-                {renderLeftBodyGrid({ width, height })}
-
-                {/* 中间 */}
-                {renderCenterBodyGrid({ width, height })}
-
-                {/* 右固定 */}
-                {renderRightBodyGrid({ width, height })}
               </div>
-            </div>
-          );
-        }}
-      </AutoSizer>
-    </div>
+            );
+          }}
+        </AutoSizer>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {isWindowScroller ? (
+        <WindowScroller
+          scrollElement={
+            typeof windowScroller === 'boolean'
+              ? undefined
+              : windowScroller.scrollElement
+          }
+        >
+          {(windowScrollerChildProps) => {
+            return renderMain(windowScrollerChildProps);
+          }}
+        </WindowScroller>
+      ) : (
+        renderMain()
+      )}
+    </>
   );
 };
 

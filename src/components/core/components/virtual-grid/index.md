@@ -143,38 +143,39 @@ export default () => {
 
 ### Props
 
-| 属性                              | 说明                | 类型                                                                      | 默认值     |
-|---------------------------------|-------------------|-------------------------------------------------------------------------|---------|
-| `cellRenderer`                  | 单元格渲染函数           | `(props: GridCellProps, measure: () => void) => React.ReactNode`        | -       |
-| `rowCount`                      | 行数                | `number`                                                                | -       |
-| `columnCount`                   | 列数                | `number`                                                                | -       |
-| `defaultWidth`                  | 单元格默认宽度           | `number`                                                                | `100`   |
-| `minWidth`                      | 单元格最小宽度           | `number`                                                                | -       |
-| `defaultHeight`                 | 单元格默认高度           | `number`                                                                | `30`    |
-| `minHeight`                     | 单元格最小高度           | `number`                                                                | -       |
-| `fixedWidth`                    | 是否固定宽度            | `boolean`                                                               | `false` |
-| `fixedHeight`                   | 是否固定高度            | `boolean`                                                               | `false` |
-| `ref`                           | VirtualGrid 组件的引用 | `Ref<VirtualGridRef>`                                                   | -       |
-| `rowHeight`                     | 行高函数              | `number \| ((params: { index: number; gridHeight: number }) => number)` | -       |
-| `columnWidth`                   | 列宽函数              | `number \| ((params: { index: number; gridWidth: number }) => number)`  | -       |
-| `getPositionCache`              | 获取滚动位置缓存的回调函数     | `(cache: PositionCacheData) => void`                                    | -       |
-| `fixedTopRowCount`              | 固定的顶部行数           | `number`                                                                | `0`     |
-| `fixedLeftColumnCount`          | 固定的左侧列数           | `number`                                                                | `0`     |
-| `fixedRightColumnCount`         | 固定的右侧列数           | `number`                                                                | `0`     |
-| `hideCenterHeaderGridScrollbar` | 是否隐藏中间表头区域的滚动条    | `boolean`                                                               | `false` |
-| `hideLeftBodyGridScrollbar`     | 是否隐藏左侧区域的滚动条      | `boolean`                                                               | `false` |
-| `hideRightBodyGridScrollbar`    | 是否隐藏右侧区域的滚动条      | `boolean`                                                               | `false` |
-| `className`                     | 容器的类名             | `string`                                                                | -       |
-| `leftHeaderClass`               | 左上角表头的类名          | `string`                                                                | -       |
-| `centerHeaderClass`             | 中间表头的类名           | `string`                                                                | -       |
-| `rightHeaderClass`              | 右上角表头的类名          | `string`                                                                | -       |
-| `leftBodyClass`                 | 左边区域的类名           | `string`                                                                | -       |
-| `centerBodyClass`               | 中间区域的类名           | `string`                                                                | -       |
-| `rightBodyClass`                | 右边区域的类名           | `string`                                                                | -       |
-| `scrollToAlignment`             | 滚动对齐方式            | `'auto' \| 'start' \| 'center' \| 'end'`                                | `'end'` |
-| `scrollToRow`                   | 滚动到指定行            | `number`                                                                | `-1`    |
-| `scrollToColumn`                | 滚动到指定列            | `number`                                                                | `-1`    |
-| `autoContainerWidth`            | 是否自动设置容器宽度        | `boolean`                                                               | -       |
+| 属性                              | 说明                                                    | 类型                                                                      | 默认值      |
+|---------------------------------|-------------------------------------------------------|-------------------------------------------------------------------------|----------|
+| `cellRenderer`                  | 单元格渲染函数                                               | `(props: GridCellProps, measure: () => void) => React.ReactNode`        | -        |
+| `rowCount`                      | 行数                                                    | `number`                                                                | -        |
+| `columnCount`                   | 列数                                                    | `number`                                                                | -        |
+| `defaultWidth`                  | 单元格默认宽度                                               | `number`                                                                | `100`    |
+| `minWidth`                      | 单元格最小宽度                                               | `number`                                                                | -        |
+| `defaultHeight`                 | 单元格默认高度                                               | `number`                                                                | `30`     |
+| `minHeight`                     | 单元格最小高度                                               | `number`                                                                | -        |
+| `fixedWidth`                    | 是否固定宽度                                                | `boolean`                                                               | `false`  |
+| `fixedHeight`                   | 是否固定高度                                                | `boolean`                                                               | `false`  |
+| `ref`                           | VirtualGrid 组件的引用                                     | `Ref<VirtualGridRef>`                                                   | -        |
+| `rowHeight`                     | 行高函数                                                  | `number \| ((params: { index: number; gridHeight: number }) => number)` | -        |
+| `columnWidth`                   | 列宽函数                                                  | `number \| ((params: { index: number; gridWidth: number }) => number)`  | -        |
+| `getPositionCache`              | 获取滚动位置缓存的回调函数                                         | `(cache: PositionCacheData) => void`                                    | -        |
+| `fixedTopRowCount`              | 固定的顶部行数                                               | `number`                                                                | `0`      |
+| `fixedLeftColumnCount`          | 固定的左侧列数                                               | `number`                                                                | `0`      |
+| `fixedRightColumnCount`         | 固定的右侧列数                                               | `number`                                                                | `0`      |
+| `hideCenterHeaderGridScrollbar` | 是否隐藏中间表头区域的滚动条                                        | `boolean`                                                               | `false`  |
+| `hideLeftBodyGridScrollbar`     | 是否隐藏左侧区域的滚动条                                          | `boolean`                                                               | `false`  |
+| `hideRightBodyGridScrollbar`    | 是否隐藏右侧区域的滚动条                                          | `boolean`                                                               | `false`  |
+| `className`                     | 容器的类名                                                 | `string`                                                                | -        |
+| `leftHeaderClass`               | 左上角表头的类名                                              | `string`                                                                | -        |
+| `centerHeaderClass`             | 中间表头的类名                                               | `string`                                                                | -        |
+| `rightHeaderClass`              | 右上角表头的类名                                              | `string`                                                                | -        |
+| `leftBodyClass`                 | 左边区域的类名                                               | `string`                                                                | -        |
+| `centerBodyClass`               | 中间区域的类名                                               | `string`                                                                | -        |
+| `rightBodyClass`                | 右边区域的类名                                               | `string`                                                                | -        |
+| `scrollToAlignment`             | 滚动对齐方式                                                | `'auto' \| 'start' \| 'center' \| 'end'`                                | `'end'`  |
+| `scrollToRow`                   | 滚动到指定行                                                | `number`                                                                | `-1`     |
+| `scrollToColumn`                | 滚动到指定列                                                | `number`                                                                | `-1`     |
+| `autoContainerWidth`            | 是否自动设置容器宽度                                            | `boolean`                                                               | -        |
+| `windowScroller`                | 是否使用WindowScroller,此组件目前不适用于设置fixed行列,此组件目前不适用于水平滚动网格 | `IWindowScroller`                                                       | `window` |
 
 ### VirtualGridRef 方法
 
@@ -185,6 +186,20 @@ export default () => {
 | `scrollToCell` | 滚动到指定单元格 | `(rowIndex: number, columnIndex: number) => void` |
 | `scrollToPosition` | 滚动到指定位置 | `(params: { scrollLeft: number; scrollTop: number }) => void` |
 | `getCache` | 获取缓存测量数据 | `() => CellMeasurerCache` |
+
+### windowScroller 类型
+
+- 此组件目前不适用于设置fixed行列
+- 此组件目前不适用于水平滚动网格，因为水平滚动会重置内部滚动顶部
+
+```ts
+type IWindowScroller =
+  | boolean
+  | {
+      /** 滚动元素,用于附加滚动事件侦听器的元素。默认为window */
+      scrollElement?: typeof window | Element | undefined;
+    };
+```
 
 此外，组件还支持部分 react-virtualized Grid 组件的属性。
 
