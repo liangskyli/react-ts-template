@@ -20,6 +20,7 @@ export type VirtualScrollListProps = {
     | 'minHeight'
     | 'fixedHeight'
     | 'rowHeight'
+    | 'windowScroller'
   >;
   /** 列表项总数 */
   rowCount: number;

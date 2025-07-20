@@ -223,13 +223,28 @@ export default () => {
 
 #### virtualScroll 对象配置
 
-| 参数                  | 说明            | 类型                                                          | 默认值   |
-|---------------------|---------------|-------------------------------------------------------------|-------|
-| `defaultHeight`     | 每项默认高度        | `number`                                                    | -     |
-| `minHeight`         | 每项最小高度        | `number`                                                    | -     |
-| `scrollToAlignment` | 控制滚动行的位置      | `"auto" \| "end" \| "start" \| "center"`                    | `end` |
-| `fixedHeight`       | 是否固定高度        | `boolean`                                                   | -     |
-| `rowHeight`         | 行高函数, 固定高度时使用 | `(params: { index: number; gridHeight: number }) => number` | -     |
+| 参数                  | 说明                                                    | 类型                                                          | 默认值      |
+|---------------------|-------------------------------------------------------|-------------------------------------------------------------|----------|
+| `defaultHeight`     | 每项默认高度                                                | `number`                                                    | -        |
+| `minHeight`         | 每项最小高度                                                | `number`                                                    | -        |
+| `scrollToAlignment` | 控制滚动行的位置                                              | `"auto" \| "end" \| "start" \| "center"`                    | `end`    |
+| `fixedHeight`       | 是否固定高度                                                | `boolean`                                                   | -        |
+| `rowHeight`         | 行高函数, 固定高度时使用                                         | `(params: { index: number; gridHeight: number }) => number` | -        |
+| `windowScroller`    | 是否使用WindowScroller,此组件目前不适用于设置fixed行列,此组件目前不适用于水平滚动网格 | `IWindowScroller`                                           | `window` |
+
+#### windowScroller 类型
+
+- 此组件目前不适用于设置fixed行列
+- 此组件目前不适用于水平滚动网格，因为水平滚动会重置内部滚动顶部
+
+```ts
+type IWindowScroller =
+  | boolean
+  | {
+      /** 滚动元素,用于附加滚动事件侦听器的元素。默认为window */
+      scrollElement?: typeof window | Element | undefined;
+    };
+```
 
 #### InfiniteScroll
 
