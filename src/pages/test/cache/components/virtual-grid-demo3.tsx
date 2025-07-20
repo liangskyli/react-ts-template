@@ -34,7 +34,7 @@ const MultiGridDemo3 = () => {
   const virtualGridCache = useCreateLRUCache<
     string,
     Parameters<Required<VirtualGridProps>['getPositionCache']>[0]
-  >('virtualGrid');
+  >('virtualGrid_demo3');
   const [virtualGridCacheValue, setVirtualGridCacheValue] =
     useState<Parameters<Required<VirtualGridProps>['getPositionCache']>[0]>();
 
