@@ -5,22 +5,26 @@ const VirtualGridDemo = () => {
   // 单元格渲染函数
   const renderItem: VirtualGridProps['cellRenderer'] = (props) => {
     // eslint-disable-next-line react/prop-types
-    const { rowIndex, columnIndex } = props;
+    const { rowIndex, columnIndex, style } = props;
+
     return (
       <div
-        className="h-full p-2"
+        className="h-full p-2 break-all"
         style={{
+          // eslint-disable-next-line react/prop-types
+          width: style.width,
           backgroundColor:
             (columnIndex + rowIndex) % 2 === 0 ? '#f5f5f5' : '#ccc',
         }}
       >
         <div>{`R${rowIndex}, C${columnIndex}`}</div>
-        {rowIndex % 10 === 0 && columnIndex === 0 && (
+        {rowIndex % 10 === 1 && columnIndex === 0 && (
           <div>
             <div>more data1</div>
             <div>more data2</div>
             <div>more data3</div>
             <div>more data4</div>
+            <div>有股权交易易主的有股权交易易主的有股权交易易主的有股权交易易主的有股权交易易主的有股权交易易主的有股权交易易主的有股权交易易主的11</div>
           </div>
         )}
       </div>
