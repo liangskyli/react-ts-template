@@ -18,11 +18,13 @@ import TreeCheckboxDemo from '@/pages/test/components/tree-checkbox-demo.tsx';
 import TreeDemo from '@/pages/test/components/tree-demo.tsx';
 import TreeRadioDemo from '@/pages/test/components/tree-radio-demo.tsx';
 import VirtualGridDemo from '@/pages/test/components/virtual-grid-demo.tsx';
+import VirtualTableDemo from '@/pages/test/components/virtual-table-demo.tsx';
 
 const Index = () => {
   return (
     <div className="mt-[10px] text-center">
       <title>UI</title>
+      <VirtualTableDemo />
       <VirtualGridDemo />
       <SearchBarDemo />
       <TreeCheckboxDemo />

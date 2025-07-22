@@ -495,5 +495,13 @@ const defaultConfig = {
     centerBody: 'absolute top-0',
     rightBody: 'absolute right-0 top-0',
   },
+  virtualTable: {
+    container: 'border border-gray-200',
+    rightHeaderClass: 'border-l border-gray-200',
+    rightBodyClass: 'border-l border-gray-200',
+    headerCellClass:
+      'flex h-full items-center border-b border-r border-gray-200 bg-gray-50 px-2',
+    bodyCellClass: 'h-full border-b border-r border-gray-200 px-2',
+  },
 };
 export { defaultConfig };

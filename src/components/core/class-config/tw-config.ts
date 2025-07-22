@@ -499,5 +499,14 @@ const twConfig = {
     centerBody: 'tw-absolute tw-top-0',
     rightBody: 'tw-absolute tw-right-0 tw-top-0',
   },
+  virtualTable: {
+    container: 'tw-border tw-border-gray-200',
+    rightHeaderClass: 'tw-border-l tw-border-gray-200',
+    rightBodyClass: 'tw-border-l tw-border-gray-200',
+    headerCellClass:
+      'tw-flex tw-h-full tw-items-center tw-border-b tw-border-r tw-border-gray-200 tw-bg-gray-50 tw-px-2',
+    bodyCellClass:
+      'tw-h-full tw-border-b tw-border-r tw-border-gray-200 tw-px-2',
+  },
 };
 export { twConfig };
