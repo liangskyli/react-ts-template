@@ -3,3 +3,5 @@ ignoredBuiltDependencies:
   - '@swc/core'
   - core-js
   - esbuild
+publicHoistPattern:
+  - "pdfjs-dist"

@@ -11,7 +11,6 @@ const ViewerPdfDemo = () => {
           <h2 className="mb-4 text-lg font-semibold">基础</h2>
           <ViewerPdf
             url="https://test-ztcpic.myscrm.cn/3a0b8d13-1f39-5688-907f-9f9b09354626.pdf"
-            errText="加载 PDF 失败"
           />
         </div>
       </div>
