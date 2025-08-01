@@ -503,5 +503,18 @@ const defaultConfig = {
       'flex h-full items-center border-b border-r border-gray-200 bg-gray-50 px-2',
     bodyCellClass: 'h-full border-b border-r border-gray-200 px-2',
   },
+  viewerPdf: {
+    container: 'flex flex-col data-[tool-bar]:border',
+    toolBar: {
+      wrap: 'flex items-center justify-end bg-gray-100',
+      zoomButton: 'p-2 data-[disabled]:text-gray-400 focus:outline-none',
+      resetZoomButton: 'w-12 py-1 text-sm focus:outline-none',
+    },
+    document: [
+      'text-center bg-white overflow-auto',
+      'flex flex-col items-center',
+    ],
+    page: 'after:shadow-[2px_2px_8px_0px_rgba(0,0,0,0.2)] after:absolute after:inset-[10px]',
+  },
 };
 export { defaultConfig };

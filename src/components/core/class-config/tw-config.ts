@@ -508,5 +508,19 @@ const twConfig = {
     bodyCellClass:
       'tw-h-full tw-border-b tw-border-r tw-border-gray-200 tw-px-2',
   },
+  viewerPdf: {
+    container: 'tw-flex tw-flex-col data-[tool-bar]:tw-border',
+    toolBar: {
+      wrap: 'tw-flex tw-items-center tw-justify-end tw-bg-gray-100',
+      zoomButton:
+        'tw-p-2 data-[disabled]:tw-text-gray-400 focus:tw-outline-none',
+      resetZoomButton: 'tw-w-12 tw-py-1 tw-text-sm focus:tw-outline-none',
+    },
+    document: [
+      'tw-text-center tw-bg-white tw-overflow-auto',
+      'tw-flex tw-flex-col tw-items-center',
+    ],
+    page: 'after:tw-shadow-[2px_2px_8px_0px_rgba(0,0,0,0.2)] after:tw-absolute after:tw-inset-[10px]',
+  },
 };
 export { twConfig };
