@@ -7,14 +7,14 @@
 <p align="center">
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-%2361DAFB?logo=react" alt="React Version"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-%23007ACC?logo=typescript" alt="TypeScript Version"></a>
-  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-6-%23646CFF?logo=vite" alt="Vite Version"></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%3E%3D18.20.0-brightgreen?logo=node.js" alt="Node Version"></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7-%23646CFF?logo=vite" alt="Vite Version"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%3E%3D20.19.0-brightgreen?logo=node.js" alt="Node Version"></a>
   <a href="https://github.com/liangskyli/react-ts-template/blob/main/LICENSE"><img src="https://img.shields.io/github/license/liangskyli/react-ts-template" alt="License"></a>
 </p>
 
 ## 📖 简介
 
-一个现代化的 React 项目模板，基于 **React 19 + TypeScript + Vite 6** 构建。告别繁琐的项目初始化配置，让你专注于业务开发。
+一个现代化的 React 项目模板，基于 **React 19 + TypeScript + Vite** 构建。告别繁琐的项目初始化配置，让你专注于业务开发。
 
 ### 为什么选择 React-Ts-Template？
 
@@ -45,7 +45,7 @@
 ## 🚀 快速开始
 
 ### 环境要求
-- Node.js: ^18.20.0 || ^20.0.0 || >=22.0.0
+- Node.js: ^20.19.0 || >=22.12.0
 - 包管理器: pnpm
 
 ### 安装依赖
@@ -100,7 +100,7 @@ pnpm build:pro
 - React 19
 - React Router v7
 - TypeScript
-- Vite 6
+- Vite
 - Tailwind CSS v3
 - Headless UI
 - Zustand (状态管理)
