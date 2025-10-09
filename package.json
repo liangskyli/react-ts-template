@@ -60,6 +60,7 @@
     "react-router": "^7.9.1",
     "react-virtualized": "^9.22.6",
     "tailwind-merge": "^2.6.0",
+    "typeit-react": "^2.7.8",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

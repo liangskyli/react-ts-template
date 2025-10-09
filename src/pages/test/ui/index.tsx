@@ -17,6 +17,7 @@ import ToastDemo from '@/pages/test/components/toast-demo.tsx';
 import TreeCheckboxDemo from '@/pages/test/components/tree-checkbox-demo.tsx';
 import TreeDemo from '@/pages/test/components/tree-demo.tsx';
 import TreeRadioDemo from '@/pages/test/components/tree-radio-demo.tsx';
+import TypewriterDemo from '@/pages/test/components/typewriter-demo.tsx';
 import ViewerPdfDemo from '@/pages/test/components/viewer-pdf-demo.tsx';
 import VirtualGridDemo from '@/pages/test/components/virtual-grid-demo.tsx';
 import VirtualTableDemo from '@/pages/test/components/virtual-table-demo.tsx';
@@ -25,6 +26,7 @@ const Index = () => {
   return (
     <div className="mt-[10px] text-center">
       <title>UI</title>
+      <TypewriterDemo />
       <ViewerPdfDemo />
       <VirtualTableDemo />
       <VirtualGridDemo />
