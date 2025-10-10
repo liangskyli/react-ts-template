@@ -19,7 +19,7 @@ const Card = ({ dataIndex }: { dataIndex: number }) => {
 const TypewriterDemo = () => {
   const [dataIndex, setDataIndex] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { text: typewriterText, instance } = useTypewriterText({
+  const { text: typewriterText, getInstance } = useTypewriterText({
     children: '开始演示：',
     //className: 'before:!content-none',
     options: { cursor: false },
@@ -33,6 +33,7 @@ const TypewriterDemo = () => {
     }, 50) as unknown as number;
   }, []);
   const getStreamData = () => {
+    const instance = getInstance();
     if (instance) {
       const div = document.createElement('div');
       const root = createRoot(div);

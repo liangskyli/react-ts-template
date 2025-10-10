@@ -59,12 +59,13 @@ import { useTypewriterText } from '@/components/core/components/typewriter';
 
 export default () => {
   const [dataIndex, setDataIndex] = useState(1);
-  const { text: typewriterText, instance } = useTypewriterText({
+  const { text: typewriterText, getInstance } = useTypewriterText({
     children: '开始演示：',
     options: { cursor: false },
   });
 
   const getStreamData = () => {
+    const instance = getInstance();
     if (instance) {
       // 创建要显示的内容
       const div = document.createElement('div');
@@ -158,7 +159,7 @@ export default () => (
 | 属性 | 说明 | 类型 |
 | --- | --- | --- |
 | `text` | 打字机组件实例 | `ReactElement` |
-| `instance` | TypeIt 实例，用于动态控制 | `TypeItCore \| null` |
+| `getInstance` | 获取 TypeIt 实例的函数，用于动态控制 | `() => TypeItCore \| null` |
 
 ### TypeItOptions 常用配置
 
@@ -176,7 +177,7 @@ export default () => (
 
 ### TypeItCore 实例方法
 
-通过 `useTypewriterText` Hook 返回的 `instance` 可以调用以下方法：
+通过 `useTypewriterText` Hook 返回的 `getInstance()` 可以获取实例并调用以下方法：
 
 | 方法 | 说明 | 参数 |
 | --- | --- | --- |

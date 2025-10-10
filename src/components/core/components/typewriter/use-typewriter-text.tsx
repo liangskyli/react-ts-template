@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef } from 'react';
 import type { TypeItProps } from 'typeit-react';
 import TypeIt from 'typeit-react';
 
@@ -9,19 +9,20 @@ export type TypewriterProps = {
 } & TypeItProps;
 const useTypewriterText = (opts: TypewriterProps = {}) => {
   const { getAfterInit, ...otherTypeItProps } = opts;
-  const [instance, setInstance] = useState<TypeItCore | null>(null);
+  const instanceRef = useRef<TypeItCore | null>(null);
 
-  const text = (
-    <TypeIt
-      {...otherTypeItProps}
-      getAfterInit={(i) => {
-        setInstance(i);
-        getAfterInit?.(i);
-        return i;
-      }}
-    />
+  // 使用 useCallback 来稳定 getAfterInit 回调
+  const handleAfterInit = useCallback(
+    (i: TypeItCore) => {
+      instanceRef.current = i;
+      getAfterInit?.(i);
+      return i;
+    },
+    [getAfterInit],
   );
 
-  return { text, instance };
+  const text = <TypeIt {...otherTypeItProps} getAfterInit={handleAfterInit} />;
+
+  return { text, getInstance: () => instanceRef.current };
 };
 export default useTypewriterText;
