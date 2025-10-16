@@ -71,22 +71,19 @@ const Popup = (props: PopupProps) => {
     duration = 0,
     popupId: defaultPopupId,
   } = props;
-  const [popupId, setPopupId] = useState(defaultPopupId);
+  const [popupId] = useState(
+    () =>
+      defaultPopupId ??
+      `auto-generate-popup-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
   const [isContentTransitionFinish, setIsContentTransitionFinish] =
     useState(false);
   const [shouldRenderContent, setShouldRenderContent] = useState(visible);
 
-  useEffect(() => {
-    const generatePopupId = `auto-generate-popup-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    setPopupId(defaultPopupId ?? generatePopupId);
-  }, [defaultPopupId]);
-
   // 当 visible 变为 true 时，设置 shouldRenderContent 为 true
-  useEffect(() => {
-    if (visible) {
-      setShouldRenderContent(true);
-    }
-  }, [visible]);
+  if (visible && !shouldRenderContent) {
+    setShouldRenderContent(true);
+  }
 
   useEffect(() => {
     if (visible && duration > 0) {

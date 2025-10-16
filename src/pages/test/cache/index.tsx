@@ -13,14 +13,13 @@ const Index = () => {
 
   const cache1 = useCreateLRUCache<string, string[]>('instanceId');
 
-  const [groupValue, setGroupValue] = useState<string[]>([]);
-  useEffect(() => {
+  const [groupValue, setGroupValue] = useState<string[]>(() => {
     console.log('getNavigationType:', getNavigationType);
     if (getNavigationType === 'POP') {
       // 后退
       const cachedValue = cache1.get('groupValue');
       if (cachedValue && cachedValue.length > 0) {
-        setGroupValue(cachedValue);
+        return cachedValue;
       } else {
         const sessionGroupValue = window.sessionStorage.getItem('groupValue');
         if (sessionGroupValue) {
@@ -31,7 +30,7 @@ const Index = () => {
             /* empty */
           }
           if (sessionGroupParseValue.length > 0) {
-            setGroupValue(sessionGroupParseValue);
+            return sessionGroupParseValue;
           }
         }
       }
@@ -40,7 +39,8 @@ const Index = () => {
       cache1.delete('groupValue');
       window.sessionStorage.removeItem('groupValue');
     }
-  }, [cache1, getNavigationType]);
+    return [];
+  });
 
   useEffect(() => {
     cache1.set('groupValue', groupValue);

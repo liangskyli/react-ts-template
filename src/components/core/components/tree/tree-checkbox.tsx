@@ -8,6 +8,119 @@ import type {
 } from '@/components/core/components/tree/tree.tsx';
 import Tree from '@/components/core/components/tree/tree.tsx';
 
+// 辅助函数：计算节点的选中状态
+function calculateCheckState<K extends string | number>(
+  nodeKey: K,
+  checkedKeys: K[],
+  nodeMap: NodesData<K>['nodeMap'],
+  checkStrictly: boolean,
+  stateCache: Map<string, { checked: boolean; indeterminate: boolean }>,
+): { checked: boolean; indeterminate: boolean } {
+  // 非严格模式下checkedKeys 存在半选数据
+  const nodeKeyChecked = checkedKeys.includes(nodeKey);
+
+  if (checkStrictly) {
+    return {
+      checked: nodeKeyChecked,
+      indeterminate: false,
+    };
+  }
+
+  // 获取子节点keys
+  const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
+  // 获取后代节点keys
+  const descendantMapKeys = nodeMap.descendantMap.get(nodeKey) || [];
+  // 如果是叶子节点
+  if (childrenKeys.length === 0) {
+    return {
+      checked: nodeKeyChecked,
+      indeterminate: false,
+    };
+  }
+
+  // 优化缓存键生成 - 获取当前节点和后代节点中的选中项
+  const relevantKeys = new Set([nodeKey, ...descendantMapKeys]);
+  const relevantCheckedKeys = checkedKeys.filter((key) =>
+    relevantKeys.has(key),
+  );
+  const cacheKey = `${nodeKey}-${relevantCheckedKeys.sort().join(',')}`;
+  const cachedState = stateCache.get(cacheKey);
+  if (cachedState) {
+    return cachedState;
+  }
+
+  // 对于非叶子节点，需要递归检查子节点状态
+  // 计算子节点的状态，但要排除禁用的子节点
+  let checkedChildrenCount = 0;
+  let indeterminateChildrenCount = 0;
+  let enabledChildrenCount = 0;
+  let disabledChildrenCount = 0;
+
+  // 使用 for...of 替代 forEach，性能更好
+  for (const childKey of childrenKeys) {
+    const childNode = nodeMap.nodeMap.get(childKey);
+    if (childNode && (childNode.disabled || childNode.selectable === false)) {
+      if (childNode.selectable !== false && childNode.disabled) {
+        disabledChildrenCount++;
+      }
+      // 跳过禁用的子节点和不可选择的子节点
+      continue;
+    }
+
+    enabledChildrenCount++;
+    const childState = calculateCheckState(
+      childKey,
+      checkedKeys,
+      nodeMap,
+      checkStrictly,
+      stateCache,
+    );
+    if (childState.checked) {
+      checkedChildrenCount++;
+    } else if (childState.indeterminate) {
+      indeterminateChildrenCount++;
+    }
+  }
+
+  // 根据子节点状态确定父节点状态
+  let result;
+  if (checkedChildrenCount === 0 && indeterminateChildrenCount === 0) {
+    // 没有任何可用子节点被选中或半选
+    result = {
+      checked: nodeKeyChecked,
+      indeterminate: false,
+    };
+  } else if (
+    enabledChildrenCount > 0 &&
+    checkedChildrenCount === enabledChildrenCount
+  ) {
+    // 所有可用子节点都被选中，但如果存在禁用子节点，则显示半选状态
+    if (disabledChildrenCount > 0) {
+      // 存在禁用的子节点，显示半选状态
+      result = {
+        checked: false,
+        indeterminate: true,
+      };
+    } else {
+      // 所有子节点都可用且都被选中
+      result = {
+        checked: true,
+        indeterminate: false,
+      };
+    }
+  } else {
+    // 部分子节点被选中或有半选状态
+    result = {
+      checked: false,
+      indeterminate: true,
+    };
+  }
+
+  // 缓存结果
+  stateCache.set(cacheKey, result);
+  return result;
+}
+
 type TreeExtendedProps = {
   /** 是否可选择 */
   selectable?: boolean;
@@ -96,109 +209,16 @@ const TreeCheckbox = <K extends string | number = string>(
     stateCache.current.clear();
   }, [treeProps.treeData]);
 
-  // 计算半选状态
+  // 计算半选状态 - 使用辅助函数
   const getCheckState = useCallback(
     (nodeKey: K, checkedKeys: K[], nodeMap: NodesData['nodeMap']) => {
-      // 非严格模式下checkedKeys 存在半选数据
-      const nodeKeyChecked = checkedKeys.includes(nodeKey);
-
-      if (checkStrictly) {
-        return {
-          checked: nodeKeyChecked,
-          indeterminate: false,
-        };
-      }
-
-      // 获取子节点keys
-      const childrenKeys = nodeMap.childrenMap.get(nodeKey) || [];
-      // 获取后代节点keys
-      const descendantMapKeys = nodeMap.descendantMap.get(nodeKey) || [];
-      // 如果是叶子节点
-      if (childrenKeys.length === 0) {
-        return {
-          checked: nodeKeyChecked,
-          indeterminate: false,
-        };
-      }
-
-      // 优化缓存键生成 - 获取当前节点和后代节点中的选中项
-      const relevantKeys = new Set([nodeKey, ...descendantMapKeys]);
-      const relevantCheckedKeys = checkedKeys.filter((key) =>
-        relevantKeys.has(key),
+      return calculateCheckState(
+        nodeKey,
+        checkedKeys,
+        nodeMap,
+        checkStrictly,
+        stateCache.current,
       );
-      const cacheKey = `${nodeKey}-${relevantCheckedKeys.sort().join(',')}`;
-      const cachedState = stateCache.current.get(cacheKey);
-      if (cachedState) {
-        return cachedState;
-      }
-
-      // 对于非叶子节点，需要递归检查子节点状态
-      // 计算子节点的状态，但要排除禁用的子节点
-      let checkedChildrenCount = 0;
-      let indeterminateChildrenCount = 0;
-      let enabledChildrenCount = 0;
-      let disabledChildrenCount = 0;
-
-      // 使用 for...of 替代 forEach，性能更好
-      for (const childKey of childrenKeys) {
-        const childNode = nodeMap.nodeMap.get(childKey);
-        if (
-          childNode &&
-          (childNode.disabled || childNode.selectable === false)
-        ) {
-          if (childNode.selectable !== false && childNode.disabled) {
-            disabledChildrenCount++;
-          }
-          // 跳过禁用的子节点和不可选择的子节点
-          continue;
-        }
-
-        enabledChildrenCount++;
-        const childState = getCheckState(childKey, checkedKeys, nodeMap);
-        if (childState.checked) {
-          checkedChildrenCount++;
-        } else if (childState.indeterminate) {
-          indeterminateChildrenCount++;
-        }
-      }
-
-      // 根据子节点状态确定父节点状态
-      let result;
-      if (checkedChildrenCount === 0 && indeterminateChildrenCount === 0) {
-        // 没有任何可用子节点被选中或半选
-        result = {
-          checked: nodeKeyChecked,
-          indeterminate: false,
-        };
-      } else if (
-        enabledChildrenCount > 0 &&
-        checkedChildrenCount === enabledChildrenCount
-      ) {
-        // 所有可用子节点都被选中，但如果存在禁用子节点，则显示半选状态
-        if (disabledChildrenCount > 0) {
-          // 存在禁用的子节点，显示半选状态
-          result = {
-            checked: false,
-            indeterminate: true,
-          };
-        } else {
-          // 所有子节点都可用且都被选中
-          result = {
-            checked: true,
-            indeterminate: false,
-          };
-        }
-      } else {
-        // 部分子节点被选中或有半选状态
-        result = {
-          checked: false,
-          indeterminate: true,
-        };
-      }
-
-      // 缓存结果
-      stateCache.current.set(cacheKey, result);
-      return result;
     },
     [checkStrictly],
   );

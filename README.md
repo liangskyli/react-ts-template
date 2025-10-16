@@ -181,6 +181,7 @@ pnpm build:pro
 ├── mock.config.ts # mock服务配置文件
 ├── package.ts # 包配置文件
 ├── pnpm-lock.yaml # 安装包锁定文件
+├── pnpm-workspace.yaml # 工作空间文件
 ├── postcss.config.js # postcss 配置文件
 ├── README.md
 ├── stylelint.config.js # Stylelint 配置文件，用于样式文件的风格和错误检查

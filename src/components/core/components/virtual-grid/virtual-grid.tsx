@@ -174,27 +174,38 @@ const VirtualGrid = (props: VirtualGridProps) => {
   const isOneColumn = columnCount === 1;
   const fixedWidth = props.fixedWidth ?? isOneColumn;
 
-  const [centerBodyScrollToRow, setCenterBodyScrollToRow] = useState<
-    number | undefined
-  >(undefined);
-  const [centerBodyScrollToColumn, setCenterBodyScrollToColumn] = useState<
-    number | undefined
-  >(undefined);
-
-  useEffect(() => {
-    setCenterBodyScrollToRow(
+  // 计算初始滚动位置
+  const initialScrollToRow = useMemo(
+    () =>
       scrollToRow - fixedTopRowCount < 0
         ? undefined
         : scrollToRow - fixedTopRowCount,
-    );
-  }, [fixedTopRowCount, scrollToRow]);
-  useEffect(() => {
-    setCenterBodyScrollToColumn(
+    [fixedTopRowCount, scrollToRow],
+  );
+
+  const initialScrollToColumn = useMemo(
+    () =>
       scrollToColumn - fixedLeftColumnCount < 0
         ? undefined
         : scrollToColumn - fixedLeftColumnCount,
-    );
-  }, [fixedLeftColumnCount, scrollToColumn]);
+    [fixedLeftColumnCount, scrollToColumn],
+  );
+
+  // 使用 state 管理滚动位置，因为它会在用户交互时被重置
+  const [centerBodyScrollToRow, setCenterBodyScrollToRow] = useState<
+    number | undefined
+  >(initialScrollToRow);
+  const [centerBodyScrollToColumn, setCenterBodyScrollToColumn] = useState<
+    number | undefined
+  >(initialScrollToColumn);
+
+  // 当计算值改变时，同步更新 state（在渲染期间）
+  if (centerBodyScrollToRow !== initialScrollToRow) {
+    setCenterBodyScrollToRow(initialScrollToRow);
+  }
+  if (centerBodyScrollToColumn !== initialScrollToColumn) {
+    setCenterBodyScrollToColumn(initialScrollToColumn);
+  }
 
   // head Grid引用
   const leftHeaderGridRef = useRef<Grid>(null);

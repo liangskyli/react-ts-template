@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import Button from '@/components/core/components/button';
@@ -26,12 +32,18 @@ const TypewriterDemo = () => {
   });
   const scrollTimeout = useRef(-1);
   const [isStreamProcess, setIsStreamProcess] = useState(false);
+  const scrollToBottomRef = useRef<() => void>(null);
+
   const scrollToBottom = useCallback(() => {
     scrollRef.current!.scrollTop = scrollRef.current!.scrollHeight;
     scrollTimeout.current = setTimeout(() => {
-      scrollToBottom();
+      scrollToBottomRef.current?.();
     }, 50) as unknown as number;
   }, []);
+
+  useLayoutEffect(() => {
+    scrollToBottomRef.current = scrollToBottom;
+  });
   const getStreamData = () => {
     const instance = getInstance();
     if (instance) {

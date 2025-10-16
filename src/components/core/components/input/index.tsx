@@ -1,5 +1,5 @@
 import type { ElementType, Ref } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Input as HeadlessInput } from '@headlessui/react';
 import type { InputProps as HeadlessInputProps } from '@headlessui/react';
 import { cn } from '@/components/core/class-config';
@@ -48,11 +48,8 @@ const Input = (props: InputProps) => {
 
   const [innerValue, setInnerValue] = useState(defaultValue || value || '');
 
-  useEffect(() => {
-    if (value !== undefined) {
-      setInnerValue(value);
-    }
-  }, [value]);
+  // 当 value 从外部控制时，直接使用 value
+  const displayValue = value !== undefined ? value : innerValue;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
@@ -118,7 +115,7 @@ const Input = (props: InputProps) => {
   return (
     <HeadlessInput
       type={type}
-      value={innerValue}
+      value={displayValue}
       readOnly={readOnly}
       maxLength={maxLength}
       onChange={handleChange}

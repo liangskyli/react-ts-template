@@ -119,6 +119,7 @@ const Popover = (props: PopoverProps) => {
       offsetMiddleware(offset), // 设置偏移量
       flipMiddleware(), // 自动翻转以保持在视口内
       shiftMiddleware(shiftOptions), // 在需要时移动以保持在视口内
+      // eslint-disable-next-line react-hooks/refs
       arrowMiddleware({ element: arrowRef }), // 箭头中间件
     ],
   });
