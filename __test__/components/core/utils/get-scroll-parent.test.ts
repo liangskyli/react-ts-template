@@ -135,7 +135,7 @@ describe('getScrollParent', () => {
     expect(result).toBe(parent);
   });
 
-  it.only('should handle overflow-y: auto', () => {
+  it('should handle overflow-y: auto', () => {
     const parent = document.createElement('div');
     Object.assign(parent.style, {
       overflowY: 'auto',

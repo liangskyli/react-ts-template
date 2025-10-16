@@ -91,7 +91,12 @@ vi.mock('react-virtualized', () => {
           recomputeGridSize: mockRecomputeGridSize,
           measureAllCells: mockMeasureAllCells,
         }),
-        [],
+        [
+          mockMeasureAllCells,
+          mockRecomputeGridSize,
+          mockScrollToCell,
+          mockScrollToPosition,
+        ],
       );
 
       return (

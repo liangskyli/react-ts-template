@@ -210,7 +210,7 @@ describe('Popup Component', () => {
 
   it('calls afterClose immediately when visible is false and destroyOnClose is true', () => {
     const afterClose = vi.fn();
-    render(
+    const { rerender } = render(
       <Popup visible={false} destroyOnClose afterClose={afterClose}>
         Content
       </Popup>,
@@ -218,6 +218,9 @@ describe('Popup Component', () => {
 
     expect(afterClose).toHaveBeenCalledTimes(0);
     expect(screen.queryByText('Content')).not.toBeInTheDocument();
+
+    rerender(<Popup visible>Content</Popup>);
+    expect(screen.queryByText('Content')).toBeInTheDocument();
   });
 
   it('handles duration prop correctly', () => {

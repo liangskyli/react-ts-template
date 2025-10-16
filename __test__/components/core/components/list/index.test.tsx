@@ -28,7 +28,7 @@ vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
       };
 
       // 使用 useImperativeHandle 来设置 cacheRef.current
-      useImperativeHandle(cacheRef, () => mockCache, []);
+      useImperativeHandle(cacheRef, () => mockCache, [mockCache]);
 
       // 创建一个模拟的 scrollToPosition 方法
       const mockScrollToPosition = vi.fn();
@@ -41,7 +41,7 @@ vi.mock('@/components/core/components/list/virtual-scroll.tsx', () => {
           scrollToPosition: mockScrollToPosition,
           getCache: () => mockCache,
         }),
-        [],
+        [mockCache, mockScrollToPosition],
       );
 
       // 模拟滚动事件处理

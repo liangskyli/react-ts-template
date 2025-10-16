@@ -47,7 +47,7 @@ vi.mock('react-virtualized', () => {
           recomputeGridSize: vi.fn(),
           getCache: vi.fn(),
         }),
-        [],
+        [mockScrollToPosition],
       );
 
       return (

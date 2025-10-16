@@ -83,6 +83,7 @@ describe('useTypewriterText Hook', () => {
       const { text, getInstance } = useTypewriterText({
         children: 'Test content',
       });
+      // eslint-disable-next-line react-hooks/globals
       instanceRef = getInstance();
       return <div>{text}</div>;
     };
@@ -97,6 +98,7 @@ describe('useTypewriterText Hook', () => {
     let getInstanceFn: any = null;
     const TestComponent = () => {
       const { text, getInstance } = useTypewriterText({ children: 'Test' });
+      // eslint-disable-next-line react-hooks/globals
       getInstanceFn = getInstance;
       return <div data-testid="test-component">{text}</div>;
     };
@@ -124,6 +126,7 @@ describe('useTypewriterText Hook', () => {
     let getInstanceFn: any = null;
     const TestComponent = () => {
       const { text, getInstance } = useTypewriterText({ children: 'Initial' });
+      // eslint-disable-next-line react-hooks/globals
       getInstanceFn = getInstance;
       return <div>{text}</div>;
     };
@@ -152,6 +155,7 @@ describe('useTypewriterText Hook', () => {
         children: 'Test',
         getAfterInit: customGetAfterInit,
       });
+      // eslint-disable-next-line react-hooks/globals
       instanceRef = getInstance();
       return <div>{text}</div>;
     };
