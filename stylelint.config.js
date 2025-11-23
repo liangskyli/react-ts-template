@@ -12,10 +12,6 @@ export default {
       files: ['**/*.less'],
       extends: ['stylelint-config-standard-less'],
     },
-    {
-      files: ['**/*.scss'],
-      extends: ['stylelint-config-standard-scss'],
-    },
   ],
   rules: {
     'import-notation': null,

@@ -22,7 +22,7 @@
 - 📦 开箱即用的工程化配置
 - 🔧 完善的开发工具链和代码规范
 - 🎯 TypeScript 保驾护航，代码更可靠
-- 🎨 支持 Less/SCSS 和 CSS Modules
+- 🎨 支持 Less 和 CSS Modules
 - 📱 响应式设计支持
 - ⚡️ Vite 驱动，开发体验一流
 
@@ -85,8 +85,7 @@ pnpm build:pro
 - **React-Router**：最新v7版本，支持路由懒加载，优化页面切换性能。
 - **[tailwindcss](https://v3.tailwindcss.com/)**：使用tailwindcss@3版本，兼容性好。
 - **[Headless UI](https://headlessui.com/)**：无样式的UI组件库，完全可定制且完美配合Tailwind CSS。
-- **Less 预编译**：使用xxx.module.less，支持CSS Modules）。
-- **SCSS 预编译**：全面采用新版 SCSS，使用 `@use` 替代 `@import`，模块化更强。
+- **Less 预编译**：使用xxx.module.less，支持CSS Modules）。---请优先使用Tailwind，Less作为备选方案
 - **[zustand](https://github.com/pmndrs/zustand)**：轻量级的状态管理库。通过对比 Redux、Dva、React-Toolkit、MobX，以及 `useContext` 结合 `useReducer` 的管理方式，最终选择了更简单的 Zustand。
 - **Immer**：简化不可变数据结构操作，尤其在多层次嵌套对象中处理更方便。
 - **[optics-ts](https://github.com/akheron/optics-ts)**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
