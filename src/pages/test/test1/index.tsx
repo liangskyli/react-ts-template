@@ -4,6 +4,7 @@ import Icon from '@/components/core/components/icon';
 import { useRouter } from '@/hooks/use-router.ts';
 import { useOpticsStoreStore } from '@/store';
 import requestApi from '@/services/api';
+import { requestApi as genRequestApi } from '@/services/gen-example/schema-api/request-api.ts';
 import './index.less';
 import styles from './index.module.less';
 
@@ -37,6 +38,10 @@ const Index = () => {
         onClick={async () => {
           const data = await requestApi.getList({ params: { id: 'id' } });
           console.log(data);
+          const genData = await genRequestApi['/v1/card/delete'].post({
+            data: { betaRoundId: 1 },
+          });
+          console.log(genData);
         }}
         className={cn(styles.testButton, 'test-button-local')}
       >

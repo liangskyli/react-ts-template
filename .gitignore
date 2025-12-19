@@ -22,3 +22,8 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# custom
+/mock/gen-example/mock/*
+!/mock/gen-example/mock/custom-data/
+/src/services/gen-example/schema-api/

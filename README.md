@@ -61,6 +61,10 @@ pnpm dev
 # 带 Mock 数据的开发模式
 pnpm dev:mock
 pnpm dev:mock-server  # 新开终端运行 mock 服务
+
+# 基于openapi生成 Mock 数据和接口数据
+pnpm mock-gen
+
 ```
 
 ### 生产构建
@@ -93,6 +97,7 @@ pnpm build:pro
 - **[react-hook-form](https://github.com/react-hook-form/react-hook-form)**：form表单管理和验证。
 - **[@liangskyli/axios-request](https://github.com/liangskyli/request/blob/main/packages/axios-request/README.md)**：封装 HTTP 请求库，更方便与后端接口对接。
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
+- **[@liangskyli/http-mock-gen](https://github.com/liangskyli/mock/blob/master/packages/http-mock-gen/README.md)**：基于openapi v3 生成 ts数据类型和http mock 数据代码。
 - **单元测试**：基于vitest实现代码的单元测试。
 
 ### 核心依赖
