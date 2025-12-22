@@ -55,10 +55,10 @@ pnpm install
 
 ### 开发模式
 ```bash
-# 标准开发模式
+# 标准开发模式(不推荐)
 pnpm dev
 
-# 带 Mock 数据的开发模式
+# 带 Mock 数据的开发模式(推荐)
 pnpm dev:mock
 pnpm dev:mock-server  # 新开终端运行 mock 服务
 
@@ -93,7 +93,6 @@ pnpm build:pro
 - **[zustand](https://github.com/pmndrs/zustand)**：轻量级的状态管理库。通过对比 Redux、Dva、React-Toolkit、MobX，以及 `useContext` 结合 `useReducer` 的管理方式，最终选择了更简单的 Zustand。
 - **Immer**：简化不可变数据结构操作，尤其在多层次嵌套对象中处理更方便。
 - **[optics-ts](https://github.com/akheron/optics-ts)**：适用于需要对大型嵌套对象进行深度操作，且希望代码类型安全、易读的场景。
-- **classnames**：动态类名管理工具，特别适合条件渲染样式。
 - **[react-hook-form](https://github.com/react-hook-form/react-hook-form)**：form表单管理和验证。
 - **[@liangskyli/axios-request](https://github.com/liangskyli/request/blob/main/packages/axios-request/README.md)**：封装 HTTP 请求库，更方便与后端接口对接。
 - **[@liangskyli/mock](https://github.com/liangskyli/mock#readme)**：支持接口数据本地mock，支持数据场景化和热更新。
