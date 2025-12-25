@@ -7,14 +7,13 @@ import { twConfig } from './tw-config.ts';
 
 type IComponentName = keyof typeof defaultConfig;
 
-let currentConfig = { ...defaultConfig };
-
-const getComponentClassConfig = (componentName: IComponentName) => {
-  return currentConfig[componentName];
+export const getTailwindPrefix = () => {
+  return window.tailwindPrefix ?? '';
 };
 
-const updateClassConfig = (config: typeof defaultConfig) => {
-  currentConfig = config;
+const getComponentClassConfig = (componentName: IComponentName) => {
+  const currentConfig = getTailwindPrefix() === '' ? defaultConfig : twConfig;
+  return currentConfig[componentName];
 };
 
 const defaultTwMerge = (className: string) => {
@@ -57,12 +56,4 @@ const cn = (...inputs: ClassValue[]) => {
   return result;
 };
 
-export {
-  getComponentClassConfig,
-  updateClassConfig,
-  twConfig,
-  updateTwMergeFunction,
-  defaultTwMerge,
-  cn,
-  cx,
-};
+export { getComponentClassConfig, updateTwMergeFunction, defaultTwMerge, cn };

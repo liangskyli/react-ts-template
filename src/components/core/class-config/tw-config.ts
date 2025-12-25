@@ -1,4 +1,7 @@
-const twConfig = {
+const getTwConfig = <T extends object = object>(obj: T) => {
+  return obj;
+};
+const twConfig = getTwConfig({
   button: {
     index: {
       base: [
@@ -491,7 +494,7 @@ const twConfig = {
   virtualGrid: {
     container: 'tw-relative',
     header: 'tw-absolute tw-left-0 tw-right-0 tw-top-0',
-    leftHeader: '"tw-absolute tw-left-0 tw-top-0',
+    leftHeader: 'tw-absolute tw-left-0 tw-top-0',
     centerHeader: 'tw-absolute tw-top-0',
     rightHeader: 'tw-absolute tw-right-0 tw-top-0',
     body: 'tw-absolute tw-left-0 tw-right-0',
@@ -522,5 +525,5 @@ const twConfig = {
     ],
     page: 'after:tw-shadow-[2px_2px_8px_0px_rgba(0,0,0,0.2)] after:tw-absolute after:tw-inset-[10px]',
   },
-};
+});
 export { twConfig };

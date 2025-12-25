@@ -13,15 +13,6 @@ const getComponentClassConfig = (componentName: ComponentName) => ClassConfig
 **参数：**
 - `componentName`: 组件名称，支持的值包括所有在 `defaultConfig` 中定义的组件名
 
-### `updateClassConfig`
-更新全局组件样式配置。
-**类型定义：**
-``` typescript
-const updateClassConfig = (config: typeof defaultConfig) => void
-```
-**参数：**
-- `config`: 新的样式配置对象，需要包含所有组件的样式定义
-
 ### `updateTwMergeFunction`
 自定义 Tailwind 类名合并函数。
 **类型定义：**
@@ -49,14 +40,6 @@ const cn = (...inputs: ClassValue[]) => string
 **参数：**
 - `inputs`: 任意数量的类名值，可以是字符串、对象或数组
 
-### `cx`
-class-variance-authority 提供的类名合并函数，用于处理条件样式。
-**引入方式：**
-``` typescript
-import { cx } from 'class-variance-authority'
-```
-### `twConfig`
-预定义的 Tailwind CSS 配置，包含了主题色、层级等基础样式配置。
 ## 使用示例
 ### 获取组件样式
 ``` typescript

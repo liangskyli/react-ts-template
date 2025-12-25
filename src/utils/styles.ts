@@ -1,8 +1,5 @@
 import { extendTailwindMerge } from 'tailwind-merge';
-
-export const getTailwindPrefix = () => {
-  return window.tailwindPrefix ?? '';
-};
+import { getTailwindPrefix } from '@/components/core/class-config';
 
 export const twMerge = (className: string) => {
   const PREFIX = getTailwindPrefix();

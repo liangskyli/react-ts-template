@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { getTailwindPrefix, twMerge } from '@/utils/styles';
+import { getTailwindPrefix } from '@/components/core/class-config';
+import { twMerge } from '@/utils/styles';
 
 describe('withPrefix twMerge utility function', () => {
   const prefixScenarios = [
