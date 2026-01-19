@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button } from '@headlessui/react';
+import { Button } from '@heroui/button';
+//import { Button } from '@headlessui/react';
 import { useRouter } from '@/hooks/use-router.ts';
 import reactLogo from '@/assets/react.svg';
 import './index.css';
@@ -20,10 +21,13 @@ const Index = () => {
       </div>
       <h1>Vite + React</h1>
       <div className="p-4">
-        <Button
+        {/*<Button
           className="rounded bg-red px-4 py-2 text-sm text-white hover:bg-red-600"
           onClick={() => setCount((count) => count + 1)}
         >
+          count is {count}
+        </Button>*/}
+        <Button color="primary" onPress={() => setCount((count) => count + 1)}>
           count is {count}
         </Button>
         <p>
