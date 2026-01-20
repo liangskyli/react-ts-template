@@ -3,21 +3,11 @@ import type { CnOptions } from 'tailwind-variants/lite';
 import { cx } from 'tailwind-variants/lite';
 import { createLRUCache, getLRUCacheInstance } from '../components/cache';
 import { defaultConfig } from './default-config.ts';
-import { twConfig } from './tw-config.ts';
 
-type IComponentName = keyof typeof defaultConfig;
-
-export const getTailwindPrefix = () => {
-  return window.tailwindPrefix ?? '';
-};
-
-const getComponentClassConfig = <T extends IComponentName>(
+const getComponentClassConfig = <T extends keyof typeof defaultConfig>(
   componentName: T,
 ) => {
-  const currentConfig = (
-    getTailwindPrefix() === '' ? defaultConfig : twConfig
-  ) as typeof defaultConfig;
-  return currentConfig[componentName];
+  return defaultConfig[componentName];
 };
 
 const defaultTwMerge = (className: string) => {

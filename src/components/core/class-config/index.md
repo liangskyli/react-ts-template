@@ -8,7 +8,7 @@
 获取指定组件的样式配置。
 **类型定义：**
 ``` typescript
-const getComponentClassConfig = (componentName: ComponentName) => ClassConfig
+const getComponentClassConfig = <T extends keyof typeof defaultConfig>(componentName: T) => ClassConfig
 ```
 **参数：**
 - `componentName`: 组件名称，支持的值包括所有在 `defaultConfig` 中定义的组件名

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   cn,
   defaultTwMerge,
@@ -6,44 +6,22 @@ import {
   updateTwMergeFunction,
 } from '@/components/core/class-config';
 import { defaultConfig } from '@/components/core/class-config/default-config.ts';
-import { twConfig } from '@/components/core/class-config/tw-config.ts';
 
 describe('Class Configuration Utilities', () => {
   describe('getComponentClassConfig', () => {
-    const prefixScenarios = [
-      { scenario: 'default', prefix: undefined },
-      { scenario: 'custom prefix', prefix: 'tw-' },
-    ];
-    prefixScenarios.forEach(({ scenario, prefix }) => {
-      describe(scenario, () => {
-        beforeEach(() => {
-          window.tailwindPrefix = prefix;
-        });
+    it('should return correct button configuration', () => {
+      const buttonConfig = getComponentClassConfig('button');
+      expect(buttonConfig).toBe(defaultConfig.button);
+    });
 
-        afterEach(() => {
-          window.tailwindPrefix = undefined;
-        });
+    it('should return correct input configuration', () => {
+      const inputConfig = getComponentClassConfig('input');
+      expect(inputConfig).toBe(defaultConfig.input);
+    });
 
-        it('should return correct button configuration', () => {
-          const buttonConfig = getComponentClassConfig('button');
-          expect(buttonConfig).toBe(
-            prefix ? twConfig.button : defaultConfig.button,
-          );
-        });
-
-        it('should return correct input configuration', () => {
-          const inputConfig = getComponentClassConfig('input');
-          expect(inputConfig).toBe(
-            prefix ? twConfig.input : defaultConfig.input,
-          );
-        });
-
-        it('should return undefined for non-existent component', () => {
-          // @ts-expect-error Testing invalid component name
-          const config = getComponentClassConfig('nonexistent');
-          expect(config).toBeUndefined();
-        });
-      });
+    it('should return undefined for non-existent component', () => {
+      const config = getComponentClassConfig('nonexistent' as never);
+      expect(config).toBeUndefined();
     });
   });
 
