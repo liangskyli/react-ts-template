@@ -472,9 +472,23 @@ const defaultConfig = getTwConfig({
         'group-data-[direction=vertical]:flex-grow',
       ],
       indicatorContainerBase: '',
-      indicatorContainerLeftLine: '',
-      indicatorContainerRightLine: '',
-      indicatorContainerLine: '',
+      indicatorContainerLeftLine: [
+        'absolute left-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2',
+        'transition-colors duration-200',
+        'bg-gray-300',
+        'group-data-[previous-status=finish]:bg-blue-500',
+      ],
+      indicatorContainerRightLine: [
+        'absolute right-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2',
+        'transition-colors duration-200',
+        'bg-gray-300',
+        'group-data-[status=finish]:bg-blue-500',
+      ],
+      indicatorContainerVerticalLine: [
+        'w-0.5 flex-1 transition-colors duration-200',
+        'bg-gray-300',
+        'group-data-[status=finish]:bg-blue-500',
+      ],
     },
     variants: {
       isDefaultIcon: {
@@ -494,28 +508,11 @@ const defaultConfig = getTwConfig({
           item: 'flex-1 items-center',
           indicatorContainerBase:
             'relative flex h-6 w-full items-center justify-center',
-          indicatorContainerLeftLine: [
-            'absolute left-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2',
-            'transition-colors duration-200',
-            'bg-gray-300',
-            'group-data-[previous-status=finish]:bg-blue-500',
-          ],
-          indicatorContainerRightLine: [
-            'absolute right-0 top-1/2 h-0.5 w-1/2 -translate-y-1/2',
-            'transition-colors duration-200',
-            'bg-gray-300',
-            'group-data-[status=finish]:bg-blue-500',
-          ],
         },
         vertical: {
           container: 'flex-col',
           item: '',
           indicatorContainerBase: 'flex flex-col items-center',
-          indicatorContainerLine: [
-            'w-0.5 flex-1 transition-colors duration-200',
-            'bg-gray-300',
-            'group-data-[status=finish]:bg-blue-500',
-          ],
         },
       },
     },

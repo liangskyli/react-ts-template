@@ -199,7 +199,6 @@ const Steps = (props: StepsProps) => {
                     <div
                       className={cn(
                         classConfigData.indicatorContainerLeftLine({
-                          direction,
                           className: horizontalLeftLineClassName,
                         }),
                       )}
@@ -211,7 +210,6 @@ const Steps = (props: StepsProps) => {
                     <div
                       className={cn(
                         classConfigData.indicatorContainerRightLine({
-                          direction,
                           className: horizontalRightLineClassName,
                         }),
                       )}
@@ -234,8 +232,7 @@ const Steps = (props: StepsProps) => {
                   {index < items.length - 1 && (
                     <div
                       className={cn(
-                        classConfigData.indicatorContainerLine({
-                          direction,
+                        classConfigData.indicatorContainerVerticalLine({
                           className: verticalLineClassName,
                         }),
                       )}
