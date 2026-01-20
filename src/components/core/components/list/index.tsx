@@ -14,6 +14,8 @@ import { flattenChildren } from '@/components/core/components/list/util.ts';
 import type { VirtualScrollListProps } from '@/components/core/components/list/virtual-scroll.tsx';
 import VirtualScrollList from '@/components/core/components/list/virtual-scroll.tsx';
 
+const classConfigData = classConfig();
+
 export type ListRef = {
   /** 滚动到指定位置 */
   scrollToPosition: (scrollTop: number) => void;
@@ -142,7 +144,7 @@ const List = <T = unknown,>(props: ListProps<T>) => {
   return (
     <div
       className={cn(
-        classConfig.listConfig({
+        classConfigData.list({
           defaultScrollHeight: Boolean(virtualScroll) || !!infiniteScroll,
           isScroll: !virtualScroll && !!infiniteScroll,
         }),

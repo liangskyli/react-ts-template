@@ -3,6 +3,8 @@ import classConfig from '@/components/core/components/skeleton/class-config.ts';
 import Skeleton from '@/components/core/components/skeleton/index.tsx';
 import type { SkeletonProps } from './base.tsx';
 
+const classConfigData = classConfig();
+
 type CircularProps = SkeletonProps;
 const Circular = (props: CircularProps) => {
   const { animation, className } = props;
@@ -10,7 +12,7 @@ const Circular = (props: CircularProps) => {
   return (
     <Skeleton
       animation={animation}
-      className={cn(classConfig.circularConfig, className)}
+      className={cn(classConfigData.circular({ className }))}
     />
   );
 };

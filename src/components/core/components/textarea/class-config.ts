@@ -1,23 +1,5 @@
-import { cva } from 'class-variance-authority';
 import { getComponentClassConfig } from '@/components/core/class-config';
-import type { defaultConfig } from '@/components/core/class-config/default-config.ts';
 
-const currentConfig = getComponentClassConfig(
-  'textarea',
-) as (typeof defaultConfig)['textarea'];
-
-const textareaConfig = cva(currentConfig.textarea.base, {
-  variants: {
-    readOnly: {
-      false: currentConfig.textarea.noReadOnly,
-    },
-  },
-});
-
-const classConfig = {
-  textareaWrapConfig: currentConfig.textareaWrap,
-  textareaConfig,
-  countConfig: currentConfig.count,
-};
+const classConfig = getComponentClassConfig('textarea');
 
 export default classConfig;

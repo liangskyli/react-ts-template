@@ -1,12 +1,14 @@
 import classConfig from '@/components/core/components/list/class-config.ts';
 
+const classConfigData = classConfig();
+
 export type InfiniteScrollContentProps = {
   hasMore: boolean;
   failed: boolean;
   retry: () => void;
 };
 const DefaultInfiniteScrollContent = (props: InfiniteScrollContentProps) => {
-  const className = classConfig.defaultInfiniteScrollContentConfig.wrap;
+  const className = classConfigData.defaultInfiniteScrollContentWrap();
   if (!props.hasMore) {
     return <div className={className}>没有更多数据了</div>;
   }
@@ -16,7 +18,7 @@ const DefaultInfiniteScrollContent = (props: InfiniteScrollContentProps) => {
       <div className={className}>
         <span>加载失败</span>
         <a
-          className={classConfig.defaultInfiniteScrollContentConfig.retry}
+          className={classConfigData.defaultInfiniteScrollContentRetry()}
           onClick={() => {
             props.retry();
           }}

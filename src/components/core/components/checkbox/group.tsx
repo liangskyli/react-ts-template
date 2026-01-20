@@ -6,6 +6,8 @@ import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/checkbox/class-config.ts';
 import { CheckboxContext } from './context.tsx';
 
+const classConfigData = classConfig();
+
 export type CheckboxGroupProps = {
   /** 当前选中的值 */
   value?: (string | number)[];
@@ -70,7 +72,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
     >
       <div
         ref={checkboxGroupRef}
-        className={cn(classConfig.groupConfig, className)}
+        className={cn(classConfigData.group({ className }), className)}
       >
         {children}
       </div>

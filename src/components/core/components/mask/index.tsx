@@ -9,6 +9,8 @@ import {
 } from '@/components/core/utils/render-to-container.ts';
 import { useLockScroll } from '@/components/core/utils/use-lock-scroll.ts';
 
+const classConfigData = classConfig();
+
 export type MaskProps = {
   /** 自定义类名 */
   className?: string;
@@ -49,7 +51,7 @@ const Mask = (props: MaskProps) => {
   const maskContent = (
     <div
       ref={ref}
-      className={cn(classConfig.contentConfig, className)}
+      className={cn(classConfigData.content({ className }))}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onMaskClick?.(e);
@@ -64,12 +66,12 @@ const Mask = (props: MaskProps) => {
     <Transition
       show={visible}
       as={Fragment}
-      enter={classConfig.transitionConfig.enter}
-      enterFrom={classConfig.transitionConfig.enterFrom}
-      enterTo={classConfig.transitionConfig.enterTo}
-      leave={classConfig.transitionConfig.leave}
-      leaveFrom={classConfig.transitionConfig.leaveFrom}
-      leaveTo={classConfig.transitionConfig.leaveTo}
+      enter={classConfigData.transitionEnter()}
+      enterFrom={classConfigData.transitionEnterFrom()}
+      enterTo={classConfigData.transitionEnterTo()}
+      leave={classConfigData.transitionLeave()}
+      leaveFrom={classConfigData.transitionLeaveFrom()}
+      leaveTo={classConfigData.transitionLeaveTo()}
       unmount={destroyOnClose}
       afterLeave={afterClose}
     >

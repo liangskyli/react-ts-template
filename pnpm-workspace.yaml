@@ -7,3 +7,6 @@ ignoredBuiltDependencies:
   - typeit
 publicHoistPattern:
   - pdfjs-dist
+peerDependencyRules:
+  allowedVersions:
+    "tailwind-variants@3>tailwind-merge": "2"

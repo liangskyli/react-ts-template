@@ -5,6 +5,8 @@ import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/switch/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/core/components/switch/icons.tsx';
 
+const classConfigData = classConfig();
+
 export type SwitchProps<TTag extends ElementType = 'button'> = {
   /** 开关是否选中 */
   checked?: boolean;
@@ -59,31 +61,39 @@ const Switch = <TTag extends ElementType = 'button'>(
   const isDisabled = disabled || loading;
 
   return (
-    <div className={cn(classConfig.switchConfig, className)}>
+    <div className={cn(classConfigData.switch({ className }))}>
       <HeadlessSwitch
         checked={checked}
         defaultChecked={defaultChecked}
         onChange={onChange}
         disabled={isDisabled}
-        className={cn(classConfig.switchTrackConfig, trackClassName)}
+        className={cn(
+          classConfigData.switchTrack({ className: trackClassName }),
+        )}
         {...rest}
       >
-        <div className={classConfig.switchChildrenWrapConfig}>
+        <div className={classConfigData.switchChildrenWrap()}>
           <span
             className={cn(
-              classConfig.switchCheckedTextConfig,
-              checkedTextClassName,
+              classConfigData.switchCheckedText({
+                className: checkedTextClassName,
+              }),
             )}
           >
             {checkedText}
           </span>
-          <span className={cn(classConfig.switchThumbConfig, thumbClassName)}>
+          <span
+            className={cn(
+              classConfigData.switchThumb({ className: thumbClassName }),
+            )}
+          >
             {loading && <DefaultLoadingIcon />}
           </span>
           <span
             className={cn(
-              classConfig.switchUncheckedTextConfig,
-              uncheckedTextClassName,
+              classConfigData.switchUncheckedText({
+                className: uncheckedTextClassName,
+              }),
             )}
           >
             {uncheckedText}

@@ -5,6 +5,8 @@ import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/button/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/core/components/button/icons.tsx';
 
+const classConfigData = classConfig();
+
 export type ButtonProps<T extends ElementType = 'button'> = {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   loading?: boolean;
@@ -40,7 +42,7 @@ const Button = <T extends ElementType = 'button'>(props: ButtonProps<T>) => {
     <HeadlessButton
       disabled={disabled || loading}
       onClick={handleClick}
-      className={cn(classConfig.indexConfig({ variant, block }), className)}
+      className={cn(classConfigData.button({ variant, block, className }))}
       {...rest}
     >
       {/*添加一个占位的 span，保持相同宽度*/}

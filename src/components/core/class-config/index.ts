@@ -1,6 +1,6 @@
-import { cx } from 'class-variance-authority';
-import type { ClassValue } from 'class-variance-authority/types';
 import { extendTailwindMerge } from 'tailwind-merge';
+import type { CnOptions } from 'tailwind-variants/lite';
+import { cx } from 'tailwind-variants/lite';
 import { createLRUCache, getLRUCacheInstance } from '../components/cache';
 import { defaultConfig } from './default-config.ts';
 import { twConfig } from './tw-config.ts';
@@ -11,8 +11,12 @@ export const getTailwindPrefix = () => {
   return window.tailwindPrefix ?? '';
 };
 
-const getComponentClassConfig = (componentName: IComponentName) => {
-  const currentConfig = getTailwindPrefix() === '' ? defaultConfig : twConfig;
+const getComponentClassConfig = <T extends IComponentName>(
+  componentName: T,
+) => {
+  const currentConfig = (
+    getTailwindPrefix() === '' ? defaultConfig : twConfig
+  ) as typeof defaultConfig;
   return currentConfig[componentName];
 };
 
@@ -39,7 +43,7 @@ const updateTwMergeFunction = (twMergeFunction: ITwMerge) => {
 };
 
 // className合并处理方法
-const cn = (...inputs: ClassValue[]) => {
+const cn = (...inputs: CnOptions) => {
   // 生成缓存 key
   const cacheKey = JSON.stringify(inputs);
 
@@ -50,7 +54,7 @@ const cn = (...inputs: ClassValue[]) => {
   }
 
   // 如果缓存中没有，计算结果并存储
-  const result = twMerge(cx(inputs));
+  const result = twMerge(cx(inputs) ?? '');
   cache?.set(cacheKey, result);
 
   return result;

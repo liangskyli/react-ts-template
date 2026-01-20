@@ -123,7 +123,7 @@ const Input = (props: InputProps) => {
       inputMode={inputMode}
       min={min}
       max={max}
-      className={cn(classConfig.indexConfig({ readOnly }), className)}
+      className={cn(classConfig({ readOnly, className }))}
       {...rest}
     />
   );

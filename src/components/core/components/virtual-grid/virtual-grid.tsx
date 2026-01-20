@@ -27,6 +27,8 @@ import { cn } from '@/components/core/class-config';
 import CellMeasurerCacheDecorator from './cell-measurer-cache-decorator.ts';
 import classConfig from './class-config.ts';
 
+const classConfigData = classConfig();
+
 export type VirtualGridRef = {
   /** 预先测量网格中的所有列和行 */
   measureAllCells: () => void;
@@ -602,7 +604,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
       return null;
     }
     return (
-      <div className={cn(classConfig.leftHeaderConfig, leftHeaderClass)}>
+      <div
+        className={cn(
+          classConfigData.leftHeader({ className: leftHeaderClass }),
+        )}
+      >
         <Grid
           data-testid="leftHeaderGrid"
           ref={leftHeaderGridRef}
@@ -646,7 +652,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
     }
     return (
       <div
-        className={cn(classConfig.centerHeaderConfig, centerHeaderClass)}
+        className={cn(
+          classConfigData.centerHeader({ className: centerHeaderClass }),
+        )}
         style={{
           left: getGridWidth(width).leftGridWidth,
         }}
@@ -700,7 +708,11 @@ const VirtualGrid = (props: VirtualGridProps) => {
       return null;
     }
     return (
-      <div className={cn(classConfig.rightHeaderConfig, rightHeaderClass)}>
+      <div
+        className={cn(
+          classConfigData.rightHeader({ className: rightHeaderClass }),
+        )}
+      >
         <Grid
           data-testid="rightHeaderGrid"
           ref={rightHeaderGridRef}
@@ -744,7 +756,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
       return null;
     }
     return (
-      <div className={cn(classConfig.leftBodyConfig, leftBodyClass)}>
+      <div
+        className={cn(classConfigData.leftBody({ className: leftBodyClass }))}
+      >
         <Grid
           data-testid="leftBodyGrid"
           ref={leftBodyGridRef}
@@ -803,7 +817,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
 
     return (
       <div
-        className={cn(classConfig.centerBodyConfig, centerBodyClass)}
+        className={cn(
+          classConfigData.centerBody({ className: centerBodyClass }),
+        )}
         style={{
           left: getGridWidth(width).leftGridWidth,
         }}
@@ -876,7 +892,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
       return null;
     }
     return (
-      <div className={cn(classConfig.rightBodyConfig, rightBodyClass)}>
+      <div
+        className={cn(classConfigData.rightBody({ className: rightBodyClass }))}
+      >
         <Grid
           data-testid="rightBodyGrid"
           ref={rightBodyGridRef}
@@ -923,12 +941,12 @@ const VirtualGrid = (props: VirtualGridProps) => {
               : autoSizerHeight;
             return (
               <div
-                className={classConfig.containerConfig}
+                className={classConfigData.container()}
                 style={{ width, height }}
               >
                 {/* head区域 */}
                 {
-                  <div className={classConfig.headerConfig}>
+                  <div className={classConfigData.header()}>
                     {/* 左固定 */}
                     {renderLeftHeaderGrid({ width, height })}
 
@@ -942,7 +960,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
 
                 {/* body区域 */}
                 <div
-                  className={classConfig.bodyConfig}
+                  className={classConfigData.body()}
                   style={{
                     top: getGridHeight(height).headerGridHeight,
                   }}

@@ -8,6 +8,8 @@ import {
   DefaultZoomOutIcon,
 } from '@/components/core/components/viewer-pdf/icons.tsx';
 
+const classConfigData = classConfig();
+
 // 设置 worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -105,21 +107,21 @@ const ViewerPdf = (props: ViewerPdfProps) => {
 
   return (
     <div
-      className={cn(classConfig.containerConfig, className)}
+      className={cn(classConfigData.container({ className }))}
       data-tool-bar={isShowToolBar ? true : undefined}
     >
       {isShowToolBar && (
         <div
           className={cn(
-            classConfig.toolBarConfig.wrap,
-            toolBarConfig.className,
+            classConfigData.toolBarWrap({ className: toolBarConfig.className }),
           )}
         >
           <button
             onClick={handleZoomOut}
             className={cn(
-              classConfig.toolBarConfig.zoomButton,
-              toolBarConfig.zoomButtonClassName,
+              classConfigData.toolBarZoomButton({
+                className: toolBarConfig.zoomButtonClassName,
+              }),
             )}
             title="缩小"
             disabled={scale <= MIN_SCALE}
@@ -130,8 +132,9 @@ const ViewerPdf = (props: ViewerPdfProps) => {
           <button
             onClick={handleResetZoom}
             className={cn(
-              classConfig.toolBarConfig.resetZoomButton,
-              toolBarConfig.resetZoomButtonClassName,
+              classConfigData.toolBarResetZoomButton({
+                className: toolBarConfig.resetZoomButtonClassName,
+              }),
             )}
           >
             {Math.round(scale * 100)}%
@@ -139,8 +142,9 @@ const ViewerPdf = (props: ViewerPdfProps) => {
           <button
             onClick={handleZoomIn}
             className={cn(
-              classConfig.toolBarConfig.zoomButton,
-              toolBarConfig.zoomButtonClassName,
+              classConfigData.toolBarZoomButton({
+                className: toolBarConfig.zoomButtonClassName,
+              }),
             )}
             title="放大"
             disabled={scale >= MAX_SCALE}
@@ -151,7 +155,9 @@ const ViewerPdf = (props: ViewerPdfProps) => {
         </div>
       )}
       <Document
-        className={cn(classConfig.documentConfig, documentClassName)}
+        className={cn(
+          classConfigData.document({ className: documentClassName }),
+        )}
         inputRef={documentRef}
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
@@ -163,7 +169,9 @@ const ViewerPdf = (props: ViewerPdfProps) => {
           return (
             <Page
               key={`page_${index + 1}`}
-              className={cn(classConfig.pageConfig, otherPageProps.className)}
+              className={cn(
+                classConfigData.page({ className: otherPageProps.className }),
+              )}
               pageNumber={index + 1}
               width={pageWidth}
               scale={scale}

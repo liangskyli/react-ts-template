@@ -2,6 +2,8 @@ import React from 'react';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/list/class-config.ts';
 
+const classConfigData = classConfig();
+
 export type ListItemProps = {
   /** 列表项标题 */
   title?: React.ReactNode;
@@ -43,22 +45,22 @@ export const ListItem = (props: ListItemProps) => {
 
   return (
     <div
-      className={cn(classConfig.itemConfig, className)}
+      className={cn(classConfigData.item({ className }))}
       data-clickable={clickable && !disabled ? true : undefined}
       data-disabled={disabled ? true : undefined}
       onClick={handleClick}
       {...rest}
     >
-      {prefix && <div className={classConfig.itemPrefixConfig}>{prefix}</div>}
+      {prefix && <div className={classConfigData.itemPrefix()}>{prefix}</div>}
 
-      <div className={classConfig.itemContentConfig.wrap}>
+      <div className={classConfigData.itemContentWrap()}>
         {children || (
           <>
             {title && (
-              <div className={classConfig.itemContentConfig.title}>{title}</div>
+              <div className={classConfigData.itemContentTitle()}>{title}</div>
             )}
             {description && (
-              <div className={classConfig.itemContentConfig.description}>
+              <div className={classConfigData.itemContentDescription()}>
                 {description}
               </div>
             )}
@@ -66,7 +68,7 @@ export const ListItem = (props: ListItemProps) => {
         )}
       </div>
 
-      {suffix && <div className={classConfig.itemSuffixConfig}>{suffix}</div>}
+      {suffix && <div className={classConfigData.itemSuffix()}>{suffix}</div>}
     </div>
   );
 };

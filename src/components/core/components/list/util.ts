@@ -1,11 +1,10 @@
-import React from 'react';
+import type { ReactNode } from 'react';
+import { Fragment } from 'react';
 
-export const flattenChildren = (
-  children: React.ReactNode,
-): React.ReactNode[] => {
-  const result: React.ReactNode[] = [];
+export const flattenChildren = (children: ReactNode): ReactNode[] => {
+  const result: ReactNode[] = [];
 
-  const flatten = (child: React.ReactNode) => {
+  const flatten = (child: ReactNode) => {
     if (child == null) return;
 
     if (Array.isArray(child)) {
@@ -13,7 +12,7 @@ export const flattenChildren = (
     } else if (
       typeof child === 'object' &&
       'type' in child &&
-      child.type === React.Fragment
+      child.type === Fragment
     ) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       flatten((child as any).props.children);

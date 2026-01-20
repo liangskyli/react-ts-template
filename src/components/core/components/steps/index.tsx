@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/steps/class-config.ts';
 
+const classConfigData = classConfig();
+
 export type StepStatus = 'wait' | 'process' | 'finish' | 'error';
 export type StepDirection = 'horizontal' | 'vertical';
 
@@ -97,9 +99,10 @@ const Steps = (props: StepsProps) => {
     let iconNode = (
       <div
         className={cn(
-          classConfig.iconConfig.base,
-          classConfig.iconConfig.defaultIcon,
-          iconClassName,
+          classConfigData.icon({
+            isDefaultIcon: true,
+            className: iconClassName,
+          }),
         )}
       >
         {/* 空内容，只显示圆点背景 */}
@@ -108,7 +111,7 @@ const Steps = (props: StepsProps) => {
     // 如果有自定义图标，则使用自定义图标
     if (icon) {
       iconNode = (
-        <div className={cn(classConfig.iconConfig.base, iconClassName)}>
+        <div className={cn(classConfigData.icon({ className: iconClassName }))}>
           {icon}
         </div>
       );
@@ -121,17 +124,26 @@ const Steps = (props: StepsProps) => {
     return (
       <>
         {(item.title || item.description) && (
-          <div className={cn(classConfig.contentConfig, contentClassName)}>
+          <div
+            className={cn(
+              classConfigData.content({ className: contentClassName }),
+            )}
+          >
             {item.title && (
-              <div className={cn(classConfig.titleConfig, titleClassName)}>
+              <div
+                className={cn(
+                  classConfigData.title({ className: titleClassName }),
+                )}
+              >
                 {item.title}
               </div>
             )}
             {item.description && (
               <div
                 className={cn(
-                  classConfig.descriptionConfig,
-                  descriptionClassName,
+                  classConfigData.description({
+                    className: descriptionClassName,
+                  }),
                 )}
               >
                 {item.description}
@@ -144,7 +156,7 @@ const Steps = (props: StepsProps) => {
   };
 
   return (
-    <div className={cn(classConfig.containerConfig({ direction }), className)}>
+    <div className={cn(classConfigData.container({ direction, className }))}>
       {items.map((item, index) => {
         const status = getStepStatus(index, item);
         const isClickable = clickable && !item.disabled;
@@ -152,7 +164,9 @@ const Steps = (props: StepsProps) => {
         return (
           <div
             key={index}
-            className={cn(classConfig.itemConfig({ direction }), itemClassName)}
+            className={cn(
+              classConfigData.item({ direction, className: itemClassName }),
+            )}
             data-status={status}
             data-previous-status={
               index > 0 ? getStepStatus(index - 1, items[index - 1]) : undefined
@@ -162,15 +176,19 @@ const Steps = (props: StepsProps) => {
             data-direction={direction}
           >
             <div
-              className={cn(classConfig.itemInnerConfig, itemInnerClassName)}
+              className={cn(
+                classConfigData.itemInner({ className: itemInnerClassName }),
+              )}
               onClick={() => handleStepClick(index, item)}
             >
               {/* 图标和线条容器 */}
               {direction === 'horizontal' ? (
                 <div
                   className={cn(
-                    classConfig.indicatorContainerConfig.horizontal.base,
-                    indicatorContainerClassName,
+                    classConfigData.indicatorContainerBase({
+                      direction,
+                      className: indicatorContainerClassName,
+                    }),
                   )}
                 >
                   {/* 图标 */}
@@ -180,9 +198,10 @@ const Steps = (props: StepsProps) => {
                   {index > 0 && (
                     <div
                       className={cn(
-                        classConfig.indicatorContainerConfig.horizontal
-                          .leftLine,
-                        horizontalLeftLineClassName,
+                        classConfigData.indicatorContainerLeftLine({
+                          direction,
+                          className: horizontalLeftLineClassName,
+                        }),
                       )}
                     />
                   )}
@@ -191,9 +210,10 @@ const Steps = (props: StepsProps) => {
                   {index < items.length - 1 && (
                     <div
                       className={cn(
-                        classConfig.indicatorContainerConfig.horizontal
-                          .rightLine,
-                        horizontalRightLineClassName,
+                        classConfigData.indicatorContainerRightLine({
+                          direction,
+                          className: horizontalRightLineClassName,
+                        }),
                       )}
                     />
                   )}
@@ -201,8 +221,10 @@ const Steps = (props: StepsProps) => {
               ) : (
                 <div
                   className={cn(
-                    classConfig.indicatorContainerConfig.vertical.base,
-                    indicatorContainerClassName,
+                    classConfigData.indicatorContainerBase({
+                      direction,
+                      className: indicatorContainerClassName,
+                    }),
                   )}
                 >
                   {/* 图标 */}
@@ -212,8 +234,10 @@ const Steps = (props: StepsProps) => {
                   {index < items.length - 1 && (
                     <div
                       className={cn(
-                        classConfig.indicatorContainerConfig.vertical.line,
-                        verticalLineClassName,
+                        classConfigData.indicatorContainerLine({
+                          direction,
+                          className: verticalLineClassName,
+                        }),
                       )}
                     />
                   )}

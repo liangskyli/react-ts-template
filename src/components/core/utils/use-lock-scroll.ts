@@ -1,16 +1,13 @@
 import type { RefObject } from 'react';
 import { useEffect } from 'react';
 import { getComponentClassConfig } from '@/components/core/class-config';
-import type { defaultConfig } from '@/components/core/class-config/default-config.ts';
 import { getScrollParent } from './get-scroll-parent.ts';
 import { supportsPassive } from './supports-passive.ts';
 import { useTouch } from './use-touch.ts';
 
 let totalLockCount = 0;
 
-const currentConfig = getComponentClassConfig(
-  'useLockScroll',
-) as (typeof defaultConfig)['useLockScroll'];
+const currentConfig = getComponentClassConfig('useLockScroll');
 
 const BODY_LOCK_CLASS = currentConfig.bodyLockClass;
 

@@ -6,6 +6,8 @@ import classConfig from '@/components/core/components/virtual-table/class-config
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+const classConfigData = classConfig();
+
 export type ColumnConfig<
   RecordType extends Record<string, any> = Record<string, any>,
 > = {
@@ -96,7 +98,9 @@ const VirtualTable = <
       // 表头
       return (
         <div
-          className={cn(classConfig.headerCellClassConfig, headerCellClass)}
+          className={cn(
+            classConfigData.headerCellClass({ className: headerCellClass }),
+          )}
           style={{ height: headerHeight, textAlign: headerAlign }}
         >
           <div style={{ width }}>{title}</div>
@@ -117,7 +121,9 @@ const VirtualTable = <
     }
     return (
       <div
-        className={cn(classConfig.bodyCellClassConfig, bodyCellClass)}
+        className={cn(
+          classConfigData.bodyCellClass({ className: bodyCellClass }),
+        )}
         style={{ textAlign: align, width }}
       >
         {content}
@@ -128,7 +134,7 @@ const VirtualTable = <
   return (
     <VirtualGrid
       {...othersVirtualGridProps}
-      className={cn(classConfig.containerConfig, className)}
+      className={cn(classConfigData.container({ className }))}
       rowCount={showHeader ? dataRowCount + 1 : dataRowCount}
       columnCount={columns.length}
       fixedWidth={true}
@@ -138,10 +144,11 @@ const VirtualTable = <
       cellRenderer={cellRenderer}
       columnWidth={({ index }) => columns[index].width}
       rightHeaderClass={cn(
-        classConfig.rightHeaderClassConfig,
-        rightHeaderClass,
+        classConfigData.rightHeaderClass({ className: rightHeaderClass }),
       )}
-      rightBodyClass={cn(classConfig.rightBodyClassConfig, rightBodyClass)}
+      rightBodyClass={cn(
+        classConfigData.rightBodyClass({ className: rightBodyClass }),
+      )}
     />
   );
 };

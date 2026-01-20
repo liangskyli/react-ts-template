@@ -1,8 +1,11 @@
 import { cn } from '@/components/core/class-config';
+import classConfig from '@/components/core/components/tree/class-config.ts';
+
+const classConfigData = classConfig();
 
 export const DefaultExpandIcon = ({ className }: { className?: string }) => (
   <svg
-    className={cn('h-4 w-4 transition-transform duration-200', className)}
+    className={cn(classConfigData.defaultExpandIcon({ className }))}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -14,10 +17,7 @@ export const DefaultExpandIcon = ({ className }: { className?: string }) => (
 
 export const DefaultCollapseIcon = ({ className }: { className?: string }) => (
   <svg
-    className={cn(
-      'h-4 w-4 rotate-90 transition-transform duration-200',
-      className,
-    )}
+    className={cn(classConfigData.defaultCollapseIcon({ className }))}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"

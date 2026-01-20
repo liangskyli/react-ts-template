@@ -7,6 +7,8 @@ import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/radio/class-config.ts';
 import Radio from '@/components/core/components/radio/radio.tsx';
 
+const classConfigData = classConfig();
+
 export type RadioGroupProps<
   TType = string,
   TTag extends ElementType = 'div',
@@ -85,7 +87,7 @@ const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
   return (
     <HeadlessRadioGroup
       ref={radioGroupRef}
-      className={cn(classConfig.groupConfig, className)}
+      className={cn(classConfigData.group({ className }))}
       value={innerValue}
       onChange={handleChange}
       {...rest}

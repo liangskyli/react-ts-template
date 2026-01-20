@@ -1,9 +1,11 @@
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/loading/class-config.ts';
 
+const classConfigData = classConfig();
+
 export const DefaultLoadingIcon = ({ className }: { className?: string }) => (
   <svg
-    className={cn(classConfig.loadingIcon, className)}
+    className={cn(classConfigData.loadingIcon({ className }))}
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

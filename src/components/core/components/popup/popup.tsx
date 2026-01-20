@@ -42,17 +42,17 @@ export type PopupProps = {
   popupId?: string;
 };
 
-const transitionStyles: Record<
-  Position,
-  {
-    enter: string;
-    enterFrom: string;
-    enterTo: string;
-    leave: string;
-    leaveFrom: string;
-    leaveTo: string;
-  }
-> = classConfig.transitionConfig;
+const {
+  popupBase,
+  mask,
+  body,
+  enter,
+  enterFrom,
+  enterTo,
+  leave,
+  leaveFrom,
+  leaveTo,
+} = classConfig();
 
 const Popup = (props: PopupProps) => {
   const {
@@ -102,16 +102,14 @@ const Popup = (props: PopupProps) => {
     return null;
   }
 
-  const transition = transitionStyles[position];
-
   const node = (
     <div
       data-testid="popup"
-      className={cn(classConfig.popupConfig, className)}
+      className={cn(popupBase({ className }))}
       data-popup-id={popupId}
     >
       <Mask
-        className={cn(classConfig.maskConfig, maskClassName)}
+        className={cn(mask({ className: maskClassName }))}
         visible={visible}
         onMaskClick={closeOnMaskClick ? onClose : undefined}
         disableBodyScroll={disableBodyScroll}
@@ -121,12 +119,12 @@ const Popup = (props: PopupProps) => {
         appear
         show={visible}
         as={Fragment}
-        enter={transition.enter}
-        enterFrom={transition.enterFrom}
-        enterTo={transition.enterTo}
-        leave={transition.leave}
-        leaveFrom={transition.leaveFrom}
-        leaveTo={transition.leaveTo}
+        enter={enter({ position })}
+        enterFrom={enterFrom({ position })}
+        enterTo={enterTo({ position })}
+        leave={leave({ position })}
+        leaveFrom={leaveFrom({ position })}
+        leaveTo={leaveTo({ position })}
         beforeEnter={() => setIsContentTransitionFinish(false)}
         afterEnter={() => setIsContentTransitionFinish(true)}
         beforeLeave={() => setIsContentTransitionFinish(false)}
@@ -138,7 +136,7 @@ const Popup = (props: PopupProps) => {
         }}
       >
         <div
-          className={cn(classConfig.bodyConfig({ position }), bodyClassName)}
+          className={cn(body({ position, className: bodyClassName }))}
           style={{
             pointerEvents: isContentTransitionFinish ? 'auto' : 'none',
           }}

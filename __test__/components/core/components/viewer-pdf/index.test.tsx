@@ -117,7 +117,7 @@ describe('ViewerPdf', () => {
     );
 
     expect(screen.getByTestId('mock-document')).toHaveClass(
-      cn(classConfig.documentConfig, customClassName),
+      cn(classConfig().document({ className: customClassName })),
     );
   });
 
@@ -169,7 +169,7 @@ describe('ViewerPdf', () => {
 
     const pageElement = screen.getByTestId('mock-page-1');
     expect(pageElement).toHaveClass(
-      cn(classConfig.pageConfig, customPageClassName),
+      cn(classConfig().page({ className: customPageClassName })),
     );
   });
 
@@ -177,7 +177,7 @@ describe('ViewerPdf', () => {
     render(<ViewerPdf file={mockFile} />);
 
     const documentElement = screen.getByTestId('mock-document');
-    expect(documentElement).toHaveClass(classConfig.documentConfig.join(' '));
+    expect(documentElement).toHaveClass(classConfig().document());
   });
 
   it('应该正确处理空PDF（0页）的情况', async () => {
@@ -238,17 +238,23 @@ describe('ViewerPdf', () => {
 
       const toolbar = screen.getByTitle('缩小').closest('div');
       expect(toolbar).toHaveClass(
-        cn(classConfig.toolBarConfig.wrap, customToolBarClass),
+        cn(classConfig().toolBarWrap({ className: customToolBarClass })),
       );
 
       const zoomOutButton = screen.getByTitle('缩小');
       expect(zoomOutButton).toHaveClass(
-        cn(classConfig.toolBarConfig.zoomButton, customZoomButtonClass),
+        cn(
+          classConfig().toolBarZoomButton({ className: customZoomButtonClass }),
+        ),
       );
 
       const resetButton = screen.getByText(/\d+%/);
       expect(resetButton).toHaveClass(
-        cn(classConfig.toolBarConfig.resetZoomButton, customResetButtonClass),
+        cn(
+          classConfig().toolBarResetZoomButton({
+            className: customResetButtonClass,
+          }),
+        ),
       );
     });
 

@@ -7,6 +7,8 @@ import Popup, {
 import classConfig from '@/components/core/components/toast/class-config.ts';
 import type { GetContainer } from '@/components/core/utils/render-to-container.ts';
 
+const classConfigData = classConfig();
+
 // Toast的位置类型
 type ToastPosition = 'top' | 'bottom' | 'center';
 // Popup的位置类型
@@ -89,8 +91,8 @@ const show = (
   // 单例模式
   clear(true);
   const newContent = (
-    <div className={classConfig.contentConfig.wrap}>
-      <div className={classConfig.contentConfig.text}>{content}</div>
+    <div className={classConfigData.contentWrap()}>
+      <div className={classConfigData.contentText()}>{content}</div>
     </div>
   );
   const { position: defaultConfigPosition } = getConfig();
@@ -104,10 +106,12 @@ const show = (
     position: 'none',
     // 强制关闭时销毁内容
     destroyOnClose: true,
-    maskClassName: cn(classConfig.maskConfig({ maskClickable }), maskClassName),
-    className: cn(classConfig.toastConfig, className),
+    maskClassName: cn(
+      classConfigData.mask({ maskClickable, className: maskClassName }),
+    ),
+    className: cn(classConfigData.toast({ className })),
     bodyClassName: cn(
-      classConfig.bodyConfig({ position: toastPosition }),
+      classConfigData.body({ position: toastPosition }),
       bodyClassName,
     ),
     getContainer,

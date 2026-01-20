@@ -14,6 +14,8 @@ import {
   DefaultExpandIcon,
 } from '@/components/core/components/tree/icons.tsx';
 
+const classConfigData = classConfig();
+
 export type TreeNode<
   K extends string | number = string,
   T extends Record<string, unknown> = Record<string, unknown>,
@@ -296,14 +298,13 @@ const Tree = <
       return (
         <div
           key={node.key}
-          className={cn(classConfig.nodeConfig, nodeClassName)}
+          className={cn(classConfigData.node({ className: nodeClassName }))}
           data-disabled={node.disabled ? true : undefined}
         >
           {/* 缩进 */}
           <div
             className={cn(
-              classConfig.nodeContentConfig.indent,
-              indentClassName,
+              classConfigData.nodeContentIndent({ className: indentClassName }),
             )}
             style={{ width: `${node.level * indentWidth}px` }}
           />
@@ -313,8 +314,9 @@ const Tree = <
             <div
               data-can-expand={canExpand ? true : undefined}
               className={cn(
-                classConfig.nodeContentConfig.switcher,
-                switcherClassName,
+                classConfigData.nodeContentSwitcher({
+                  className: switcherClassName,
+                }),
               )}
               onClick={() => handleNodeExpand(node)}
               data-testid={
@@ -332,8 +334,9 @@ const Tree = <
           {/* 节点内容 */}
           <div
             className={cn(
-              classConfig.nodeContentConfig.wrap,
-              nodeTitleContentClassName,
+              classConfigData.nodeContentWrap({
+                className: nodeTitleContentClassName,
+              }),
             )}
           >
             {renderNode?.(node, { nodeMap, flattenNodes, allFlattenNodeMap }) ??

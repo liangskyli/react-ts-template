@@ -3,6 +3,8 @@ import classConfig from '@/components/core/components/skeleton/class-config.ts';
 import Skeleton from '@/components/core/components/skeleton/index.tsx';
 import type { SkeletonProps } from './base.tsx';
 
+const classConfigData = classConfig();
+
 type ParagraphProps = {
   /** 段落行数 */
   lineCount?: number;
@@ -16,14 +18,16 @@ const Paragraph = (props: ParagraphProps) => {
 
   return (
     <div
-      className={cn(classConfig.paragraphConfig.list, className)}
+      className={cn(classConfigData.paragraphList({ className }))}
       role="skeleton.paragraph"
     >
       {keys.map((key) => (
         <Skeleton
           key={key}
           animation={animation}
-          className={cn(classConfig.paragraphConfig.item, lineClassName)}
+          className={cn(
+            classConfigData.paragraphItem({ className: lineClassName }),
+          )}
         />
       ))}
     </div>

@@ -10,6 +10,8 @@ import CheckboxGroup from './group.tsx';
 import type { CheckboxGroupProps } from './group.tsx';
 import { DefaultCheckedIcon, DefaultIndeterminateIcon } from './icons.tsx';
 
+const classConfigData = classConfig();
+
 export type { CheckboxGroupProps };
 
 export type CheckboxProps<T extends ElementType = 'span'> = {
@@ -93,7 +95,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
       checked={innerChecked}
       onChange={handleChange}
       disabled={isDisabled}
-      className={cn(classConfig.checkboxConfig, className)}
+      className={cn(classConfigData.checkbox({ className }))}
       indeterminate={indeterminate}
       {...rest}
     >
@@ -102,15 +104,23 @@ const CheckboxBase = <T extends ElementType = 'span'>(
           <>{children}</>
         ) : (
           <>
-            <div className={cn(classConfig.boxConfig, boxClassName)}>
+            <div
+              className={cn(classConfigData.box({ className: boxClassName }))}
+            >
               {indeterminate ? (
-                <span className={cn(classConfig.checkedConfig, checkClassName)}>
+                <span
+                  className={cn(
+                    classConfigData.checked({ className: checkClassName }),
+                  )}
+                >
                   {indeterminateIcon}
                 </span>
               ) : (
                 innerChecked && (
                   <span
-                    className={cn(classConfig.checkedConfig, checkClassName)}
+                    className={cn(
+                      classConfigData.checked({ className: checkClassName }),
+                    )}
                   >
                     {checkedIcon}
                   </span>
@@ -118,7 +128,11 @@ const CheckboxBase = <T extends ElementType = 'span'>(
               )}
             </div>
             {children && (
-              <span className={cn(classConfig.labelConfig, labelClassName)}>
+              <span
+                className={cn(
+                  classConfigData.label({ className: labelClassName }),
+                )}
+              >
                 {children}
               </span>
             )}

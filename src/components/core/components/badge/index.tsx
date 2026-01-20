@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/badge/class-config.ts';
 
+const classConfigData = classConfig();
+
 export type BadgeProps = {
   /** 徽标内容,不存在时不显示 */
   content?: ReactNode;
@@ -14,14 +16,14 @@ export type BadgeProps = {
 };
 
 const Badge = ({ isDot = false, children, className, content }: BadgeProps) => {
-  const badgeClasses = classConfig.badgeConfig({
+  const badgeClasses = classConfigData.badge({
     isDot,
   });
 
   return (
     <>
       {children ? (
-        <div className={classConfig.wrapConfig}>
+        <div className={classConfigData.wrap()}>
           {children}
           {(isDot || content) && (
             <span className={cn(badgeClasses, className)}>
@@ -31,7 +33,7 @@ const Badge = ({ isDot = false, children, className, content }: BadgeProps) => {
         </div>
       ) : (
         <span
-          className={cn(badgeClasses, classConfig.onlyBadgeConfig, className)}
+          className={cn(badgeClasses, classConfigData.onlyBadge({ className }))}
         >
           {content}
         </span>

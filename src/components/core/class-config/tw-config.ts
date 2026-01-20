@@ -1,10 +1,12 @@
+import { tv } from 'tailwind-variants/lite';
+
 const getTwConfig = <T extends object = object>(obj: T) => {
   return obj;
 };
 const twConfig = getTwConfig({
-  button: {
-    index: {
-      base: [
+  button: tv({
+    slots: {
+      button: [
         'tw-inline-flex tw-items-center tw-justify-center focus:tw-outline-none',
         'disabled:tw-cursor-not-allowed disabled:before:tw-hidden',
         'tw-transition-colors tw-duration-200',
@@ -13,126 +15,143 @@ const twConfig = getTwConfig({
         // 圆角
         'tw-rounded-md before:tw-rounded-md',
       ],
+      loadingIcon: '-tw-ml-1 tw-mr-2 tw-h-4 tw-w-4 tw-animate-spin',
+      loadingIconCircle1: 'tw-opacity-25',
+      loadingIconCircle2: 'tw-opacity-75',
+    },
+    variants: {
       variant: {
-        primary:
-          'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-600 disabled:tw-bg-blue-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
-        secondary:
-          'tw-bg-blue-100 tw-text-blue-700 hover:tw-bg-blue-100 disabled:tw-bg-blue-50 disabled:tw-text-blue-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
-        danger:
-          'tw-bg-red-600 tw-text-white hover:tw-bg-red-600 disabled:tw-bg-red-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
-        ghost:
-          'tw-bg-white tw-text-gray-700 tw-border tw-border-gray-300 hover:tw-bg-white disabled:tw-bg-gray-50 disabled:tw-text-gray-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
+        primary: {
+          button:
+            'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-600 disabled:tw-bg-blue-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
+        },
+        secondary: {
+          button:
+            'tw-bg-blue-100 tw-text-blue-700 hover:tw-bg-blue-100 disabled:tw-bg-blue-50 disabled:tw-text-blue-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
+        },
+        danger: {
+          button:
+            'tw-bg-red-600 tw-text-white hover:tw-bg-red-600 disabled:tw-bg-red-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
+        },
+        ghost: {
+          button:
+            'tw-bg-white tw-text-gray-700 tw-border tw-border-gray-300 hover:tw-bg-white disabled:tw-bg-gray-50 disabled:tw-text-gray-400 tw-relative before:tw-absolute before:tw-inset-0 before:tw-opacity-0 active:before:tw-opacity-[0.08] before:tw-bg-black before:tw-transition-opacity',
+        },
       },
-      block: 'tw-w-full',
+      block: {
+        true: { button: 'tw-w-full' },
+      },
     },
-    icons: {
-      base: '-tw-ml-1 tw-mr-2 tw-h-4 tw-w-4 tw-animate-spin',
-      circle1: 'tw-opacity-25',
-      circle2: 'tw-opacity-75',
+  }),
+  input: tv({
+    base: [
+      'tw-w-full tw-rounded-md tw-border tw-border-gray-300 tw-bg-white tw-px-3 tw-py-2 tw-text-base tw-text-gray-700',
+      'tw-transition-colors tw-duration-200',
+      'read-only:tw-bg-gray-50',
+      'disabled:tw-cursor-not-allowed disabled:tw-bg-gray-100 disabled:tw-opacity-40',
+      'placeholder:tw-text-gray-400',
+      'tw-outline-none',
+    ],
+    variants: {
+      readOnly: {
+        false:
+          'focus:tw-border-blue-600 focus:tw-ring-1 focus:tw-ring-blue-600',
+      },
     },
-  },
-  input: {
-    index: {
-      base: [
-        'tw-w-full tw-rounded-md tw-border tw-border-gray-300 tw-bg-white tw-px-3 tw-py-2 tw-text-base tw-text-gray-700',
-        'tw-transition-colors tw-duration-200',
-        'read-only:tw-bg-gray-50',
-        'disabled:tw-cursor-not-allowed disabled:tw-bg-gray-100 disabled:tw-opacity-40',
-        'placeholder:tw-text-gray-400',
-        'tw-outline-none',
-      ],
-      noReadOnly:
-        'focus:tw-border-blue-600 focus:tw-ring-1 focus:tw-ring-blue-600',
+  }),
+  popup: tv({
+    slots: {
+      popupBase: 'tw-fixed tw-z-[1000]',
+      mask: 'tw-z-0',
+      body: 'tw-fixed tw-z-0 tw-overflow-auto tw-bg-white',
+      enter: '',
+      enterFrom: '',
+      enterTo: '',
+      leave: '',
+      leaveFrom: '',
+      leaveTo: '',
     },
-  },
-  popup: {
-    popup: {
-      base: 'tw-fixed tw-z-[1000]',
-    },
-    mask: 'tw-z-0',
-    body: {
-      base: 'tw-fixed tw-z-0 tw-overflow-auto tw-bg-white',
+    variants: {
       position: {
-        bottom: 'tw-bottom-0 tw-left-0 tw-right-0 tw-max-h-[80vh]',
-        top: 'tw-top-0 tw-left-0 tw-right-0 tw-max-h-[80vh]',
-        left: 'tw-left-0 tw-top-0 tw-bottom-0 tw-max-w-[80vw]',
-        right: 'tw-right-0 tw-top-0 tw-bottom-0 tw-max-w-[80vw]',
-        center:
-          'tw-left-1/2 tw-top-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2 tw-w-[70vw] tw-max-h-[80vh]',
-        none: '', // 不添加任何位置相关的样式
+        bottom: {
+          body: 'tw-bottom-0 tw-left-0 tw-right-0 tw-max-h-[80vh]',
+          enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
+          enterFrom: 'tw-translate-y-full',
+          enterTo: 'tw-translate-y-0',
+          leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
+          leaveFrom: 'tw-translate-y-0',
+          leaveTo: 'tw-translate-y-full',
+        },
+        top: {
+          body: 'tw-top-0 tw-left-0 tw-right-0 tw-max-h-[80vh]',
+          enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
+          enterFrom: '-tw-translate-y-full',
+          enterTo: 'tw-translate-y-0',
+          leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
+          leaveFrom: 'tw-translate-y-0',
+          leaveTo: '-tw-translate-y-full',
+        },
+        left: {
+          body: 'tw-left-0 tw-top-0 tw-bottom-0 tw-max-w-[80vw]',
+          enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
+          enterFrom: '-tw-translate-x-full',
+          enterTo: 'tw-translate-x-0',
+          leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
+          leaveFrom: 'tw-translate-x-0',
+          leaveTo: '-tw-translate-x-full',
+        },
+        right: {
+          body: 'tw-right-0 tw-top-0 tw-bottom-0 tw-max-w-[80vw]',
+          enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
+          enterFrom: 'tw-translate-x-full',
+          enterTo: 'tw-translate-x-0',
+          leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
+          leaveFrom: 'tw-translate-x-0',
+          leaveTo: 'tw-translate-x-full',
+        },
+        center: {
+          body: 'tw-left-1/2 tw-top-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2 tw-w-[70vw] tw-max-h-[80vh]',
+          enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
+          enterFrom: 'tw-opacity-0 tw-scale-75',
+          enterTo: 'tw-opacity-100 tw-scale-100',
+          leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
+          leaveFrom: 'tw-opacity-100 tw-scale-100',
+          leaveTo: 'tw-opacity-0 tw-scale-75',
+        },
+        none: {
+          // 不添加任何位置相关的样式
+          body: '',
+          enter: 'tw-transition-opacity tw-duration-300',
+          enterFrom: 'tw-opacity-0',
+          enterTo: 'tw-opacity-100',
+          leave: 'tw-transition-opacity tw-duration-200',
+          leaveFrom: 'tw-opacity-100',
+          leaveTo: 'tw-opacity-0',
+        },
       },
     },
-    transition: {
-      bottom: {
-        enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
-        enterFrom: 'tw-translate-y-full',
-        enterTo: 'tw-translate-y-0',
-        leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
-        leaveFrom: 'tw-translate-y-0',
-        leaveTo: 'tw-translate-y-full',
-      },
-      top: {
-        enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
-        enterFrom: '-tw-translate-y-full',
-        enterTo: 'tw-translate-y-0',
-        leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
-        leaveFrom: 'tw-translate-y-0',
-        leaveTo: '-tw-translate-y-full',
-      },
-      left: {
-        enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
-        enterFrom: '-tw-translate-x-full',
-        enterTo: 'tw-translate-x-0',
-        leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
-        leaveFrom: 'tw-translate-x-0',
-        leaveTo: '-tw-translate-x-full',
-      },
-      right: {
-        enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
-        enterFrom: 'tw-translate-x-full',
-        enterTo: 'tw-translate-x-0',
-        leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
-        leaveFrom: 'tw-translate-x-0',
-        leaveTo: 'tw-translate-x-full',
-      },
-      center: {
-        enter: 'tw-transform tw-transition tw-ease-out tw-duration-300',
-        enterFrom: 'tw-opacity-0 tw-scale-75',
-        enterTo: 'tw-opacity-100 tw-scale-100',
-        leave: 'tw-transform tw-transition tw-ease-in tw-duration-200',
-        leaveFrom: 'tw-opacity-100 tw-scale-100',
-        leaveTo: 'tw-opacity-0 tw-scale-75',
-      },
-      none: {
-        enter: 'tw-transition-opacity tw-duration-300',
-        enterFrom: 'tw-opacity-0',
-        enterTo: 'tw-opacity-100',
-        leave: 'tw-transition-opacity tw-duration-200',
-        leaveFrom: 'tw-opacity-100',
-        leaveTo: 'tw-opacity-0',
-      },
+  }),
+  toast: tv({
+    slots: {
+      toast: 'tw-z-[5000]',
+      mask: 'tw-bg-black/0',
+      body: 'tw-bg-transparent tw-left-1/2 -tw-translate-x-1/2 tw-w-[80vw] tw-max-h-[80vh]',
+      contentWrap:
+        'tw-mx-auto tw-w-fit tw-min-w-[120px] tw-rounded-lg tw-bg-black/70 tw-px-4 tw-py-3',
+      contentText: 'tw-break-words tw-text-center tw-text-sm tw-text-white',
     },
-  },
-  toast: {
-    toast: 'tw-z-[5000]',
-    mask: {
-      base: 'tw-bg-black/0',
-      maskClickable: 'tw-pointer-events-none',
-      noMaskClickable: 'tw-pointer-events-auto',
-    },
-    body: {
-      base: 'tw-bg-transparent tw-left-1/2 -tw-translate-x-1/2 tw-w-[80vw] tw-max-h-[80vh]',
+    variants: {
+      maskClickable: {
+        true: { mask: 'tw-pointer-events-none' },
+        false: { mask: 'tw-pointer-events-auto' },
+      },
       position: {
-        top: 'tw-top-[20%]',
-        center: 'tw-top-1/2 -tw-translate-y-1/2',
-        bottom: 'tw-bottom-[20%]',
+        top: { body: 'tw-top-[20%]' },
+        center: { body: 'tw-top-1/2 -tw-translate-y-1/2' },
+        bottom: { body: 'tw-bottom-[20%]' },
       },
     },
-    content: {
-      wrap: 'tw-mx-auto tw-w-fit tw-min-w-[120px] tw-rounded-lg tw-bg-black/70 tw-px-4 tw-py-3',
-      text: 'tw-break-words tw-text-center tw-text-sm tw-text-white',
-    },
-  },
+  }),
   popover: {
     index: {
       base: 'tw-inline-block',

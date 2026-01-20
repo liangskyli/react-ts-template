@@ -1,4 +1,3 @@
-import { cx } from 'class-variance-authority';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   cn,
@@ -62,14 +61,17 @@ describe('Class Configuration Utilities', () => {
       const result = cn('test-class');
 
       // Verify mockTwMerge was called with correct arguments
-      expect(mockTwMerge).toHaveBeenCalledWith(cx(['test-class']));
-      expect(result).toBe('processed-' + cx(['test-class']));
+      expect(mockTwMerge).toHaveBeenCalledWith('test-class');
+      expect(result).toBe('processed-' + 'test-class');
       updateTwMergeFunction(defaultTwMerge);
     });
   });
 
   describe('cn function', () => {
     it('should merge class names correctly', () => {
+      // Test with no parameters
+      expect(cn()).toBe('');
+
       // Test with a single class
       expect(cn('btn')).toBeTruthy();
 

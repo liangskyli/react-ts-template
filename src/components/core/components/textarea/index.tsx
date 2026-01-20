@@ -5,6 +5,8 @@ import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
 import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/textarea/class-config.ts';
 
+const classConfigData = classConfig();
+
 export type TextAreaProps = {
   /** 输入框的值 */
   value?: string;
@@ -125,20 +127,22 @@ function TextArea(props: TextAreaProps) {
   };
 
   return (
-    <div className={cn(classConfig.textareaWrapConfig, className)}>
+    <div className={cn(classConfigData.textareaWrap({ className }))}>
       <HeadlessTextarea
         ref={mergedRef}
         value={innerValue}
         onChange={handleChange}
         readOnly={readOnly}
         className={cn(
-          classConfig.textareaConfig({ readOnly }),
+          classConfigData.textarea({ readOnly }),
           textareaClassName,
         )}
         {...rest}
       />
       {showCount && (
-        <div className={cn(classConfig.countConfig, countClassName)}>
+        <div
+          className={cn(classConfigData.count({ className: countClassName }))}
+        >
           {innerValue.length}
           {maxLength ? `/${maxLength}` : ''}
         </div>

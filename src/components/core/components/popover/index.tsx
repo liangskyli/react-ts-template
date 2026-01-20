@@ -15,6 +15,8 @@ import classConfig from '@/components/core/components/popover/class-config.ts';
 import type { PopupProps } from '@/components/core/components/popup';
 import Popup from '@/components/core/components/popup';
 
+const classConfigData = classConfig();
+
 export type PopoverProps = {
   className?: string;
   /** 气泡框className */
@@ -70,7 +72,7 @@ const getArrowStyles = (direction: Placement, bgColor: string) => {
   };
 
   return {
-    className: classConfig.floatingArrowDirectionConfig({ direction }),
+    className: classConfigData.floatingArrowDirection({ direction }),
     style: arrowStyle,
     direction: baseDirection,
   };
@@ -174,25 +176,27 @@ const Popover = (props: PopoverProps) => {
           floatingRef.current = node;
         }
       }}
-      className={cn(classConfig.floatingConfig.base, bubbleClassName)}
+      className={cn(classConfigData.floating({ className: bubbleClassName }))}
       style={floatingStyles}
     >
       <div
         className={cn(
-          classConfig.floatingWrapConfig({ direction: currentPlacement }),
+          classConfigData.floatingWrap({ direction: currentPlacement }),
         )}
       >
         <div
-          className={cn(classConfig.floatingContentConfig, contentClassName)}
+          className={cn(
+            classConfigData.floatingContent({ className: contentClassName }),
+          )}
         >
           {typeof content === 'function' ? content(setOpen) : content}
         </div>
 
         <div
           className={cn(
-            classConfig.floatingArrowConfig,
-            arrowStyles.className,
-            arrow?.className,
+            classConfigData.floatingArrow({
+              className: [arrowStyles.className, arrow?.className],
+            }),
           )}
           style={{
             ...arrowStyles.style,
@@ -206,7 +210,7 @@ const Popover = (props: PopoverProps) => {
   return (
     <>
       <div
-        className={cn(classConfig.popoverConfig, className)}
+        className={cn(classConfigData.popoverBase({ className }))}
         ref={(node) => {
           // 同时设置两个 ref
           refs.setReference(node);
@@ -221,9 +225,9 @@ const Popover = (props: PopoverProps) => {
       <Popup
         visible={open}
         onClose={() => setOpen(false)}
-        maskClassName={cn(classConfig.popupMaskConfig({ maskClickable }))}
-        bodyClassName={classConfig.popupBodyConfig}
-        className={classConfig.popupConfig}
+        maskClassName={cn(classConfigData.mask({ maskClickable }))}
+        bodyClassName={classConfigData.popupBody()}
+        className={classConfigData.popupBase()}
         getContainer={getContainer}
         position="none"
         destroyOnClose

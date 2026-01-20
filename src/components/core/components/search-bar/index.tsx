@@ -9,6 +9,8 @@ import {
   DefaultSearchIcon,
 } from '@/components/core/components/search-bar/icons.tsx';
 
+const classConfigData = classConfig();
+
 export type SearchBarProps = {
   /** 是否显示搜索图标 */
   showSearchIcon?: boolean;
@@ -99,11 +101,15 @@ const SearchBar = (props: SearchBarProps) => {
   );
 
   return (
-    <div className={cn(classConfig.containerConfig, className)}>
-      <div className={cn(classConfig.searchConfig, searchClassName)}>
+    <div className={cn(classConfigData.container({ className }))}>
+      <div
+        className={cn(classConfigData.search({ className: searchClassName }))}
+      >
         {showSearchIcon && (
           <div
-            className={cn(classConfig.searchIconConfig, searchIconClassName)}
+            className={cn(
+              classConfigData.searchIcon({ className: searchIconClassName }),
+            )}
             role="search-icon"
           >
             {searchIcon}
@@ -117,7 +123,7 @@ const SearchBar = (props: SearchBarProps) => {
           readOnly={readOnly}
           data-search-icon={showSearchIcon ? true : undefined}
           data-clear-icon={isShowClearButton ? true : undefined}
-          className={cn(classConfig.input, inputClassName)}
+          className={cn(classConfigData.input({ className: inputClassName }))}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           {...inputProps}
@@ -125,7 +131,9 @@ const SearchBar = (props: SearchBarProps) => {
 
         {isShowClearButton && (
           <div
-            className={cn(classConfig.clearButtonConfig, clearButtonClassName)}
+            className={cn(
+              classConfigData.clearButton({ className: clearButtonClassName }),
+            )}
             onClick={handleClear}
             role="clear-button"
             onMouseDown={(e) => {
