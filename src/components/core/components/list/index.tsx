@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/list/class-config.ts';
 import type { InfiniteScrollProps } from '@/components/core/components/list/infinite-scroll.tsx';
 import InfiniteScroll from '@/components/core/components/list/infinite-scroll.tsx';
@@ -143,13 +142,11 @@ const List = <T = unknown,>(props: ListProps<T>) => {
 
   return (
     <div
-      className={cn(
-        classConfigData.list({
-          defaultScrollHeight: Boolean(virtualScroll) || !!infiniteScroll,
-          isScroll: !virtualScroll && !!infiniteScroll,
-        }),
+      className={classConfigData.list({
+        defaultScrollHeight: Boolean(virtualScroll) || !!infiniteScroll,
+        isScroll: !virtualScroll && !!infiniteScroll,
         className,
-      )}
+      })}
       onScroll={onDivListScroll}
       role="list"
       ref={listRef}

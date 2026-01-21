@@ -2,7 +2,6 @@ import type { Ref } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Textarea as HeadlessTextarea } from '@headlessui/react';
 import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/textarea/class-config.ts';
 
 const classConfigData = classConfig();
@@ -127,22 +126,20 @@ function TextArea(props: TextAreaProps) {
   };
 
   return (
-    <div className={cn(classConfigData.textareaWrap({ className }))}>
+    <div className={classConfigData.textareaWrap({ className })}>
       <HeadlessTextarea
         ref={mergedRef}
         value={innerValue}
         onChange={handleChange}
         readOnly={readOnly}
-        className={cn(
-          classConfigData.textarea({ readOnly }),
-          textareaClassName,
-        )}
+        className={classConfigData.textarea({
+          readOnly,
+          className: textareaClassName,
+        })}
         {...rest}
       />
       {showCount && (
-        <div
-          className={cn(classConfigData.count({ className: countClassName }))}
-        >
+        <div className={classConfigData.count({ className: countClassName })}>
           {innerValue.length}
           {maxLength ? `/${maxLength}` : ''}
         </div>

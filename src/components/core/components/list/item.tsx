@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/list/class-config.ts';
 
 const classConfigData = classConfig();
@@ -45,7 +44,7 @@ export const ListItem = (props: ListItemProps) => {
 
   return (
     <div
-      className={cn(classConfigData.item({ className }))}
+      className={classConfigData.item({ className })}
       data-clickable={clickable && !disabled ? true : undefined}
       data-disabled={disabled ? true : undefined}
       onClick={handleClick}

@@ -2,7 +2,6 @@ import type { ReactNode, Ref } from 'react';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/checkbox/class-config.ts';
 import { CheckboxContext } from './context.tsx';
 
@@ -72,7 +71,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
     >
       <div
         ref={checkboxGroupRef}
-        className={cn(classConfigData.group({ className }), className)}
+        className={classConfigData.group({ className })}
       >
         {children}
       </div>

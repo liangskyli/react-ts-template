@@ -23,7 +23,6 @@ import type {
   SectionRenderedParams,
 } from 'react-virtualized/dist/es/Grid';
 import type { WindowScrollerChildProps } from 'react-virtualized/dist/es/WindowScroller';
-import { cn } from '@/components/core/class-config';
 import CellMeasurerCacheDecorator from './cell-measurer-cache-decorator.ts';
 import classConfig from './class-config.ts';
 
@@ -605,9 +604,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     }
     return (
       <div
-        className={cn(
-          classConfigData.leftHeader({ className: leftHeaderClass }),
-        )}
+        className={classConfigData.leftHeader({ className: leftHeaderClass })}
       >
         <Grid
           data-testid="leftHeaderGrid"
@@ -652,9 +649,9 @@ const VirtualGrid = (props: VirtualGridProps) => {
     }
     return (
       <div
-        className={cn(
-          classConfigData.centerHeader({ className: centerHeaderClass }),
-        )}
+        className={classConfigData.centerHeader({
+          className: centerHeaderClass,
+        })}
         style={{
           left: getGridWidth(width).leftGridWidth,
         }}
@@ -709,9 +706,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
     }
     return (
       <div
-        className={cn(
-          classConfigData.rightHeader({ className: rightHeaderClass }),
-        )}
+        className={classConfigData.rightHeader({ className: rightHeaderClass })}
       >
         <Grid
           data-testid="rightHeaderGrid"
@@ -756,9 +751,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
       return null;
     }
     return (
-      <div
-        className={cn(classConfigData.leftBody({ className: leftBodyClass }))}
-      >
+      <div className={classConfigData.leftBody({ className: leftBodyClass })}>
         <Grid
           data-testid="leftBodyGrid"
           ref={leftBodyGridRef}
@@ -817,9 +810,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
 
     return (
       <div
-        className={cn(
-          classConfigData.centerBody({ className: centerBodyClass }),
-        )}
+        className={classConfigData.centerBody({ className: centerBodyClass })}
         style={{
           left: getGridWidth(width).leftGridWidth,
         }}
@@ -892,9 +883,7 @@ const VirtualGrid = (props: VirtualGridProps) => {
       return null;
     }
     return (
-      <div
-        className={cn(classConfigData.rightBody({ className: rightBodyClass }))}
-      >
+      <div className={classConfigData.rightBody({ className: rightBodyClass })}>
         <Grid
           data-testid="rightBodyGrid"
           ref={rightBodyGridRef}

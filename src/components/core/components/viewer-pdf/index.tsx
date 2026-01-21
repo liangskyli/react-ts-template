@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import type { DocumentProps, PageProps } from 'react-pdf';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/viewer-pdf/class-config.ts';
 import {
   DefaultZoomInIcon,
@@ -107,22 +106,20 @@ const ViewerPdf = (props: ViewerPdfProps) => {
 
   return (
     <div
-      className={cn(classConfigData.container({ className }))}
+      className={classConfigData.container({ className })}
       data-tool-bar={isShowToolBar ? true : undefined}
     >
       {isShowToolBar && (
         <div
-          className={cn(
-            classConfigData.toolBarWrap({ className: toolBarConfig.className }),
-          )}
+          className={classConfigData.toolBarWrap({
+            className: toolBarConfig.className,
+          })}
         >
           <button
             onClick={handleZoomOut}
-            className={cn(
-              classConfigData.toolBarZoomButton({
-                className: toolBarConfig.zoomButtonClassName,
-              }),
-            )}
+            className={classConfigData.toolBarZoomButton({
+              className: toolBarConfig.zoomButtonClassName,
+            })}
             title="缩小"
             disabled={scale <= MIN_SCALE}
             data-disabled={scale <= MIN_SCALE ? true : undefined}
@@ -131,21 +128,17 @@ const ViewerPdf = (props: ViewerPdfProps) => {
           </button>
           <button
             onClick={handleResetZoom}
-            className={cn(
-              classConfigData.toolBarResetZoomButton({
-                className: toolBarConfig.resetZoomButtonClassName,
-              }),
-            )}
+            className={classConfigData.toolBarResetZoomButton({
+              className: toolBarConfig.resetZoomButtonClassName,
+            })}
           >
             {Math.round(scale * 100)}%
           </button>
           <button
             onClick={handleZoomIn}
-            className={cn(
-              classConfigData.toolBarZoomButton({
-                className: toolBarConfig.zoomButtonClassName,
-              }),
-            )}
+            className={classConfigData.toolBarZoomButton({
+              className: toolBarConfig.zoomButtonClassName,
+            })}
             title="放大"
             disabled={scale >= MAX_SCALE}
             data-disabled={scale >= MAX_SCALE ? true : undefined}
@@ -155,9 +148,7 @@ const ViewerPdf = (props: ViewerPdfProps) => {
         </div>
       )}
       <Document
-        className={cn(
-          classConfigData.document({ className: documentClassName }),
-        )}
+        className={classConfigData.document({ className: documentClassName })}
         inputRef={documentRef}
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
@@ -169,9 +160,9 @@ const ViewerPdf = (props: ViewerPdfProps) => {
           return (
             <Page
               key={`page_${index + 1}`}
-              className={cn(
-                classConfigData.page({ className: otherPageProps.className }),
-              )}
+              className={classConfigData.page({
+                className: otherPageProps.className,
+              })}
               pageNumber={index + 1}
               width={pageWidth}
               scale={scale}

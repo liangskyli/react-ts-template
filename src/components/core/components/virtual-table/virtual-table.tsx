@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '@/components/core/class-config';
 import type { VirtualGridProps } from '@/components/core/components/virtual-grid';
 import VirtualGrid from '@/components/core/components/virtual-grid';
 import classConfig from '@/components/core/components/virtual-table/class-config.ts';
@@ -98,9 +97,9 @@ const VirtualTable = <
       // 表头
       return (
         <div
-          className={cn(
-            classConfigData.headerCellClass({ className: headerCellClass }),
-          )}
+          className={classConfigData.headerCellClass({
+            className: headerCellClass,
+          })}
           style={{ height: headerHeight, textAlign: headerAlign }}
         >
           <div style={{ width }}>{title}</div>
@@ -121,9 +120,7 @@ const VirtualTable = <
     }
     return (
       <div
-        className={cn(
-          classConfigData.bodyCellClass({ className: bodyCellClass }),
-        )}
+        className={classConfigData.bodyCellClass({ className: bodyCellClass })}
         style={{ textAlign: align, width }}
       >
         {content}
@@ -134,7 +131,7 @@ const VirtualTable = <
   return (
     <VirtualGrid
       {...othersVirtualGridProps}
-      className={cn(classConfigData.container({ className }))}
+      className={classConfigData.container({ className })}
       rowCount={showHeader ? dataRowCount + 1 : dataRowCount}
       columnCount={columns.length}
       fixedWidth={true}
@@ -143,12 +140,12 @@ const VirtualTable = <
       fixedRightColumnCount={rightColumnCount}
       cellRenderer={cellRenderer}
       columnWidth={({ index }) => columns[index].width}
-      rightHeaderClass={cn(
-        classConfigData.rightHeaderClass({ className: rightHeaderClass }),
-      )}
-      rightBodyClass={cn(
-        classConfigData.rightBodyClass({ className: rightBodyClass }),
-      )}
+      rightHeaderClass={classConfigData.rightHeaderClass({
+        className: rightHeaderClass,
+      })}
+      rightBodyClass={classConfigData.rightBodyClass({
+        className: rightBodyClass,
+      })}
     />
   );
 };

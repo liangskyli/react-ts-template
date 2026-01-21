@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/steps/class-config.ts';
 
 const classConfigData = classConfig();
@@ -98,12 +97,10 @@ const Steps = (props: StepsProps) => {
     // 默认图标
     let iconNode = (
       <div
-        className={cn(
-          classConfigData.icon({
-            isDefaultIcon: true,
-            className: iconClassName,
-          }),
-        )}
+        className={classConfigData.icon({
+          isDefaultIcon: true,
+          className: iconClassName,
+        })}
       >
         {/* 空内容，只显示圆点背景 */}
       </div>
@@ -111,7 +108,7 @@ const Steps = (props: StepsProps) => {
     // 如果有自定义图标，则使用自定义图标
     if (icon) {
       iconNode = (
-        <div className={cn(classConfigData.icon({ className: iconClassName }))}>
+        <div className={classConfigData.icon({ className: iconClassName })}>
           {icon}
         </div>
       );
@@ -125,26 +122,20 @@ const Steps = (props: StepsProps) => {
       <>
         {(item.title || item.description) && (
           <div
-            className={cn(
-              classConfigData.content({ className: contentClassName }),
-            )}
+            className={classConfigData.content({ className: contentClassName })}
           >
             {item.title && (
               <div
-                className={cn(
-                  classConfigData.title({ className: titleClassName }),
-                )}
+                className={classConfigData.title({ className: titleClassName })}
               >
                 {item.title}
               </div>
             )}
             {item.description && (
               <div
-                className={cn(
-                  classConfigData.description({
-                    className: descriptionClassName,
-                  }),
-                )}
+                className={classConfigData.description({
+                  className: descriptionClassName,
+                })}
               >
                 {item.description}
               </div>
@@ -156,7 +147,7 @@ const Steps = (props: StepsProps) => {
   };
 
   return (
-    <div className={cn(classConfigData.container({ direction, className }))}>
+    <div className={classConfigData.container({ direction, className })}>
       {items.map((item, index) => {
         const status = getStepStatus(index, item);
         const isClickable = clickable && !item.disabled;
@@ -164,9 +155,10 @@ const Steps = (props: StepsProps) => {
         return (
           <div
             key={index}
-            className={cn(
-              classConfigData.item({ direction, className: itemClassName }),
-            )}
+            className={classConfigData.item({
+              direction,
+              className: itemClassName,
+            })}
             data-status={status}
             data-previous-status={
               index > 0 ? getStepStatus(index - 1, items[index - 1]) : undefined
@@ -176,20 +168,18 @@ const Steps = (props: StepsProps) => {
             data-direction={direction}
           >
             <div
-              className={cn(
-                classConfigData.itemInner({ className: itemInnerClassName }),
-              )}
+              className={classConfigData.itemInner({
+                className: itemInnerClassName,
+              })}
               onClick={() => handleStepClick(index, item)}
             >
               {/* 图标和线条容器 */}
               {direction === 'horizontal' ? (
                 <div
-                  className={cn(
-                    classConfigData.indicatorContainerBase({
-                      direction,
-                      className: indicatorContainerClassName,
-                    }),
-                  )}
+                  className={classConfigData.indicatorContainerBase({
+                    direction,
+                    className: indicatorContainerClassName,
+                  })}
                 >
                   {/* 图标 */}
                   {renderIcon(item.icon)}
@@ -197,33 +187,27 @@ const Steps = (props: StepsProps) => {
                   {/* 左侧连接线 */}
                   {index > 0 && (
                     <div
-                      className={cn(
-                        classConfigData.indicatorContainerLeftLine({
-                          className: horizontalLeftLineClassName,
-                        }),
-                      )}
+                      className={classConfigData.indicatorContainerLeftLine({
+                        className: horizontalLeftLineClassName,
+                      })}
                     />
                   )}
 
                   {/* 右侧连接线 */}
                   {index < items.length - 1 && (
                     <div
-                      className={cn(
-                        classConfigData.indicatorContainerRightLine({
-                          className: horizontalRightLineClassName,
-                        }),
-                      )}
+                      className={classConfigData.indicatorContainerRightLine({
+                        className: horizontalRightLineClassName,
+                      })}
                     />
                   )}
                 </div>
               ) : (
                 <div
-                  className={cn(
-                    classConfigData.indicatorContainerBase({
-                      direction,
-                      className: indicatorContainerClassName,
-                    }),
-                  )}
+                  className={classConfigData.indicatorContainerBase({
+                    direction,
+                    className: indicatorContainerClassName,
+                  })}
                 >
                   {/* 图标 */}
                   {renderIcon(item.icon)}
@@ -231,10 +215,10 @@ const Steps = (props: StepsProps) => {
                   {/* 垂直连接线 */}
                   {index < items.length - 1 && (
                     <div
-                      className={cn(
-                        classConfigData.indicatorContainerVerticalLine({
+                      className={classConfigData.indicatorContainerVerticalLine(
+                        {
                           className: verticalLineClassName,
-                        }),
+                        },
                       )}
                     />
                   )}

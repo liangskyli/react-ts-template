@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants/lite';
+import { tv } from './tv-utils.ts';
 
 const getTwConfig = <T extends object = object>(obj: T) => {
   return obj;

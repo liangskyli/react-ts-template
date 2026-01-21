@@ -13,24 +13,6 @@ const getComponentClassConfig = <T extends keyof typeof defaultConfig>(component
 **参数：**
 - `componentName`: 组件名称，支持的值包括所有在 `defaultConfig` 中定义的组件名
 
-### `updateTwMergeFunction`
-自定义 Tailwind 类名合并函数。
-**类型定义：**
-``` typescript
-const updateTwMergeFunction = (twMergeFunction: (className: string) => string) => void
-```
-**参数：**
-- `twMergeFunction`: 自定义的类名合并函数
-
-### `defaultTwMerge`
-默认的 Tailwind 类名合并函数。
-**类型定义：**
-``` typescript
-const defaultTwMerge = (className: string) => string
-```
-**参数：**
-- `className`: 需要合并的类名字符串
-
 ### `cn`
 用于合并多个类名的工具函数，支持条件类名。
 **类型定义：**
@@ -70,16 +52,7 @@ const className = cn('base-class', {
   'disabled-class': isDisabled
 });
 ```
-### 自定义类名合并函数
-``` typescript
-import { updateTwMergeFunction } from '@/components/core/class-config';
 
-// 使用自定义的合并函数
-updateTwMergeFunction((className) => {
-  // 自定义合并逻辑
-  return className;
-});
-```
 ### 配置示例
 ``` typescript
 // 默认配置示例，见defaultConfig声明

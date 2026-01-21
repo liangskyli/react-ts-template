@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/components/core/class-config';
 import { createImperative } from '@/components/core/components/popup/imperative.tsx';
 import Popup, {
   type PopupProps,
@@ -106,14 +105,15 @@ const show = (
     position: 'none',
     // 强制关闭时销毁内容
     destroyOnClose: true,
-    maskClassName: cn(
-      classConfigData.mask({ maskClickable, className: maskClassName }),
-    ),
-    className: cn(classConfigData.toast({ className })),
-    bodyClassName: cn(
-      classConfigData.body({ position: toastPosition }),
-      bodyClassName,
-    ),
+    maskClassName: classConfigData.mask({
+      maskClickable,
+      className: maskClassName,
+    }),
+    className: classConfigData.toast({ className }),
+    bodyClassName: classConfigData.body({
+      position: toastPosition,
+      className: bodyClassName,
+    }),
     getContainer,
     disableBodyScroll,
     closeOnMaskClick,

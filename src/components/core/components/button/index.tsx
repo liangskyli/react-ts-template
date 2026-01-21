@@ -1,7 +1,6 @@
 import type { ElementType, ReactNode } from 'react';
 import type { ButtonProps as HeadlessButtonProps } from '@headlessui/react';
 import { Button as HeadlessButton } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/button/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/core/components/button/icons.tsx';
 
@@ -42,7 +41,7 @@ const Button = <T extends ElementType = 'button'>(props: ButtonProps<T>) => {
     <HeadlessButton
       disabled={disabled || loading}
       onClick={handleClick}
-      className={cn(classConfigData.button({ variant, block, className }))}
+      className={classConfigData.button({ variant, block, className })}
       {...rest}
     >
       {/*添加一个占位的 span，保持相同宽度*/}

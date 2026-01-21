@@ -1,4 +1,3 @@
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/loading/class-config.ts';
 import Mask from '@/components/core/components/mask';
 import { DefaultLoadingIcon } from './icons.tsx';
@@ -27,13 +26,13 @@ const Loading = (props: Props) => {
   } = props;
 
   return (
-    <Mask visible={visible} className={cn(classConfigData.mask({ className }))}>
+    <Mask visible={visible} className={classConfigData.mask({ className })}>
       <div className={classConfigData.position()}>
-        <div className={cn(classConfigData.body({ className: bodyClassName }))}>
+        <div className={classConfigData.body({ className: bodyClassName })}>
           <DefaultLoadingIcon className={loadingIconClassName} />
           <div
             data-testid="text"
-            className={cn(classConfigData.text({ className: textClassName }))}
+            className={classConfigData.text({ className: textClassName })}
           >
             加载中...
           </div>

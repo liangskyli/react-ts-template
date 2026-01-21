@@ -1,7 +1,6 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { Fragment, useRef } from 'react';
 import { Transition } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/mask/class-config.ts';
 import {
   type GetContainer,
@@ -51,7 +50,7 @@ const Mask = (props: MaskProps) => {
   const maskContent = (
     <div
       ref={ref}
-      className={cn(classConfigData.content({ className }))}
+      className={classConfigData.content({ className })}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onMaskClick?.(e);

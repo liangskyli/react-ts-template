@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/checkbox/class-config.ts';
 import { CheckboxContext } from './context.tsx';
 import CheckboxGroup from './group.tsx';
@@ -95,7 +94,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
       checked={innerChecked}
       onChange={handleChange}
       disabled={isDisabled}
-      className={cn(classConfigData.checkbox({ className }))}
+      className={classConfigData.checkbox({ className })}
       indeterminate={indeterminate}
       {...rest}
     >
@@ -104,23 +103,21 @@ const CheckboxBase = <T extends ElementType = 'span'>(
           <>{children}</>
         ) : (
           <>
-            <div
-              className={cn(classConfigData.box({ className: boxClassName }))}
-            >
+            <div className={classConfigData.box({ className: boxClassName })}>
               {indeterminate ? (
                 <span
-                  className={cn(
-                    classConfigData.checked({ className: checkClassName }),
-                  )}
+                  className={classConfigData.checked({
+                    className: checkClassName,
+                  })}
                 >
                   {indeterminateIcon}
                 </span>
               ) : (
                 innerChecked && (
                   <span
-                    className={cn(
-                      classConfigData.checked({ className: checkClassName }),
-                    )}
+                    className={classConfigData.checked({
+                      className: checkClassName,
+                    })}
                   >
                     {checkedIcon}
                   </span>
@@ -129,9 +126,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
             </div>
             {children && (
               <span
-                className={cn(
-                  classConfigData.label({ className: labelClassName }),
-                )}
+                className={classConfigData.label({ className: labelClassName })}
               >
                 {children}
               </span>

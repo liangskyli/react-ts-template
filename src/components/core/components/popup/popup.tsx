@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { Fragment, useState } from 'react';
 import { Transition } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import Mask from '@/components/core/components/mask';
 import classConfig from '@/components/core/components/popup/class-config.ts';
 import { generateTimeoutFunction } from '@/components/core/components/popup/imperative.tsx';
@@ -105,11 +104,11 @@ const Popup = (props: PopupProps) => {
   const node = (
     <div
       data-testid="popup"
-      className={cn(popupBase({ className }))}
+      className={popupBase({ className })}
       data-popup-id={popupId}
     >
       <Mask
-        className={cn(mask({ className: maskClassName }))}
+        className={mask({ className: maskClassName })}
         visible={visible}
         onMaskClick={closeOnMaskClick ? onClose : undefined}
         disableBodyScroll={disableBodyScroll}
@@ -136,7 +135,7 @@ const Popup = (props: PopupProps) => {
         }}
       >
         <div
-          className={cn(body({ position, className: bodyClassName }))}
+          className={body({ position, className: bodyClassName })}
           style={{
             pointerEvents: isContentTransitionFinish ? 'auto' : 'none',
           }}

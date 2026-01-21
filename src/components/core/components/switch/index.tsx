@@ -1,7 +1,6 @@
 import type { ElementType, ReactNode, Ref } from 'react';
 import { Switch as HeadlessSwitch } from '@headlessui/react';
 import type { SwitchProps as HeadlessSwitchProps } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/switch/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/core/components/switch/icons.tsx';
 
@@ -61,40 +60,34 @@ const Switch = <TTag extends ElementType = 'button'>(
   const isDisabled = disabled || loading;
 
   return (
-    <div className={cn(classConfigData.switch({ className }))}>
+    <div className={classConfigData.switch({ className })}>
       <HeadlessSwitch
         checked={checked}
         defaultChecked={defaultChecked}
         onChange={onChange}
         disabled={isDisabled}
-        className={cn(
-          classConfigData.switchTrack({ className: trackClassName }),
-        )}
+        className={classConfigData.switchTrack({ className: trackClassName })}
         {...rest}
       >
         <div className={classConfigData.switchChildrenWrap()}>
           <span
-            className={cn(
-              classConfigData.switchCheckedText({
-                className: checkedTextClassName,
-              }),
-            )}
+            className={classConfigData.switchCheckedText({
+              className: checkedTextClassName,
+            })}
           >
             {checkedText}
           </span>
           <span
-            className={cn(
-              classConfigData.switchThumb({ className: thumbClassName }),
-            )}
+            className={classConfigData.switchThumb({
+              className: thumbClassName,
+            })}
           >
             {loading && <DefaultLoadingIcon />}
           </span>
           <span
-            className={cn(
-              classConfigData.switchUncheckedText({
-                className: uncheckedTextClassName,
-              }),
-            )}
+            className={classConfigData.switchUncheckedText({
+              className: uncheckedTextClassName,
+            })}
           >
             {uncheckedText}
           </span>

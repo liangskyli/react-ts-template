@@ -1,4 +1,3 @@
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/skeleton/class-config.ts';
 import './base.css';
 
@@ -14,9 +13,7 @@ export type SkeletonProps = {
 const Skeleton = (props: SkeletonProps) => {
   const { className, animation = true } = props;
 
-  const skeletonClassName = cn(
-    classConfigData.skeleton({ animation, className }),
-  );
+  const skeletonClassName = classConfigData.skeleton({ animation, className });
 
   return <div className={skeletonClassName} role="skeleton" />;
 };

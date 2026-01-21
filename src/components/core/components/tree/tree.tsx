@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { cn } from '@/components/core/class-config';
 import type { ListProps, ListRef } from '@/components/core/components/list';
 import List from '@/components/core/components/list';
 import classConfig from '@/components/core/components/tree/class-config.ts';
@@ -298,14 +297,14 @@ const Tree = <
       return (
         <div
           key={node.key}
-          className={cn(classConfigData.node({ className: nodeClassName }))}
+          className={classConfigData.node({ className: nodeClassName })}
           data-disabled={node.disabled ? true : undefined}
         >
           {/* 缩进 */}
           <div
-            className={cn(
-              classConfigData.nodeContentIndent({ className: indentClassName }),
-            )}
+            className={classConfigData.nodeContentIndent({
+              className: indentClassName,
+            })}
             style={{ width: `${node.level * indentWidth}px` }}
           />
 
@@ -313,11 +312,9 @@ const Tree = <
           {showIcon && (
             <div
               data-can-expand={canExpand ? true : undefined}
-              className={cn(
-                classConfigData.nodeContentSwitcher({
-                  className: switcherClassName,
-                }),
-              )}
+              className={classConfigData.nodeContentSwitcher({
+                className: switcherClassName,
+              })}
               onClick={() => handleNodeExpand(node)}
               data-testid={
                 canExpand
@@ -333,11 +330,9 @@ const Tree = <
 
           {/* 节点内容 */}
           <div
-            className={cn(
-              classConfigData.nodeContentWrap({
-                className: nodeTitleContentClassName,
-              }),
-            )}
+            className={classConfigData.nodeContentWrap({
+              className: nodeTitleContentClassName,
+            })}
           >
             {renderNode?.(node, { nodeMap, flattenNodes, allFlattenNodeMap }) ??
               node.title}
@@ -374,7 +369,7 @@ const Tree = <
   return (
     <List<FlattenNode<K, T>>
       ref={listRef}
-      className={cn(className)}
+      className={className}
       virtualScroll={virtualScroll}
       list={flattenNodes}
     >

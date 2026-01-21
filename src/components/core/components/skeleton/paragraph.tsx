@@ -1,4 +1,3 @@
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/skeleton/class-config.ts';
 import Skeleton from '@/components/core/components/skeleton/index.tsx';
 import type { SkeletonProps } from './base.tsx';
@@ -18,16 +17,16 @@ const Paragraph = (props: ParagraphProps) => {
 
   return (
     <div
-      className={cn(classConfigData.paragraphList({ className }))}
+      className={classConfigData.paragraphList({ className })}
       role="skeleton.paragraph"
     >
       {keys.map((key) => (
         <Skeleton
           key={key}
           animation={animation}
-          className={cn(
-            classConfigData.paragraphItem({ className: lineClassName }),
-          )}
+          className={classConfigData.paragraphItem({
+            className: lineClassName,
+          })}
         />
       ))}
     </div>

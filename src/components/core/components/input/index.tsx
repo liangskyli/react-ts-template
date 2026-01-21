@@ -2,7 +2,6 @@ import type { ElementType, Ref } from 'react';
 import { useState } from 'react';
 import { Input as HeadlessInput } from '@headlessui/react';
 import type { InputProps as HeadlessInputProps } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/input/class-config.ts';
 
 export type InputProps<TTag extends ElementType = 'input'> = {
@@ -123,7 +122,7 @@ const Input = (props: InputProps) => {
       inputMode={inputMode}
       min={min}
       max={max}
-      className={cn(classConfig({ readOnly, className }))}
+      className={classConfig({ readOnly, className })}
       {...rest}
     />
   );

@@ -10,7 +10,6 @@ import {
   shift as shiftMiddleware,
   useFloating,
 } from '@floating-ui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/popover/class-config.ts';
 import type { PopupProps } from '@/components/core/components/popup';
 import Popup from '@/components/core/components/popup';
@@ -176,28 +175,26 @@ const Popover = (props: PopoverProps) => {
           floatingRef.current = node;
         }
       }}
-      className={cn(classConfigData.floating({ className: bubbleClassName }))}
+      className={classConfigData.floating({ className: bubbleClassName })}
       style={floatingStyles}
     >
       <div
-        className={cn(
-          classConfigData.floatingWrap({ direction: currentPlacement }),
-        )}
+        className={classConfigData.floatingWrap({
+          direction: currentPlacement,
+        })}
       >
         <div
-          className={cn(
-            classConfigData.floatingContent({ className: contentClassName }),
-          )}
+          className={classConfigData.floatingContent({
+            className: contentClassName,
+          })}
         >
           {typeof content === 'function' ? content(setOpen) : content}
         </div>
 
         <div
-          className={cn(
-            classConfigData.floatingArrow({
-              className: [arrowStyles.className, arrow?.className],
-            }),
-          )}
+          className={classConfigData.floatingArrow({
+            className: [arrowStyles.className, arrow?.className],
+          })}
           style={{
             ...arrowStyles.style,
           }}
@@ -210,7 +207,7 @@ const Popover = (props: PopoverProps) => {
   return (
     <>
       <div
-        className={cn(classConfigData.popoverBase({ className }))}
+        className={classConfigData.popoverBase({ className })}
         ref={(node) => {
           // 同时设置两个 ref
           refs.setReference(node);
@@ -225,7 +222,7 @@ const Popover = (props: PopoverProps) => {
       <Popup
         visible={open}
         onClose={() => setOpen(false)}
-        maskClassName={cn(classConfigData.mask({ maskClickable }))}
+        maskClassName={classConfigData.mask({ maskClickable })}
         bodyClassName={classConfigData.popupBody()}
         className={classConfigData.popupBase()}
         getContainer={getContainer}

@@ -1,6 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cn } from '@/components/core/class-config';
 import ViewerPdf from '@/components/core/components/viewer-pdf';
 import classConfig from '@/components/core/components/viewer-pdf/class-config';
 
@@ -117,7 +116,7 @@ describe('ViewerPdf', () => {
     );
 
     expect(screen.getByTestId('mock-document')).toHaveClass(
-      cn(classConfig().document({ className: customClassName })),
+      classConfig().document({ className: customClassName }),
     );
   });
 
@@ -169,7 +168,7 @@ describe('ViewerPdf', () => {
 
     const pageElement = screen.getByTestId('mock-page-1');
     expect(pageElement).toHaveClass(
-      cn(classConfig().page({ className: customPageClassName })),
+      classConfig().page({ className: customPageClassName }),
     );
   });
 
@@ -238,23 +237,19 @@ describe('ViewerPdf', () => {
 
       const toolbar = screen.getByTitle('缩小').closest('div');
       expect(toolbar).toHaveClass(
-        cn(classConfig().toolBarWrap({ className: customToolBarClass })),
+        classConfig().toolBarWrap({ className: customToolBarClass }),
       );
 
       const zoomOutButton = screen.getByTitle('缩小');
       expect(zoomOutButton).toHaveClass(
-        cn(
-          classConfig().toolBarZoomButton({ className: customZoomButtonClass }),
-        ),
+        classConfig().toolBarZoomButton({ className: customZoomButtonClass }),
       );
 
       const resetButton = screen.getByText(/\d+%/);
       expect(resetButton).toHaveClass(
-        cn(
-          classConfig().toolBarResetZoomButton({
-            className: customResetButtonClass,
-          }),
-        ),
+        classConfig().toolBarResetZoomButton({
+          className: customResetButtonClass,
+        }),
       );
     });
 

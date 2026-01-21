@@ -1,6 +1,5 @@
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useRef, useState } from 'react';
-import { cn } from '@/components/core/class-config';
 import Input from '@/components/core/components/input';
 import type { InputProps } from '@/components/core/components/input';
 import classConfig from '@/components/core/components/search-bar/class-config.ts';
@@ -101,15 +100,13 @@ const SearchBar = (props: SearchBarProps) => {
   );
 
   return (
-    <div className={cn(classConfigData.container({ className }))}>
-      <div
-        className={cn(classConfigData.search({ className: searchClassName }))}
-      >
+    <div className={classConfigData.container({ className })}>
+      <div className={classConfigData.search({ className: searchClassName })}>
         {showSearchIcon && (
           <div
-            className={cn(
-              classConfigData.searchIcon({ className: searchIconClassName }),
-            )}
+            className={classConfigData.searchIcon({
+              className: searchIconClassName,
+            })}
             role="search-icon"
           >
             {searchIcon}
@@ -123,7 +120,7 @@ const SearchBar = (props: SearchBarProps) => {
           readOnly={readOnly}
           data-search-icon={showSearchIcon ? true : undefined}
           data-clear-icon={isShowClearButton ? true : undefined}
-          className={cn(classConfigData.input({ className: inputClassName }))}
+          className={classConfigData.input({ className: inputClassName })}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           {...inputProps}
@@ -131,9 +128,9 @@ const SearchBar = (props: SearchBarProps) => {
 
         {isShowClearButton && (
           <div
-            className={cn(
-              classConfigData.clearButton({ className: clearButtonClassName }),
-            )}
+            className={classConfigData.clearButton({
+              className: clearButtonClassName,
+            })}
             onClick={handleClear}
             role="clear-button"
             onMouseDown={(e) => {

@@ -1,7 +1,6 @@
 import type { ElementType, ReactNode, Ref } from 'react';
 import { Radio as HeadlessRadio } from '@headlessui/react';
 import type { RadioProps as HeadlessRadioProps } from '@headlessui/react';
-import { cn } from '@/components/core/class-config';
 import classConfig from '@/components/core/components/radio/class-config.ts';
 
 const classConfigData = classConfig();
@@ -60,7 +59,7 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
   return (
     <HeadlessRadio
       value={value}
-      className={cn(classConfigData.radio({ className }))}
+      className={classConfigData.radio({ className })}
       onClick={handleClick}
       {...rest}
     >
@@ -73,23 +72,23 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
             ) : (
               <>
                 <div
-                  className={cn(
-                    classConfigData.radioBox({ className: boxClassName }),
-                  )}
+                  className={classConfigData.radioBox({
+                    className: boxClassName,
+                  })}
                 >
                   {checked && (
                     <span
-                      className={cn(
-                        classConfigData.radioDot({ className: dotClassName }),
-                      )}
+                      className={classConfigData.radioDot({
+                        className: dotClassName,
+                      })}
                     />
                   )}
                 </div>
                 {children && (
                   <span
-                    className={cn(
-                      classConfigData.radioLabel({ className: labelClassName }),
-                    )}
+                    className={classConfigData.radioLabel({
+                      className: labelClassName,
+                    })}
                   >
                     {children}
                   </span>

@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from 'react';
-import { cn } from '@/components/core/class-config';
 import type { RadioGroupProps } from '@/components/core/components/radio';
 import RadioGroup from '@/components/core/components/radio';
 import classConfig from '@/components/core/components/tree/class-config.ts';
@@ -115,7 +114,7 @@ const TreeRadio = <K extends string | number = string>(
     <RadioGroup
       value={selectedKey}
       onChange={handleSingleSelect}
-      className={cn(classConfigData.treeRadio({ className }))}
+      className={classConfigData.treeRadio({ className })}
       allowDeselect={allowDeselect}
     >
       <Tree
