@@ -3,22 +3,21 @@ import { createImperative } from '@/components/core/components/popup/imperative.
 import Popup, {
   type PopupProps,
 } from '@/components/core/components/popup/popup.tsx';
+import type { ToastVariants } from '@/components/core/components/toast/class-config.ts';
 import classConfig from '@/components/core/components/toast/class-config.ts';
 import type { GetContainer } from '@/components/core/utils/render-to-container.ts';
 
 const classConfigData = classConfig();
 
 // Toast的位置类型
-type ToastPosition = 'top' | 'bottom' | 'center';
+type ToastPosition = ToastVariants['position'];
 // Popup的位置类型
 type PopupPosition = PopupProps['position'];
 
 // Toast对外的Props类型
 type ToastProps = {
   message?: ReactNode;
-  position: ToastPosition;
   onClose?: () => void;
-  maskClickable?: boolean;
   getContainer?: Omit<GetContainer, 'null'>;
 } & Pick<
   PopupProps,
@@ -29,9 +28,9 @@ type ToastProps = {
   | 'disableBodyScroll'
   | 'closeOnMaskClick'
   | 'duration'
->;
-type ToastConfigProps = Omit<ToastProps, 'message' | 'onClose' | 'position'> &
-  Pick<Partial<ToastProps>, 'position'>;
+> &
+  ToastVariants;
+type ToastConfigProps = Omit<ToastProps, 'message' | 'onClose'>;
 
 type ImperativeConfigProps = Omit<
   ToastProps,
@@ -45,11 +44,8 @@ type ToastInternalProps = Omit<ToastProps, 'position' | 'getContainer'> & {
 };
 
 // 默认配置
-const defaultConfig: Partial<Omit<ToastProps, 'position'>> &
-  Pick<ToastProps, 'position'> = {
+const defaultConfig: Partial<ToastProps> = {
   duration: 3000,
-  position: 'center',
-  maskClickable: false,
 };
 
 const imperativeToast = createImperative<
@@ -76,7 +72,7 @@ const show = (
   config?: Partial<Omit<ToastProps, 'message'>>,
 ) => {
   const {
-    maskClickable = false,
+    maskClickable,
     maskClassName,
     className,
     bodyClassName,

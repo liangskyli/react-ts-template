@@ -2,6 +2,7 @@ import type { Ref } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Textarea as HeadlessTextarea } from '@headlessui/react';
 import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
+import type { TextAreaVariants } from '@/components/core/components/textarea/class-config.ts';
 import classConfig from '@/components/core/components/textarea/class-config.ts';
 
 const classConfigData = classConfig();
@@ -25,7 +26,8 @@ export type TextAreaProps = {
   onChange?: (value: string) => void;
   /** ref引用 */
   ref?: Ref<HTMLTextAreaElement>;
-} & Omit<HeadlessTextareaProps, 'onChange' | 'className'>;
+} & Omit<HeadlessTextareaProps, 'onChange' | 'className' | 'readOnly'> &
+  TextAreaVariants;
 
 function TextArea(props: TextAreaProps) {
   const {
@@ -39,7 +41,7 @@ function TextArea(props: TextAreaProps) {
     countClassName,
     onChange,
     ref,
-    readOnly = false,
+    readOnly,
     ...rest
   } = props;
 

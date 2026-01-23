@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import {
   type OffsetOptions,
-  type Placement,
   arrow as arrowMiddleware,
   autoUpdate,
   flip as flipMiddleware,
@@ -10,11 +9,13 @@ import {
   shift as shiftMiddleware,
   useFloating,
 } from '@floating-ui/react';
+import type { PopoverVariants } from '@/components/core/components/popover/class-config.ts';
 import classConfig from '@/components/core/components/popover/class-config.ts';
 import type { PopupProps } from '@/components/core/components/popup';
 import Popup from '@/components/core/components/popup';
 
 const classConfigData = classConfig();
+type Placement = PopoverVariants['placement'];
 
 export type PopoverProps = {
   className?: string;
@@ -30,15 +31,11 @@ export type PopoverProps = {
   content:
     | ReactNode
     | ((setOpen: React.Dispatch<React.SetStateAction<boolean>>) => ReactNode);
-  /** 气泡框位置 */
-  placement?: Placement;
   /** 气泡框偏移量 */
   offset?: OffsetOptions;
   /** 气泡框视图显示配置 */
   shiftOptions?: Parameters<typeof shiftMiddleware>[0];
   disabled?: boolean;
-  /** 是否允许背景点击 */
-  maskClickable?: boolean;
   /** 气泡框箭头 */
   arrow?: {
     /** 气泡框箭头className */
@@ -48,13 +45,14 @@ export type PopoverProps = {
   };
   /** 点击外部是否关闭弹出层 */
   closeOnOutsideClick?: boolean;
-} & Pick<PopupProps, 'disableBodyScroll' | 'getContainer'>;
+} & Pick<PopupProps, 'disableBodyScroll' | 'getContainer'> &
+  PopoverVariants;
 
 // 获取 placement 的基本方向
 const getBaseDirection = (direction: Placement) => {
-  if (direction.startsWith('bottom')) return 'bottom';
-  if (direction.startsWith('left')) return 'left';
-  if (direction.startsWith('right')) return 'right';
+  if (direction?.startsWith('bottom')) return 'bottom';
+  if (direction?.startsWith('left')) return 'left';
+  if (direction?.startsWith('right')) return 'right';
   return 'top';
 };
 
@@ -71,7 +69,7 @@ const getArrowStyles = (direction: Placement, bgColor: string) => {
   };
 
   return {
-    className: classConfigData.floatingArrowDirection({ direction }),
+    className: classConfigData.floatingArrowDirection({ placement: direction }),
     style: arrowStyle,
     direction: baseDirection,
   };
@@ -81,13 +79,13 @@ const Popover = (props: PopoverProps) => {
   const {
     children,
     content,
-    placement = 'top',
+    placement,
     className,
     bubbleClassName,
     contentClassName,
     disabled,
     getContainer = document.body,
-    maskClickable = true,
+    maskClickable,
     arrow,
     closeOnOutsideClick = true,
     offset = 2,
@@ -180,7 +178,7 @@ const Popover = (props: PopoverProps) => {
     >
       <div
         className={classConfigData.floatingWrap({
-          direction: currentPlacement,
+          placement: currentPlacement,
         })}
       >
         <div

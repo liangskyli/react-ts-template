@@ -42,6 +42,10 @@ const defaultConfig = getTwConfig({
         true: { button: 'w-full' },
       },
     },
+    defaultVariants: {
+      variant: 'primary',
+      block: false,
+    },
   }),
   input: tv({
     base: [
@@ -56,6 +60,9 @@ const defaultConfig = getTwConfig({
       readOnly: {
         false: 'focus:border-blue-600 focus:ring-1 focus:ring-blue-600',
       },
+    },
+    defaultVariants: {
+      readOnly: false,
     },
   }),
   popup: tv({
@@ -129,6 +136,10 @@ const defaultConfig = getTwConfig({
         },
       },
     },
+    defaultVariants: {
+      /** 弹出位置 */
+      position: 'bottom',
+    },
   }),
   toast: tv({
     slots: {
@@ -150,6 +161,10 @@ const defaultConfig = getTwConfig({
         bottom: { body: 'bottom-[20%]' },
       },
     },
+    defaultVariants: {
+      maskClickable: false,
+      position: 'center',
+    },
   }),
   popover: tv({
     slots: {
@@ -168,7 +183,7 @@ const defaultConfig = getTwConfig({
       popupBody: 'bg-transparent static',
     },
     variants: {
-      direction: {
+      placement: {
         // 上方位置的箭头指向下方
         top: {
           floatingArrowDirection:
@@ -242,6 +257,12 @@ const defaultConfig = getTwConfig({
         false: { mask: 'pointer-events-auto' },
       },
     },
+    defaultVariants: {
+      /** 气泡框位置 */
+      placement: 'top',
+      /** 是否允许背景点击 */
+      maskClickable: true,
+    },
   }),
   checkbox: tv({
     slots: {
@@ -311,6 +332,9 @@ const defaultConfig = getTwConfig({
           textarea: 'focus:border-blue-600 focus:ring-1 focus:ring-blue-600',
         },
       },
+    },
+    defaultVariants: {
+      readOnly: false,
     },
   }),
   switch: tv({
@@ -413,6 +437,10 @@ const defaultConfig = getTwConfig({
         true: { skeleton: 'animate-[shimmer_1.4s_ease_infinite]' },
       },
     },
+    defaultVariants: {
+      /** 是否显示动画 */
+      animation: true,
+    },
   }),
   badge: tv({
     slots: {
@@ -430,6 +458,10 @@ const defaultConfig = getTwConfig({
       isDot: {
         true: { badge: 'size-3 p-0' },
       },
+    },
+    defaultVariants: {
+      /** 是否为圆点模式 */
+      isDot: false,
     },
   }),
   steps: tv({
@@ -515,6 +547,10 @@ const defaultConfig = getTwConfig({
           indicatorContainerBase: 'flex flex-col items-center',
         },
       },
+    },
+    defaultVariants: {
+      /** 步骤条方向 */
+      direction: 'horizontal',
     },
   }),
   tree: tv({

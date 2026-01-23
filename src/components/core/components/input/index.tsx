@@ -2,6 +2,7 @@ import type { ElementType, Ref } from 'react';
 import { useState } from 'react';
 import { Input as HeadlessInput } from '@headlessui/react';
 import type { InputProps as HeadlessInputProps } from '@headlessui/react';
+import type { InputVariants } from '@/components/core/components/input/class-config.ts';
 import classConfig from '@/components/core/components/input/class-config.ts';
 
 export type InputProps<TTag extends ElementType = 'input'> = {
@@ -25,15 +26,16 @@ export type InputProps<TTag extends ElementType = 'input'> = {
   ref?: Ref<HTMLElement>;
 } & Omit<
   HeadlessInputProps<TTag>,
-  'onChange' | 'className' | 'type' | 'value' | 'min' | 'max'
->;
+  'onChange' | 'className' | 'type' | 'value' | 'min' | 'max' | 'readOnly'
+> &
+  InputVariants;
 
 const Input = (props: InputProps) => {
   const {
     value,
     defaultValue,
     type = 'text',
-    readOnly = false,
+    readOnly,
     maxLength,
     className,
     onChange,

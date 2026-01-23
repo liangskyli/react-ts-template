@@ -1,30 +1,30 @@
 import type { ElementType, ReactNode } from 'react';
 import type { ButtonProps as HeadlessButtonProps } from '@headlessui/react';
 import { Button as HeadlessButton } from '@headlessui/react';
+import type { ButtonVariants } from '@/components/core/components/button/class-config.ts';
 import classConfig from '@/components/core/components/button/class-config.ts';
 import { DefaultLoadingIcon } from '@/components/core/components/button/icons.tsx';
 
 const classConfigData = classConfig();
 
 export type ButtonProps<T extends ElementType = 'button'> = {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   loading?: boolean;
-  block?: boolean;
   children?: ReactNode;
   className?: string;
   /** 自定义加载图标 */
   loadingIcon?: ReactNode;
-} & Omit<HeadlessButtonProps<T>, 'className'>;
+} & Omit<HeadlessButtonProps<T>, 'className'> &
+  ButtonVariants;
 
 const Button = <T extends ElementType = 'button'>(props: ButtonProps<T>) => {
   const {
-    variant = 'primary',
+    variant,
     disabled = false,
     loading = false,
     children,
     onClick,
     className,
-    block = false,
+    block,
     loadingIcon = <DefaultLoadingIcon />,
     ...rest
   } = props;

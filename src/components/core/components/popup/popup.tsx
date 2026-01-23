@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Fragment, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import Mask from '@/components/core/components/mask';
+import type { PopupVariants } from '@/components/core/components/popup/class-config.ts';
 import classConfig from '@/components/core/components/popup/class-config.ts';
 import { generateTimeoutFunction } from '@/components/core/components/popup/imperative.tsx';
 import type { GetContainer } from '@/components/core/utils/render-to-container.ts';
@@ -15,8 +16,6 @@ export type PopupProps = {
   visible?: boolean;
   /** 内容 */
   children?: ReactNode;
-  /** 弹出位置 */
-  position?: Position;
   /** 遮罩类名 */
   maskClassName?: string;
   /** 容器类名 */
@@ -39,7 +38,7 @@ export type PopupProps = {
   duration?: number;
   /** 唯一标识符，不建议手动设置 */
   popupId?: string;
-};
+} & PopupVariants;
 
 const {
   popupBase,
@@ -56,7 +55,7 @@ const {
 const Popup = (props: PopupProps) => {
   const {
     visible = false,
-    position = 'bottom',
+    position,
     children,
     maskClassName,
     className,
