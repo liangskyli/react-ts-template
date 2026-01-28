@@ -62,7 +62,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   };
 
   return (
-    <CheckboxContext.Provider
+    <CheckboxContext
       value={{
         value,
         disabled,
@@ -75,7 +75,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
       >
         {children}
       </div>
-    </CheckboxContext.Provider>
+    </CheckboxContext>
   );
 };
 
