@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import type { RefCallBack } from 'react-hook-form';
 import classConfig from '@/components/core/components/checkbox/class-config.ts';
-import { CheckboxContext } from './context.tsx';
+import { CheckboxGroupContext } from './context.tsx';
 
 const classConfigData = classConfig();
 
@@ -62,7 +62,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   };
 
   return (
-    <CheckboxContext
+    <CheckboxGroupContext
       value={{
         value,
         disabled,
@@ -75,7 +75,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
       >
         {children}
       </div>
-    </CheckboxContext>
+    </CheckboxGroupContext>
   );
 };
 

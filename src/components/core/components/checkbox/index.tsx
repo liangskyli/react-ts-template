@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
 import classConfig from '@/components/core/components/checkbox/class-config.ts';
-import { CheckboxContext } from './context.tsx';
+import { CheckboxGroupContext } from './context.tsx';
 import CheckboxGroup from './group.tsx';
 import type { CheckboxGroupProps } from './group.tsx';
 import { DefaultCheckedIcon, DefaultIndeterminateIcon } from './icons.tsx';
@@ -59,7 +59,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
     ...rest
   } = props;
 
-  const group = useContext(CheckboxContext);
+  const group = useContext(CheckboxGroupContext);
   const isInGroup = group.onChange !== undefined;
 
   const [innerChecked, setInnerChecked] = useState(defaultChecked ?? false);

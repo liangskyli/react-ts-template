@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
-export type CheckboxContextValue = {
+export type CheckboxGroupContextValue = {
   value: (string | number)[];
   disabled?: boolean;
   onChange?: (value: (string | number)[]) => void;
 };
 
-export const CheckboxContext = createContext<CheckboxContextValue>({
+export const CheckboxGroupContext = createContext<CheckboxGroupContextValue>({
   value: [], // 提供默认空数组
 });
