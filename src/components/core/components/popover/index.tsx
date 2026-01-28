@@ -13,12 +13,25 @@ import type { PopoverVariants } from '@/components/core/components/popover/class
 import classConfig from '@/components/core/components/popover/class-config.ts';
 import type { PopupProps } from '@/components/core/components/popup';
 import Popup from '@/components/core/components/popup';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 
 const classConfigData = classConfig();
 type Placement = PopoverVariants['placement'];
 
+type SemanticClassNames = {
+  /** 自定义类名 */
+  root?: string;
+  /** 气泡框className */
+  bubble?: string;
+  /** 气泡框内容className */
+  content?: string;
+  /** 气泡框箭头className */
+  arrow?: string;
+};
+
 export type PopoverProps = {
-  className?: string;
+  /** 自定义类名 或 语义化的类名 */
+  className?: string | SemanticClassNames;
   /** 气泡框className */
   bubbleClassName?: string;
   /** 气泡框内容className */
@@ -93,6 +106,7 @@ const Popover = (props: PopoverProps) => {
     disableBodyScroll = false,
     defaultVisible = false,
   } = props;
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
   const { bgColor = 'white' } = arrow ?? {};
   const [open, setOpen] = useState(defaultVisible);
   const arrowRef = useRef(null);
@@ -157,11 +171,9 @@ const Popover = (props: PopoverProps) => {
 
   // 当 context 或 placement 变化时更新方向和箭头样式
   useEffect(() => {
-    if (context) {
-      const newDirection = context.placement;
-      setCurrentPlacement(newDirection);
-      setArrowStyles(getArrowStyles(newDirection, bgColor));
-    }
+    const newDirection = context.placement;
+    setCurrentPlacement(newDirection);
+    setArrowStyles(getArrowStyles(newDirection, bgColor));
   }, [context, bgColor]);
 
   const floatingNode = (
@@ -169,11 +181,11 @@ const Popover = (props: PopoverProps) => {
       ref={(node) => {
         // 同时设置两个 ref
         refs.setFloating(node);
-        if (floatingRef) {
-          floatingRef.current = node;
-        }
+        floatingRef.current = node;
       }}
-      className={classConfigData.floating({ className: bubbleClassName })}
+      className={classConfigData.floating({
+        className: classNames?.bubble ?? bubbleClassName,
+      })}
       style={floatingStyles}
     >
       <div
@@ -183,7 +195,7 @@ const Popover = (props: PopoverProps) => {
       >
         <div
           className={classConfigData.floatingContent({
-            className: contentClassName,
+            className: classNames?.content ?? contentClassName,
           })}
         >
           {typeof content === 'function' ? content(setOpen) : content}
@@ -191,7 +203,10 @@ const Popover = (props: PopoverProps) => {
 
         <div
           className={classConfigData.floatingArrow({
-            className: [arrowStyles.className, arrow?.className],
+            className: [
+              arrowStyles.className,
+              classNames?.arrow ?? arrow?.className,
+            ],
           })}
           style={{
             ...arrowStyles.style,
@@ -205,13 +220,13 @@ const Popover = (props: PopoverProps) => {
   return (
     <>
       <div
-        className={classConfigData.popoverBase({ className })}
+        className={classConfigData.popoverBase({
+          className: classNames?.root,
+        })}
         ref={(node) => {
           // 同时设置两个 ref
           refs.setReference(node);
-          if (referenceRef) {
-            referenceRef.current = node;
-          }
+          referenceRef.current = node;
         }}
         onClick={() => !disabled && setOpen(!open)}
       >

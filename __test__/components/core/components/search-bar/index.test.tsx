@@ -161,4 +161,29 @@ describe('SearchBar', () => {
     expect(screen.getByTestId('custom-search')).toBeInTheDocument();
     expect(screen.getByTestId('custom-clear')).toBeInTheDocument();
   });
+
+  it('applies custom className as SemanticClassNames ', () => {
+    const { container } = render(
+      <SearchBar
+        className={{
+          root: 'custom-search-bar',
+          input: 'custom-input',
+          search: 'custom-search',
+          searchIcon: 'custom-search-icon',
+          clearButton: 'custom-clear-button',
+        }}
+        value="test"
+      />,
+    );
+    console.log('container:', container.outerHTML);
+
+    const wrapper = container.firstChild;
+    expect(wrapper).toHaveClass('custom-search-bar');
+    const input = container.getElementsByTagName('input')[0];
+    expect(input).toHaveClass('custom-input');
+    const searchIcon = screen.queryByRole('search-icon');
+    expect(searchIcon).toHaveClass('custom-search-icon');
+    const clearButton = screen.queryByRole('clear-button');
+    expect(clearButton).toHaveClass('custom-clear-button');
+  });
 });

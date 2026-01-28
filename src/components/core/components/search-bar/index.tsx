@@ -7,8 +7,22 @@ import {
   DefaultClearIcon,
   DefaultSearchIcon,
 } from '@/components/core/components/search-bar/icons.tsx';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 
 const classConfigData = classConfig();
+
+type SemanticClassNames = {
+  /** 自定义容器类名 */
+  root?: string;
+  /** Input组件的类名 */
+  input?: string;
+  /** 搜索框的类名 */
+  search?: string;
+  /** 搜索图标类名 */
+  searchIcon?: string;
+  /** 清除按钮类名 */
+  clearButton?: string;
+};
 
 export type SearchBarProps = {
   /** 是否显示搜索图标 */
@@ -23,8 +37,8 @@ export type SearchBarProps = {
   onSearch?: (value: string) => void;
   /** 清除时的回调函数 */
   onClear?: () => void;
-  /** 自定义容器类名 */
-  className?: string;
+  /** 自定义容器类名 或 语义化的类名 */
+  className?: string | SemanticClassNames;
   /** Input组件的类名 */
   inputClassName?: string;
   /** 搜索框的类名 */
@@ -55,6 +69,7 @@ const SearchBar = (props: SearchBarProps) => {
     clearButtonClassName,
     ...inputProps
   } = props;
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
 
   const [currentValue, setCurrentValue] = useState(
     value || inputProps.defaultValue || '',
@@ -100,12 +115,16 @@ const SearchBar = (props: SearchBarProps) => {
   );
 
   return (
-    <div className={classConfigData.container({ className })}>
-      <div className={classConfigData.search({ className: searchClassName })}>
+    <div className={classConfigData.container({ className: classNames?.root })}>
+      <div
+        className={classConfigData.search({
+          className: classNames?.search ?? searchClassName,
+        })}
+      >
         {showSearchIcon && (
           <div
             className={classConfigData.searchIcon({
-              className: searchIconClassName,
+              className: classNames?.searchIcon ?? searchIconClassName,
             })}
             role="search-icon"
           >
@@ -120,7 +139,9 @@ const SearchBar = (props: SearchBarProps) => {
           readOnly={readOnly}
           data-search-icon={showSearchIcon ? true : undefined}
           data-clear-icon={isShowClearButton ? true : undefined}
-          className={classConfigData.input({ className: inputClassName })}
+          className={classConfigData.input({
+            className: classNames?.input ?? inputClassName,
+          })}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           {...inputProps}
@@ -129,7 +150,7 @@ const SearchBar = (props: SearchBarProps) => {
         {isShowClearButton && (
           <div
             className={classConfigData.clearButton({
-              className: clearButtonClassName,
+              className: classNames?.clearButton ?? clearButtonClassName,
             })}
             onClick={handleClear}
             role="clear-button"

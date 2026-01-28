@@ -47,6 +47,40 @@ describe('Radio Component', () => {
     expect(label).toHaveClass('custom-label');
   });
 
+  test('applies custom className to radio button as SemanticClassNames', () => {
+    const { container } = render(
+      <RadioGroup defaultValue="">
+        <RadioGroup.Radio
+          value="1"
+          className={{
+            root: 'custom-radio',
+            box: 'custom-box',
+            dot: 'custom-dot',
+            label: 'custom-label',
+          }}
+        >
+          Custom Radio
+        </RadioGroup.Radio>
+      </RadioGroup>,
+    );
+
+    const radio = container.querySelector('[role="radio"]');
+    expect(radio).toHaveClass('custom-radio');
+
+    const box = radio?.querySelector('div');
+    expect(box).toHaveClass('custom-box');
+
+    // 点击单选按钮使其选中，这样才能看到 dot
+    fireEvent.click(radio as HTMLElement);
+
+    const dot = box?.querySelector('span');
+    expect(dot).toHaveClass('custom-dot');
+
+    // 使用更精确的选择器或通过文本内容查找标签元素
+    const label = screen.getByText('Custom Radio').closest('span');
+    expect(label).toHaveClass('custom-label');
+  });
+
   test('handles checked state correctly', () => {
     const { container } = render(
       <RadioGroup value="1">

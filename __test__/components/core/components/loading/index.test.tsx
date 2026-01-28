@@ -35,6 +35,30 @@ describe('Loading Component', () => {
     expect(iconElement).toHaveClass('custom-icon');
   });
 
+  it('should render with custom classNames as SemanticClassNames', () => {
+    const { getByTestId } = render(
+      <Loading
+        visible={true}
+        className={{
+          root: 'custom-class',
+          body: 'custom-body',
+          text: 'custom-text',
+          loadingIcon: 'custom-icon',
+        }}
+      />,
+    );
+
+    const maskElement = getByTestId('mask');
+    const bodyElement = maskElement.querySelector('[class*="body"]');
+    const textElement = getByTestId('text');
+    const iconElement = maskElement.querySelector('svg');
+
+    expect(maskElement).toHaveClass('custom-class');
+    expect(bodyElement).toHaveClass('custom-body');
+    expect(textElement).toHaveClass('custom-text');
+    expect(iconElement).toHaveClass('custom-icon');
+  });
+
   it('should render loading icon', () => {
     const { container } = render(<Loading visible={true} />);
     const iconElement = container.querySelector('svg');

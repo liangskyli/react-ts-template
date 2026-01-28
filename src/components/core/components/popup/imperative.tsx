@@ -48,9 +48,7 @@ export function createImperative<
     const root = createRoot(container);
 
     const destroy = () => {
-      if (container) {
-        container.parentNode?.removeChild(container);
-      }
+      container.parentNode?.removeChild(container);
     };
 
     const handleClose = (ignoreAfterClose: boolean = false) => {

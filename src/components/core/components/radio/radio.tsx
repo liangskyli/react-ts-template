@@ -2,16 +2,28 @@ import type { ElementType, ReactNode, Ref } from 'react';
 import { Radio as HeadlessRadio } from '@headlessui/react';
 import type { RadioProps as HeadlessRadioProps } from '@headlessui/react';
 import classConfig from '@/components/core/components/radio/class-config.ts';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 
 const classConfigData = classConfig();
+
+type SemanticClassNames = {
+  /** 自定义类名 */
+  root?: string;
+  /** 单选框框类名 */
+  box?: string;
+  /** 单选框选中点类名 */
+  dot?: string;
+  /** 单选框文本类名 */
+  label?: string;
+};
 
 export type RadioProps<TType = string, TTag extends ElementType = 'span'> = {
   /** 是否全部自定义 */
   isCustom?: boolean;
   /** 单选框右侧的内容或全部自定义内容 */
   children?: ReactNode;
-  /** 自定义类名 */
-  className?: string;
+  /** 自定义类名 或 语义化的类名 */
+  className?: string | SemanticClassNames;
   /** 单选框框类名 */
   boxClassName?: string;
   /** 单选框选中点类名 */
@@ -36,6 +48,7 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
     onClick,
     ...rest
   } = props;
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClick = (e: any) => {
@@ -59,7 +72,7 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
   return (
     <HeadlessRadio
       value={value}
-      className={classConfigData.radio({ className })}
+      className={classConfigData.radio({ className: classNames?.root })}
       onClick={handleClick}
       {...rest}
     >
@@ -73,13 +86,13 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
               <>
                 <div
                   className={classConfigData.radioBox({
-                    className: boxClassName,
+                    className: classNames?.box ?? boxClassName,
                   })}
                 >
                   {checked && (
                     <span
                       className={classConfigData.radioDot({
-                        className: dotClassName,
+                        className: classNames?.dot ?? dotClassName,
                       })}
                     />
                   )}
@@ -87,7 +100,7 @@ const Radio = <TType = string, TTag extends ElementType = 'span'>(
                 {children && (
                   <span
                     className={classConfigData.radioLabel({
-                      className: labelClassName,
+                      className: classNames?.label ?? labelClassName,
                     })}
                   >
                     {children}

@@ -208,6 +208,27 @@ describe('Popup Component', () => {
     );
   });
 
+  it('applies custom className props as SemanticClassNames', () => {
+    render(
+      <Popup
+        visible
+        className={{
+          root: 'custom-class',
+          mask: 'custom-mask',
+          body: 'custom-body',
+        }}
+      >
+        Content
+      </Popup>,
+    );
+
+    expect(screen.getByTestId('mask')).toHaveClass('custom-mask');
+    expect(screen.getByText('Content')).toHaveClass('custom-body');
+    expect(screen.getByTestId('mask').parentElement).toHaveClass(
+      'custom-class',
+    );
+  });
+
   it('calls afterClose immediately when visible is false and destroyOnClose is true', () => {
     const afterClose = vi.fn();
     const { rerender } = render(

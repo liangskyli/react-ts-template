@@ -4,9 +4,18 @@ import { Textarea as HeadlessTextarea } from '@headlessui/react';
 import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
 import type { TextAreaVariants } from '@/components/core/components/textarea/class-config.ts';
 import classConfig from '@/components/core/components/textarea/class-config.ts';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 
 const classConfigData = classConfig();
 
+type SemanticClassNames = {
+  /** 自定义类名 */
+  root?: string;
+  /** 输入框类名 */
+  textarea?: string;
+  /** 字数统计类名 */
+  count?: string;
+};
 export type TextAreaProps = {
   /** 输入框的值 */
   value?: string;
@@ -17,7 +26,7 @@ export type TextAreaProps = {
   /** 自动高度 */
   autoSize?: boolean | { minRows?: number; maxRows?: number };
   /** 自定义类名 */
-  className?: string;
+  className?: string | SemanticClassNames;
   /** 输入框类名 */
   textareaClassName?: string;
   /** 字数统计类名 */
@@ -44,6 +53,7 @@ function TextArea(props: TextAreaProps) {
     readOnly,
     ...rest
   } = props;
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
 
   const [innerValue, setInnerValue] = useState(defaultValue || value || '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -128,7 +138,9 @@ function TextArea(props: TextAreaProps) {
   };
 
   return (
-    <div className={classConfigData.textareaWrap({ className })}>
+    <div
+      className={classConfigData.textareaWrap({ className: classNames?.root })}
+    >
       <HeadlessTextarea
         ref={mergedRef}
         value={innerValue}
@@ -136,12 +148,16 @@ function TextArea(props: TextAreaProps) {
         readOnly={readOnly}
         className={classConfigData.textarea({
           readOnly,
-          className: textareaClassName,
+          className: classNames?.textarea ?? textareaClassName,
         })}
         {...rest}
       />
       {showCount && (
-        <div className={classConfigData.count({ className: countClassName })}>
+        <div
+          className={classConfigData.count({
+            className: classNames?.count ?? countClassName,
+          })}
+        >
           {innerValue.length}
           {maxLength ? `/${maxLength}` : ''}
         </div>

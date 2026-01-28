@@ -75,7 +75,7 @@ describe('TextArea', () => {
   });
 
   test('applies custom className props', () => {
-    const { container } = render(
+    const { container, rerender } = render(
       <TextArea
         className="custom-container"
         textareaClassName="custom-textarea"
@@ -84,6 +84,20 @@ describe('TextArea', () => {
       />,
     );
 
+    expect(container.querySelector('.custom-container')).toBeInTheDocument();
+    expect(container.querySelector('.custom-textarea')).toBeInTheDocument();
+    expect(container.querySelector('.custom-count')).toBeInTheDocument();
+
+    rerender(
+      <TextArea
+        className={{
+          root: 'custom-container',
+          textarea: 'custom-textarea',
+          count: 'custom-count',
+        }}
+        showCount
+      />,
+    );
     expect(container.querySelector('.custom-container')).toBeInTheDocument();
     expect(container.querySelector('.custom-textarea')).toBeInTheDocument();
     expect(container.querySelector('.custom-count')).toBeInTheDocument();

@@ -45,11 +45,10 @@ const RadioGroupBase = <TType = string, TTag extends ElementType = 'div'>(
       ...formRef,
       focus: () => {
         // 聚焦到第一个 Radio 元素
-        const firstRadio =
-          radioGroupRef.current?.querySelector('[role="radio"]');
-        if (firstRadio) {
-          (firstRadio as HTMLElement).focus();
-        }
+        const firstRadio = radioGroupRef.current?.querySelector(
+          '[role="radio"]',
+        ) as HTMLElement | undefined;
+        firstRadio?.focus();
       },
     };
 

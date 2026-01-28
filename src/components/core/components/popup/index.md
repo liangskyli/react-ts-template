@@ -116,7 +116,7 @@ Popup.clear();
 | position | 弹出位置 | `'bottom' \| 'top' \| 'left' \| 'right' \| 'center'` | `'bottom'` |
 | children | 内容 | `ReactNode` | - |
 | maskClassName | 遮罩类名 | `string` | - |
-| className | 容器类名 | `string` | - |
+| className | 容器类名 或 语义化的类名 | `string \| SemanticClassNames` | - |
 | bodyClassName | 内容区域类名 | `string` | - |
 | closeOnMaskClick | 点击遮罩层是否关闭 | `boolean` | `true` |
 | onClose | 关闭时触发 | `() => void` | - |
@@ -126,6 +126,14 @@ Popup.clear();
 | disableBodyScroll | 是否在显示弹出层时禁用背景滚动 | `boolean` | `true` |
 | duration | 显示持续时间(毫秒)，设置为 0 则不会自动关闭 | `number` | `0` |
 | popupId | 弹出层的唯一标识符，一般不需要手动设置 | `string` | - |
+
+### SemanticClassNames Props
+
+| 属性   | 说明      | 类型       | 默认值 |
+|------|---------|----------|-----|
+| `root` | 容器类名    | `string` | -   |
+| `mask` | 遮罩类名    | `string` | -   |
+| `body` | 内容区域类名  | `string` | -   |
 
 ## 注意事项
 

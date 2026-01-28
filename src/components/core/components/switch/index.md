@@ -112,7 +112,7 @@ export default () => (
 | `onChange` | 变化时的回调函数 | `(checked: boolean) => void` | - |
 | `disabled` | 是否禁用 | `boolean` | `false` |
 | `loading` | 加载中状态 | `boolean` | `false` |
-| `className` | 自定义类名 | `string` | - |
+| `className` | 自定义类名 或 语义化的类名 | `string \| SemanticClassNames` | - |
 | `trackClassName` | 开关轨道类名 | `string` | - |
 | `thumbClassName` | 开关滑块类名 | `string` | - |
 | `children` | 开关右侧的内容 | `ReactNode` | - |
@@ -120,6 +120,16 @@ export default () => (
 | `uncheckedText` | 非选中时的文本 | `ReactNode` | - |
 | `checkedTextClassName` | 选中时的文本类名 | `string` | - |
 | `uncheckedTextClassName` | 非选中时的文本类名 | `string` | - |
+
+### SemanticClassNames Props
+
+| 属性              | 说明         | 类型       | 默认值 |
+|-----------------|------------|----------|-----|
+| `root`          | 自定义类名      | `string` | -   |
+| `track`         | 开关轨道类名     | `string` | -   |
+| `thumb`         | 开关滑块类名     | `string` | -   |
+| `checkedText`   | 选中时的文本类名   | `string` | -   |
+| `uncheckedText` | 非选中时的文本类名  | `string` | -   |
 
 此外，组件还支持所有原生 button 元素的属性（如 `id`、`aria-*` 等）。
 

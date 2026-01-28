@@ -3,13 +3,22 @@
 
 ## 属性
 
-| 属性                   | 说明             | 类型        | 默认值 |
-|----------------------|----------------|-----------|-----|
-| visible              | 是否显示           | `boolean` | -   |
-| className            | 遮罩层自定义类名       | `string`  | -   |
-| bodyClassName        | 内容区域自定义类名      | `string`  | -   |
-| textClassName        | 文本区域自定义类名      | `string`  | -   |
-| loadingIconClassName | loading图标自定义类名 | `string`  | -   |
+| 属性                   | 说明                | 类型                            | 默认值 |
+|----------------------|-------------------|-------------------------------|-----|
+| visible              | 是否显示              | `boolean`                     | -   |
+| className            | 遮罩层自定义类名 或 语义化的类名 | `string \|SemanticClassNames` | -   |
+| bodyClassName        | 内容区域自定义类名         | `string`                      | -   |
+| textClassName        | 文本区域自定义类名         | `string`                      | -   |
+| loadingIconClassName | loading图标自定义类名    | `string`                      | -   |
+
+### SemanticClassNames Props
+
+| 属性            | 说明             | 类型       | 默认值 |
+|---------------|----------------|----------|-----|
+| `root`        | 遮罩层自定义类名       | `string` | -   |
+| `body`        | 内容区域自定义类名      | `string` | -   |
+| `text`        | 文本区域自定义类名      | `string` | -   |
+| `loadingIcon` | loading图标自定义类名 | `string` | -   |
 
 ## 代码示例
 ### 基础用法

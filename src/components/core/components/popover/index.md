@@ -135,7 +135,7 @@ export default () => (
 | `disabled`            | 是否禁用                                                                                                         | `boolean`                                                                                                                                                            | `false`                                             |
 | `maskClickable`       | 是否允许背景点击                                                                                                     | `boolean`                                                                                                                                                            | `true`                                              |
 | `closeOnOutsideClick` | 点击外部是否关闭                                                                                                     | `boolean`                                                                                                                                                            | `true`                                              |
-| `className`           | 触发元素容器类名                                                                                                     | `string`                                                                                                                                                             | -                                                   |
+| `className`           | 触发元素容器类名 或 语义化的类名                                                                                            | `string \| SemanticClassNames`                                                                                                                                       | -                                                   |
 | `bubbleClassName`     | 气泡框类名                                                                                                        | `string`                                                                                                                                                             | -                                                   |
 | `contentClassName`    | 气泡框内容类名                                                                                                      | `string`                                                                                                                                                             | -                                                   |
 | `offset`              | 气泡框偏移量                                                                                                       | `OffsetOptions`                                                                                                                                                      | `2`                                                 |
@@ -143,6 +143,15 @@ export default () => (
 | `getContainer`        | 指定挂载的节点                                                                                                      | `HTMLElement \| (() => HTMLElement) \| null`                                                                                                                         | `document.body`                                     |
 | `disableBodyScroll`   | 是否禁用 body 滚动                                                                                                 | `boolean`                                                                                                                                                            | `false`                                             |
 | `shiftOptions`        | 配置组件在视口范围内的位置调整行为。<br/>`mainAxis`: 是否允许在主轴上调整位置<br/>`crossAxis`: 是否允许在交叉轴上调整位置<br/>`padding`: 与视口边缘的最小距离（像素） | `{ mainAxis?: boolean; crossAxis?: boolean; padding?: number }`                                                                                                      | `{ padding: 4, mainAxis: false, crossAxis: false }` |
+
+### SemanticClassNames Props
+
+| 属性        | 说明        | 类型       | 默认值 |
+|-----------|-----------|----------|-----|
+| `root`    | 触发元素容器类名  | `string` | -   |
+| `bubble`  | 气泡框类名     | `string` | -   |
+| `content` | 气泡框内容类名   | `string` | -   |
+| `arrow`   | 气泡框箭头类名   | `string` | -   |
 ## 样式定制
 
 Popover 组件使用 Tailwind CSS 进行样式设置，支持以下样式定制：

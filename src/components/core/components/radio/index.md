@@ -163,16 +163,25 @@ export default () => (
 
 ### RadioGroup.Radio Props
 
-| 属性               | 说明               | 类型          | 默认值     |
-|------------------|------------------|-------------|---------|
-| `value`          | 单选框的值            | `TType`     | -       |
-| `disabled`       | 是否禁用             | `boolean`   | `false` |
-| `isCustom`       | 是否全部自定义          | `boolean`   | `false` |
-| `children`       | 单选框右侧的内容或全部自定义内容 | `ReactNode` | -       |
-| `className`      | 自定义类名            | `string`    | -       |
-| `boxClassName`   | 单选框框类名           | `string`    | -       |
-| `dotClassName`   | 单选框选中点类名         | `string`    | -       |
-| `labelClassName` | 单选框文本类名          | `string`    | -       |
+| 属性               | 说明                 | 类型                             | 默认值     |
+|------------------|--------------------|---------------------------------|---------|
+| `value`          | 单选框的值              | `TType`                         | -       |
+| `disabled`       | 是否禁用               | `boolean`                       | `false` |
+| `isCustom`       | 是否全部自定义            | `boolean`                       | `false` |
+| `children`       | 单选框右侧的内容或全部自定义内容   | `ReactNode`                     | -       |
+| `className`      | 自定义类名 或 语义化的类名     | `string \| SemanticClassNames`  | -       |
+| `boxClassName`   | 单选框框类名             | `string`                        | -       |
+| `dotClassName`   | 单选框选中点类名           | `string`                        | -       |
+| `labelClassName` | 单选框文本类名            | `string`                        | -       |
+
+### SemanticClassNames Props
+
+| 属性      | 说明        | 类型       | 默认值 |
+|---------|-----------|----------|-----|
+| `root`  | 自定义类名     | `string` | -   |
+| `box`   | 单选框框类名    | `string` | -   |
+| `dot`   | 单选框选中点类名  | `string` | -   |
+| `label` | 单选框文本类名   | `string` | -   |
 ## 样式定制
 
 RadioGroup 使用 Tailwind CSS 进行样式设置，支持以下预设样式：

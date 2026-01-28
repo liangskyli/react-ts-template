@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 import type { CheckboxProps as HeadlessCheckboxProps } from '@headlessui/react';
 import classConfig from '@/components/core/components/checkbox/class-config.ts';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 import { CheckboxGroupContext } from './context.tsx';
 import CheckboxGroup from './group.tsx';
 import type { CheckboxGroupProps } from './group.tsx';
@@ -13,6 +14,16 @@ const classConfigData = classConfig();
 
 export type { CheckboxGroupProps };
 
+type SemanticClassNames = {
+  /** 自定义类名 */
+  root?: string;
+  /** 复选框框类名 */
+  box?: string;
+  /** 复选框勾选图标类名 */
+  check?: string;
+  /** 复选框文本类名 */
+  label?: string;
+};
 export type CheckboxProps<T extends ElementType = 'span'> = {
   /** 复选框的值，用于 Group 模式 */
   value?: string | number;
@@ -20,8 +31,8 @@ export type CheckboxProps<T extends ElementType = 'span'> = {
   isCustom?: boolean;
   /** 复选框右侧的内容或全部自定义内容 */
   children?: ReactNode;
-  /** 自定义类名 */
-  className?: string;
+  /** 自定义类名 或 语义化的类名 */
+  className?: string | SemanticClassNames;
   /** 复选框框类名 */
   boxClassName?: string;
   /** 复选框勾选图标类名 */
@@ -58,6 +69,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
     indeterminateIcon = <DefaultIndeterminateIcon />,
     ...rest
   } = props;
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
 
   const group = useContext(CheckboxGroupContext);
   const isInGroup = group.onChange !== undefined;
@@ -94,7 +106,9 @@ const CheckboxBase = <T extends ElementType = 'span'>(
       checked={innerChecked}
       onChange={handleChange}
       disabled={isDisabled}
-      className={classConfigData.checkbox({ className })}
+      className={classConfigData.checkbox({
+        className: classNames?.root,
+      })}
       indeterminate={indeterminate}
       {...rest}
     >
@@ -103,11 +117,15 @@ const CheckboxBase = <T extends ElementType = 'span'>(
           <>{children}</>
         ) : (
           <>
-            <div className={classConfigData.box({ className: boxClassName })}>
+            <div
+              className={classConfigData.box({
+                className: classNames?.box ?? boxClassName,
+              })}
+            >
               {indeterminate ? (
                 <span
                   className={classConfigData.checked({
-                    className: checkClassName,
+                    className: classNames?.check ?? checkClassName,
                   })}
                 >
                   {indeterminateIcon}
@@ -116,7 +134,7 @@ const CheckboxBase = <T extends ElementType = 'span'>(
                 innerChecked && (
                   <span
                     className={classConfigData.checked({
-                      className: checkClassName,
+                      className: classNames?.check ?? checkClassName,
                     })}
                   >
                     {checkedIcon}
@@ -126,7 +144,9 @@ const CheckboxBase = <T extends ElementType = 'span'>(
             </div>
             {children && (
               <span
-                className={classConfigData.label({ className: labelClassName })}
+                className={classConfigData.label({
+                  className: classNames?.label ?? labelClassName,
+                })}
               >
                 {children}
               </span>

@@ -54,9 +54,7 @@ const InfiniteScroll = (props: InfiniteScrollProps) => {
 
   useEffect(() => {
     const element = elementRef.current;
-    if (element) {
-      setScrollParent(getScrollParent(element));
-    }
+    setScrollParent(getScrollParent(element));
   }, []);
 
   const lockScrollCheckRef = useRef(false);

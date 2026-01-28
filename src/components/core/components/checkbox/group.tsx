@@ -45,11 +45,10 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
       ...formRef,
       focus: () => {
         // 聚焦到第一个 Checkbox 元素
-        const firstCheckbox =
-          checkboxGroupRef.current?.querySelector('[role="checkbox"]');
-        if (firstCheckbox) {
-          (firstCheckbox as HTMLElement).focus();
-        }
+        const firstCheckbox = checkboxGroupRef.current?.querySelector(
+          '[role="checkbox"]',
+        ) as HTMLElement | undefined;
+        firstCheckbox?.focus();
       },
     };
 

@@ -137,6 +137,27 @@ describe('Checkbox', () => {
     expect(container.querySelector('.custom-label')).toBeInTheDocument();
   });
 
+  test('handles custom classNames props as SemanticClassNames', () => {
+    const { container } = render(
+      <Checkbox
+        checked
+        className={{
+          root: 'text-red-100',
+          box: 'text-red-200',
+          check: 'text-red-300',
+          label: 'text-red-400',
+        }}
+      >
+        Custom Classes
+      </Checkbox>,
+    );
+
+    expect(container.querySelector('.text-red-100')).toBeInTheDocument();
+    expect(container.querySelector('.text-red-200')).toBeInTheDocument();
+    expect(container.querySelector('.text-red-300')).toBeInTheDocument();
+    expect(container.querySelector('.text-red-400')).toBeInTheDocument();
+  });
+
   test('handles onChange event', () => {
     const handleChange = vi.fn();
     const { container } = render(

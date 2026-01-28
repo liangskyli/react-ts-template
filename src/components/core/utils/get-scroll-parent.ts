@@ -11,7 +11,7 @@ function isElement(node: Element) {
   return node.nodeType === ELEMENT_NODE_TYPE;
 }
 export function getScrollParent(
-  el: Element,
+  el: Element | null | undefined,
   root: ScrollElement | null | undefined = defaultRoot,
 ): Window | Element | null | undefined {
   let node = el;

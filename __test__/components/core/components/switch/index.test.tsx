@@ -96,7 +96,7 @@ describe('Switch', () => {
   });
 
   test('applies custom class names', () => {
-    const { container } = render(
+    const { container, rerender } = render(
       <Switch
         className="test-class"
         trackClassName="test-track"
@@ -108,8 +108,22 @@ describe('Switch', () => {
     expect(screen.getByRole('switch')).toHaveClass('test-track');
 
     // Find the thumb element
-    const thumbElement = container.querySelector('.test-thumb');
-    expect(thumbElement).toBeInTheDocument();
+    expect(container.querySelector('.test-thumb')).toBeInTheDocument();
+
+    rerender(
+      <Switch
+        className={{
+          root: 'test-class',
+          track: 'test-track',
+          thumb: 'test-thumb',
+        }}
+      />,
+    );
+    expect(container.firstChild).toHaveClass('test-class');
+    expect(screen.getByRole('switch')).toHaveClass('test-track');
+
+    // Find the thumb element
+    expect(container.querySelector('.test-thumb')).toBeInTheDocument();
   });
 
   test('applies custom text class names', () => {

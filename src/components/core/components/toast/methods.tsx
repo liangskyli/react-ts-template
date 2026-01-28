@@ -2,9 +2,11 @@ import type { ReactNode } from 'react';
 import { createImperative } from '@/components/core/components/popup/imperative.tsx';
 import Popup, {
   type PopupProps,
+  type SemanticClassNames,
 } from '@/components/core/components/popup/popup.tsx';
 import type { ToastVariants } from '@/components/core/components/toast/class-config.ts';
 import classConfig from '@/components/core/components/toast/class-config.ts';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 import type { GetContainer } from '@/components/core/utils/render-to-container.ts';
 
 const classConfigData = classConfig();
@@ -82,6 +84,7 @@ const show = (
     closeOnMaskClick = false,
     position,
   } = config ?? {};
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
 
   // 单例模式
   clear(true);
@@ -101,15 +104,17 @@ const show = (
     position: 'none',
     // 强制关闭时销毁内容
     destroyOnClose: true,
-    maskClassName: classConfigData.mask({
-      maskClickable,
-      className: maskClassName,
-    }),
-    className: classConfigData.toast({ className }),
-    bodyClassName: classConfigData.body({
-      position: toastPosition,
-      className: bodyClassName,
-    }),
+    className: {
+      root: classConfigData.toast({ className: classNames?.root }),
+      mask: classConfigData.mask({
+        maskClickable,
+        className: classNames?.mask ?? maskClassName,
+      }),
+      body: classConfigData.body({
+        position: toastPosition,
+        className: classNames?.body ?? bodyClassName,
+      }),
+    },
     getContainer,
     disableBodyScroll,
     closeOnMaskClick,

@@ -6,10 +6,20 @@ import Mask from '@/components/core/components/mask';
 import type { PopupVariants } from '@/components/core/components/popup/class-config.ts';
 import classConfig from '@/components/core/components/popup/class-config.ts';
 import { generateTimeoutFunction } from '@/components/core/components/popup/imperative.tsx';
+import { getSemanticClassNames } from '@/components/core/utils/get-semantic-class-names.ts';
 import type { GetContainer } from '@/components/core/utils/render-to-container.ts';
 import { renderToContainer } from '@/components/core/utils/render-to-container.ts';
 
 export type Position = 'bottom' | 'top' | 'left' | 'right' | 'center' | 'none';
+
+export type SemanticClassNames = {
+  /** 容器类名 */
+  root?: string;
+  /** 遮罩类名 */
+  mask?: string;
+  /** 内容区域类名 */
+  body?: string;
+};
 
 export type PopupProps = {
   /** 是否可见 */
@@ -18,8 +28,8 @@ export type PopupProps = {
   children?: ReactNode;
   /** 遮罩类名 */
   maskClassName?: string;
-  /** 容器类名 */
-  className?: string;
+  /** 容器类名 或 语义化的类名 */
+  className?: string | SemanticClassNames;
   /** 内容区域类名 */
   bodyClassName?: string;
   /** 点击蒙层是否关闭 */
@@ -69,6 +79,7 @@ const Popup = (props: PopupProps) => {
     duration = 0,
     popupId: defaultPopupId,
   } = props;
+  const classNames = getSemanticClassNames<SemanticClassNames>(className);
   const [popupId] = useState(
     () =>
       defaultPopupId ??
@@ -103,11 +114,11 @@ const Popup = (props: PopupProps) => {
   const node = (
     <div
       data-testid="popup"
-      className={popupBase({ className })}
+      className={popupBase({ className: classNames?.root })}
       data-popup-id={popupId}
     >
       <Mask
-        className={mask({ className: maskClassName })}
+        className={mask({ className: classNames?.mask ?? maskClassName })}
         visible={visible}
         onMaskClick={closeOnMaskClick ? onClose : undefined}
         disableBodyScroll={disableBodyScroll}
@@ -134,7 +145,10 @@ const Popup = (props: PopupProps) => {
         }}
       >
         <div
-          className={body({ position, className: bodyClassName })}
+          className={body({
+            position,
+            className: classNames?.body ?? bodyClassName,
+          })}
           style={{
             pointerEvents: isContentTransitionFinish ? 'auto' : 'none',
           }}

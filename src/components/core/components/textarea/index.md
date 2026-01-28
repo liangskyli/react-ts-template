@@ -91,21 +91,29 @@ export default () => (
 
 ## API
 
-| 属性                  | 说明         | 类型                                                  | 默认值     |
-|---------------------|------------|-----------------------------------------------------|---------|
-| `value`             | 输入框的值      | `string`                                            | -       |
-| `defaultValue`      | 输入框默认值     | `string`                                            | -       |
-| `disabled`          | 是否禁用       | `boolean`                                           | `false` |
-| `readOnly`          | 是否只读       | `boolean`                                           | `false` |
-| `maxLength`         | 最大长度       | `number`                                            | -       |
-| `showCount`         | 是否显示字数统计   | `boolean`                                           | `false` |
-| `autoSize`          | 自动高度       | `boolean \| { minRows?: number; maxRows?: number }` | `false` |
-| `className`         | 自定义类名      | `string`                                            | -       |
-| `textareaClassName` | 输入框类名      | `string`                                            | -       |
-| `countClassName`    | 字数统计类名     | `string`                                            | -       |
-| `onChange`          | 值变化时的回调函数  | `(value: string) => void`                           | -       |
+| 属性                  | 说明             | 类型                                                  | 默认值     |
+|---------------------|----------------|-----------------------------------------------------|---------|
+| `value`             | 输入框的值          | `string`                                            | -       |
+| `defaultValue`      | 输入框默认值         | `string`                                            | -       |
+| `disabled`          | 是否禁用           | `boolean`                                           | `false` |
+| `readOnly`          | 是否只读           | `boolean`                                           | `false` |
+| `maxLength`         | 最大长度           | `number`                                            | -       |
+| `showCount`         | 是否显示字数统计       | `boolean`                                           | `false` |
+| `autoSize`          | 自动高度           | `boolean \| { minRows?: number; maxRows?: number }` | `false` |
+| `className`         | 自定义类名 或 语义化的类名 | `string \| SemanticClassNames`                      | -       |
+| `textareaClassName` | 输入框类名          | `string`                                            | -       |
+| `countClassName`    | 字数统计类名         | `string`                                            | -       |
+| `onChange`          | 值变化时的回调函数      | `(value: string) => void`                           | -       |
 
 此外，组件还支持所有原生 textarea 元素的属性（如 `rows`、`cols` 等）。
+
+### SemanticClassNames Props
+
+| 属性         | 说明     | 类型       | 默认值 |
+|------------|--------|----------|-----|
+| `root`     | 自定义类名  | `string` | -   |
+| `textarea` | 输入框类名  | `string` | -   |
+| `count`    | 字数统计类名 | `string` | -   |
 
 ## 样式定制
 

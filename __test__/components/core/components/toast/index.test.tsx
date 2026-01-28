@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SemanticClassNames } from '@/components/core/components/popup/popup.tsx';
 import Toast from '@/components/core/components/toast';
 
 // Mock Popup组件
@@ -12,9 +13,7 @@ vi.mock('@/components/core/components/popup/popup.tsx', () => {
     onClose,
     destroyOnClose,
     duration = 0,
-    bodyClassName,
     className,
-    maskClassName,
   }: {
     visible: boolean;
     children: React.ReactNode;
@@ -22,9 +21,7 @@ vi.mock('@/components/core/components/popup/popup.tsx', () => {
     onClose?: () => void;
     destroyOnClose?: boolean;
     duration?: number;
-    bodyClassName?: string;
-    className?: string;
-    maskClassName?: string;
+    className?: SemanticClassNames;
   }) => {
     const [shouldRender, setShouldRender] = React.useState(visible);
 
@@ -58,9 +55,9 @@ vi.mock('@/components/core/components/popup/popup.tsx', () => {
     }
 
     return visible ? (
-      <div data-testid="popup" className={className}>
-        <div data-testid="mask" className={maskClassName} />
-        <div data-testid="body" className={bodyClassName}>
+      <div data-testid="popup" className={className?.root}>
+        <div data-testid="mask" className={className?.mask} />
+        <div data-testid="body" className={className?.body}>
           {children}
         </div>
       </div>

@@ -135,16 +135,24 @@ Toast.clear()
 
 ### Options
 
-| 参数             | 说明                       | 类型                                   | 默认值             |
-|----------------|--------------------------|--------------------------------------|-----------------|
-| duration       | 提示持续时间（毫秒），设置为 0 则不会自动关闭 | `number`                             | `3000`          |
-| position       | 提示显示位置                   | `'top' \| 'bottom' \| 'center'`      | `'center'`      |
-| afterClose     | 完全关闭后的回调函数               | `() => void`                         | -               |
-| maskClickable  | 是否允许背景点击                 | `boolean`                            | `false`         |
-| getContainer   | 自定义轻提示的挂载节点              | `HTMLElement \| (() => HTMLElement)` | `document.body` |
-| maskClassName  | 遮罩类名                     | `string`                             | -               |
-| className      | 容器类名                     | `string`                             | -               |
-| bodyClassName  | 内容区域类名                   | `string`                             | -               |
+| 参数            | 说明                       | 类型                                   | 默认值             |
+|---------------|--------------------------|--------------------------------------|-----------------|
+| duration      | 提示持续时间（毫秒），设置为 0 则不会自动关闭 | `number`                             | `3000`          |
+| position      | 提示显示位置                   | `'top' \| 'bottom' \| 'center'`      | `'center'`      |
+| afterClose    | 完全关闭后的回调函数               | `() => void`                         | -               |
+| maskClickable | 是否允许背景点击                 | `boolean`                            | `false`         |
+| getContainer  | 自定义轻提示的挂载节点              | `HTMLElement \| (() => HTMLElement)` | `document.body` |
+| className     | 容器类名                     | `string \| SemanticClassNames`       | -               |
+| bodyClassName | 内容区域类名                   | `string`                             | -               |
+| maskClassName | 遮罩类名                     | `string`                             | -               |
+
+### SemanticClassNames Props
+
+| 属性   | 说明      | 类型       | 默认值 |
+|------|---------|----------|-----|
+| `root` | 容器类名    | `string` | -   |
+| `mask` | 遮罩类名    | `string` | -   |
+| `body` | 内容区域类名  | `string` | -   |
 
 ## 注意事项
 

@@ -121,19 +121,29 @@ export default () => (
 
 SearchBar组件继承了Input组件的所有属性，并添加了以下特有属性：
 
-| 属性                     | 说明                  | 类型                        | 默认值              |
-|------------------------|---------------------|---------------------------|------------------|
-| `showSearchIcon`       | 是否显示搜索图标            | `boolean`                 | `true`           |
-| `searchIcon`           | 自定义搜索图标             | `ReactNode`               | `<SearchIcon />` |
-| `showClearButton`      | 是否显示清除按钮            | `boolean`                 | `true`           |
-| `clearIcon`            | 自定义清除图标             | `ReactNode`               | `<ClearIcon />`  |
-| `className`            | 自定义容器类名             | `string`                  | -                |
-| `inputClassName`       | Input组件的类名          | `string`                  | -                |
-| `searchClassName`      | 搜索框的类名              | `string`                  | -                |
-| `searchIconClassName`  | 搜索图标类名              | `string`                  | -                |
-| `clearButtonClassName` | 清除按钮类名              | `string`                  | -                |
-| `onSearch`             | 搜索时的回调函数（按Enter键触发） | `(value: string) => void` |
-| `onClear`              | 清除时的回调函数            | `() => void`              |
+| 属性                     | 说明                  | 类型                                  | 默认值              |
+|------------------------|---------------------|-------------------------------------|------------------|
+| `showSearchIcon`       | 是否显示搜索图标            | `boolean`                           | `true`           |
+| `searchIcon`           | 自定义搜索图标             | `ReactNode`                         | `<SearchIcon />` |
+| `showClearButton`      | 是否显示清除按钮            | `boolean`                           | `true`           |
+| `clearIcon`            | 自定义清除图标             | `ReactNode`                         | `<ClearIcon />`  |
+| `className`            | 自定义容器类名 或 语义化的类名   | `string \| SemanticClassNames`      | -                |
+| `inputClassName`       | Input组件的类名          | `string`                            | -                |
+| `searchClassName`      | 搜索框的类名              | `string`                            | -                |
+| `searchIconClassName`  | 搜索图标类名              | `string`                            | -                |
+| `clearButtonClassName` | 清除按钮类名              | `string`                            | -                |
+| `onSearch`             | 搜索时的回调函数（按Enter键触发） | `(value: string) => void`           | -                |
+| `onClear`              | 清除时的回调函数            | `() => void`                        | -                |
+
+### SemanticClassNames Props
+
+| 属性            | 说明        | 类型       | 默认值 |
+|---------------|-----------|----------|-----|
+| `root`        | 自定义容器类名   | `string` | -   |
+| `input`       | Input组件的类名 | `string` | -   |
+| `search`      | 搜索框的类名    | `string` | -   |
+| `searchIcon`  | 搜索图标类名    | `string` | -   |
+| `clearButton` | 清除按钮类名    | `string` | -   |
 
 ### 继承的Input属性
 

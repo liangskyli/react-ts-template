@@ -122,7 +122,7 @@ vi.mock('react-virtualized', () => {
 
 describe('List Component', () => {
   it('renders basic list correctly', () => {
-    render(
+    const { rerender } = render(
       <List>
         <List.Item title="Item 1" description="Description 1" />
         <List.Item title="Item 2" description="Description 2" />
@@ -133,6 +133,22 @@ describe('List Component', () => {
     expect(screen.getByText('Description 1')).toBeInTheDocument();
     expect(screen.getByText('Item 2')).toBeInTheDocument();
     expect(screen.getByText('Description 2')).toBeInTheDocument();
+
+    // 验证列表没有被渲染
+    rerender(
+      <List>
+        {(listData) => {
+          return listData.map((item: any) => (
+            <List.Item
+              key={item.id}
+              title={item.title}
+              description={item.description}
+            />
+          ));
+        }}
+      </List>,
+    );
+    expect(screen.getByRole('list').innerHTML).toBe('');
   });
 
   it('renders list with custom className', () => {

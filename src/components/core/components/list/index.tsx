@@ -99,11 +99,9 @@ const List = <T = unknown,>(props: ListProps<T>) => {
   let childrenArray: React.ReactNode[] = [];
   if (!virtualScroll) {
     if (typeof children === 'function') {
-      if (list) {
-        const childrenNode = children(list);
-        // 将children转换为数组，以便在rowRenderer中使用
-        childrenArray = flattenChildren(childrenNode);
-      }
+      const childrenNode = children(list ?? []);
+      // 将children转换为数组，以便在rowRenderer中使用
+      childrenArray = flattenChildren(childrenNode);
     } else {
       childrenArray = flattenChildren(children);
     }
