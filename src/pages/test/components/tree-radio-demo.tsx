@@ -1,78 +1,75 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Tree from '@/components/core/components/tree';
 import type { TreeNode } from '@/components/core/components/tree';
 
 const TreeRadioDemo = () => {
   // 基础树形数据
-  const basicTreeData: TreeNode[] = useMemo(
-    () => [
-      {
-        key: '1',
-        title: '父节点1',
-        children: [
-          {
-            key: '1-1',
-            title: '子节点1-1',
-          },
-          {
-            key: '1-2',
-            title: '子节点1-2',
-            children: [
-              {
-                key: '1-2-1',
-                title: '子节点1-2-1',
-              },
-              {
-                key: '1-2-2',
-                title: '子节点1-2-2',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        key: '2',
-        title: '父节点2',
-        children: [
-          {
-            key: '2-1',
-            title: '子节点2-1',
-          },
-          {
-            key: '2-2',
-            title: '子节点2-2',
-            disabled: true,
-          },
-          {
-            key: '2-3',
-            title: '子节点2-3',
-            selectable: false,
-          },
-        ],
-      },
-      {
-        key: '3',
-        title: '叶子节点3',
-        selectable: false,
-      },
-      {
-        key: '4',
-        title: '父节点4',
-        selectable: false,
-        children: [
-          {
-            key: '4-1',
-            title: '子节点4-1',
-          },
-          {
-            key: '4-2',
-            title: '子节点4-2',
-          },
-        ],
-      },
-    ],
-    [],
-  );
+  const basicTreeData: TreeNode[] = [
+    {
+      key: '1',
+      title: '父节点1',
+      children: [
+        {
+          key: '1-1',
+          title: '子节点1-1',
+        },
+        {
+          key: '1-2',
+          title: '子节点1-2',
+          children: [
+            {
+              key: '1-2-1',
+              title: '子节点1-2-1',
+            },
+            {
+              key: '1-2-2',
+              title: '子节点1-2-2',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      key: '2',
+      title: '父节点2',
+      children: [
+        {
+          key: '2-1',
+          title: '子节点2-1',
+        },
+        {
+          key: '2-2',
+          title: '子节点2-2',
+          disabled: true,
+        },
+        {
+          key: '2-3',
+          title: '子节点2-3',
+          selectable: false,
+        },
+      ],
+    },
+    {
+      key: '3',
+      title: '叶子节点3',
+      selectable: false,
+    },
+    {
+      key: '4',
+      title: '父节点4',
+      selectable: false,
+      children: [
+        {
+          key: '4-1',
+          title: '子节点4-1',
+        },
+        {
+          key: '4-2',
+          title: '子节点4-2',
+        },
+      ],
+    },
+  ];
 
   // 大量数据生成函数
   const generateLargeTreeData = (level = 0, parentKey = ''): TreeNode[] => {
@@ -88,11 +85,7 @@ const TreeRadioDemo = () => {
     });
   };
 
-  const largeTreeData = useMemo(
-    () => generateLargeTreeData(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const largeTreeData = generateLargeTreeData();
 
   // 受控模式状态
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['1']);

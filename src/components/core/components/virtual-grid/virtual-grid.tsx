@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -176,21 +175,15 @@ const VirtualGrid = (props: VirtualGridProps) => {
   const fixedWidth = props.fixedWidth ?? isOneColumn;
 
   // 计算初始滚动位置
-  const initialScrollToRow = useMemo(
-    () =>
-      scrollToRow - fixedTopRowCount < 0
-        ? undefined
-        : scrollToRow - fixedTopRowCount,
-    [fixedTopRowCount, scrollToRow],
-  );
+  const initialScrollToRow =
+    scrollToRow - fixedTopRowCount < 0
+      ? undefined
+      : scrollToRow - fixedTopRowCount;
 
-  const initialScrollToColumn = useMemo(
-    () =>
-      scrollToColumn - fixedLeftColumnCount < 0
-        ? undefined
-        : scrollToColumn - fixedLeftColumnCount,
-    [fixedLeftColumnCount, scrollToColumn],
-  );
+  const initialScrollToColumn =
+    scrollToColumn - fixedLeftColumnCount < 0
+      ? undefined
+      : scrollToColumn - fixedLeftColumnCount;
 
   // 使用 state 管理滚动位置，因为它会在用户交互时被重置
   const [centerBodyScrollToRow, setCenterBodyScrollToRow] = useState<
@@ -233,12 +226,10 @@ const VirtualGrid = (props: VirtualGridProps) => {
   });
 
   // 中间区域的列数
-  const centerColumnCount = useMemo(() => {
-    return Math.max(
-      0,
-      columnCount - fixedLeftColumnCount - fixedRightColumnCount,
-    );
-  }, [columnCount, fixedLeftColumnCount, fixedRightColumnCount]);
+  const centerColumnCount = Math.max(
+    0,
+    columnCount - fixedLeftColumnCount - fixedRightColumnCount,
+  );
 
   // 创建缓存对象
   const gridCache = useRef(

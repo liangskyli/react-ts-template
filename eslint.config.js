@@ -26,7 +26,9 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      // 使用 React Hooks 的最新推荐规则，包含 React Compiler 的 ESLint 规则
+      ...(reactHooks.configs['recommended-latest'].rules ||
+        reactHooks.configs.recommended.rules),
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

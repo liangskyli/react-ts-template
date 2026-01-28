@@ -1,5 +1,5 @@
 import legacy from '@vitejs/plugin-legacy';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import type { UserConfig, UserConfigFnObject } from 'vite';
@@ -31,7 +31,20 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
   return {
     base: routerBase,
     plugins: [
-      react(),
+      // React Compiler - 自动处理记忆化，无需手动使用 useMemo/useCallback
+      react({
+        babel: {
+          plugins: [
+            [
+              'babel-plugin-react-compiler',
+              {
+                // React Compiler 配置
+                // target: '19' 是默认值，支持 React 19 的所有特性
+              },
+            ],
+          ],
+        },
+      }),
       svgr(),
       // 在浏览器中直接看到上报的类型错误（更严格的类型校验）
       checker({

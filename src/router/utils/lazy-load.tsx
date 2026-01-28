@@ -1,3 +1,5 @@
+'use no memo';
+
 import type { FC, ReactNode } from 'react';
 import { Suspense } from 'react';
 import Loading from '@/components/core/components/loading';
