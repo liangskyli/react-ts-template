@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import { useEffectEvent } from 'react';
 import { useEffect } from 'react';
 import { getComponentClassConfig } from '@/components/core/class-config';
 import { getScrollParent } from './get-scroll-parent.ts';
@@ -78,7 +79,7 @@ export function useLockScroll(
     }
   };
 
-  const lock = () => {
+  const lock = useEffectEvent(() => {
     document.addEventListener('touchstart', touch.start);
     document.addEventListener(
       'touchmove',
@@ -91,9 +92,9 @@ export function useLockScroll(
     }
 
     totalLockCount++;
-  };
+  });
 
-  const unlock = () => {
+  const unlock = useEffectEvent(() => {
     if (totalLockCount) {
       document.removeEventListener('touchstart', touch.start);
       document.removeEventListener('touchmove', onTouchMove);
@@ -104,7 +105,7 @@ export function useLockScroll(
         document.body.classList.remove(BODY_LOCK_CLASS);
       }
     }
-  };
+  });
 
   useEffect(() => {
     if (shouldLock) {
@@ -113,6 +114,5 @@ export function useLockScroll(
         unlock();
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldLock]);
 }
