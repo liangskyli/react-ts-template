@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useNavigationType } from 'react-router';
 import { useCreateLRUCache } from '@/components/core/components/cache/use-lru-cache.ts';
 import List, { type ListProps } from '@/components/core/components/list';
@@ -48,7 +48,7 @@ const InfiniteScrollList = () => {
   };
   const listRef: ListProps['ref'] = useRef(null);
 
-  useEffect(() => {
+  const initData = useEffectEvent(() => {
     let hasInfiniteScrollCache = false;
     if (getNavigationType === 'POP') {
       // 后退
@@ -68,7 +68,9 @@ const InfiniteScrollList = () => {
         setInfiniteScrollListData(res);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  useEffect(() => {
+    initData();
   }, []);
 
   return (
@@ -81,7 +83,10 @@ const InfiniteScrollList = () => {
           hasMore: hasListPageMore,
         }}
         getPositionCache={(cache) => {
-          if (infiniteScrollListData!.list.length > 0) {
+          if (
+            infiniteScrollListData &&
+            infiniteScrollListData.list.length > 0
+          ) {
             infiniteScrollCache.set('infiniteScrollCache', {
               data: infiniteScrollListData!,
               scrollTop: cache.scrollTop,

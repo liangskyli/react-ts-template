@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useCreateLRUCache } from '@/components/core/components/cache';
 import type {
   VirtualGridProps,
@@ -38,13 +38,14 @@ const MultiGridDemo2 = () => {
   const [virtualGridCacheValue, setVirtualGridCacheValue] =
     useState<Parameters<Required<VirtualGridProps>['getPositionCache']>[0]>();
 
-  useEffect(() => {
+  const cacheInit = useEffectEvent(() => {
     const cachedValue = virtualGridCache.get('virtualGridCache');
     if (cachedValue) {
       setVirtualGridCacheValue(cachedValue);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  useEffect(() => {
+    cacheInit();
   }, []);
 
   const goToGridPosition = () => {

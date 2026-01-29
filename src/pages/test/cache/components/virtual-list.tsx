@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useNavigationType } from 'react-router';
 import { useCreateLRUCache } from '@/components/core/components/cache/use-lru-cache.ts';
 import type { ListProps } from '@/components/core/components/list';
@@ -27,20 +27,21 @@ const VirtualList = () => {
     string,
     Parameters<Required<ListProps>['getPositionCache']>[0]
   >('list');
-
+  const cacheInit = useEffectEvent(() => {
+    if (getNavigationType === 'POP') {
+      const cachedValue = virtualListCache.get('virtualListCache');
+      if (cachedValue && cachedValue.stopIndex) {
+        listRef.current?.virtualScrollToIndex(cachedValue.stopIndex);
+      }
+    } else {
+      virtualListCache.delete('virtualListCache');
+    }
+  });
   useEffect(() => {
     initRequest().then((res) => {
       setVirtualListData(res);
-      if (getNavigationType === 'POP') {
-        const cachedValue = virtualListCache.get('virtualListCache');
-        if (cachedValue && cachedValue.stopIndex) {
-          listRef.current?.virtualScrollToIndex(cachedValue.stopIndex);
-        }
-      } else {
-        virtualListCache.delete('virtualListCache');
-      }
+      cacheInit();
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

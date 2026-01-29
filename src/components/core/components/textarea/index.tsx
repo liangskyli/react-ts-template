@@ -1,5 +1,5 @@
 import type { Ref } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { Textarea as HeadlessTextarea } from '@headlessui/react';
 import type { TextareaProps as HeadlessTextareaProps } from '@headlessui/react';
 import type { TextAreaVariants } from '@/components/core/components/textarea/class-config.ts';
@@ -68,20 +68,17 @@ function TextArea(props: TextAreaProps) {
     }
   };
 
+  const updateInnerValue = useEffectEvent((newValue: string) => {
+    setInnerValue(newValue);
+  });
+
   useEffect(() => {
     if (value !== undefined) {
-      setInnerValue(value);
+      updateInnerValue(value);
     }
   }, [value]);
 
-  useEffect(() => {
-    if (autoSize) {
-      adjustHeight();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [innerValue, autoSize]);
-
-  const adjustHeight = () => {
+  const adjustHeight = useEffectEvent(() => {
     const textarea = textareaRef.current!;
 
     // 重置高度以便正确计算scrollHeight
@@ -125,7 +122,13 @@ function TextArea(props: TextAreaProps) {
 
     // 设置实际高度为内容高度
     textarea.style.height = `${textarea.scrollHeight}px`;
-  };
+  });
+
+  useEffect(() => {
+    if (autoSize) {
+      adjustHeight();
+    }
+  }, [innerValue, autoSize]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;

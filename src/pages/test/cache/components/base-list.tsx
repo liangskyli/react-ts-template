@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useNavigationType } from 'react-router';
 import { useCreateLRUCache } from '@/components/core/components/cache/use-lru-cache.ts';
 import type { ListProps } from '@/components/core/components/list';
@@ -27,19 +27,21 @@ const BaseList = () => {
     'list',
   );
 
+  const cacheInit = useEffectEvent(() => {
+    if (getNavigationType === 'POP') {
+      const cachedValue = baseListCache.get('baseListCache');
+      if (cachedValue) {
+        listRef.current?.scrollToPosition(cachedValue.scrollTop);
+      }
+    } else {
+      baseListCache.delete('baseListCache');
+    }
+  });
   useEffect(() => {
     initRequest().then((res) => {
       setBaseListData(res);
-      if (getNavigationType === 'POP') {
-        const cachedValue = baseListCache.get('baseListCache');
-        if (cachedValue) {
-          listRef.current?.scrollToPosition(cachedValue.scrollTop);
-        }
-      } else {
-        baseListCache.delete('baseListCache');
-      }
+      cacheInit();
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
