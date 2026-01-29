@@ -17,7 +17,7 @@ const routes: ExtendRouteObjectWith[] = [
       },
       {
         path: '/index',
-        element: LazyLoad(lazy(() => import('@/pages/index'))),
+        element: <LazyLoad component={lazy(() => import('@/pages/index'))} />,
         title: 'index',
       },
       ...testRoutes,
@@ -25,7 +25,7 @@ const routes: ExtendRouteObjectWith[] = [
   },
   {
     path: '*',
-    element: LazyLoad(lazy(() => import('@/pages/404.tsx'))),
+    element: <LazyLoad component={lazy(() => import('@/pages/404.tsx'))} />,
     title: '404',
   },
 ];

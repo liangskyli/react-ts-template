@@ -10,27 +10,39 @@ const testRoutes: ExtendRouteObjectWith[] = [
     children: [
       {
         path: '/test/test1',
-        element: LazyLoad(lazy(() => import('@/pages/test/test1'))),
+        element: (
+          <LazyLoad component={lazy(() => import('@/pages/test/test1'))} />
+        ),
         title: 'test/test1',
       },
       {
         path: '/test/ui',
-        element: LazyLoad(lazy(() => import('@/pages/test/ui'))),
+        element: <LazyLoad component={lazy(() => import('@/pages/test/ui'))} />,
         title: 'ui',
       },
       {
         path: '/test/cache',
-        element: LazyLoad(lazy(() => import('@/pages/test/cache'))),
+        element: (
+          <LazyLoad component={lazy(() => import('@/pages/test/cache'))} />
+        ),
         title: 'cache',
       },
       {
         path: '/test/cache2',
-        element: LazyLoad(lazy(() => import('@/pages/test/cache/index2.tsx'))),
+        element: (
+          <LazyLoad
+            component={lazy(() => import('@/pages/test/cache/index2.tsx'))}
+          />
+        ),
         title: 'cache',
       },
       {
         path: '/test/cache3',
-        element: LazyLoad(lazy(() => import('@/pages/test/cache/index3.tsx'))),
+        element: (
+          <LazyLoad
+            component={lazy(() => import('@/pages/test/cache/index3.tsx'))}
+          />
+        ),
         title: 'cache',
       },
     ],
