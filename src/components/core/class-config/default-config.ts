@@ -623,5 +623,16 @@ const defaultConfig = getTwConfig({
       page: 'after:shadow-[2px_2px_8px_0px_rgba(0,0,0,0.2)] after:absolute after:inset-[10px]',
     },
   }),
+  pdfViewer: tv({
+    slots: {
+      loadingText: 'text-center',
+      documentWrap: 'flex h-full flex-col',
+      viewport: 'flex bg-gray-100',
+      toolBarWrap:
+        'flex justify-end items-center border-b border-gray-200 bg-gray-100',
+      toolBarZoomButton: 'p-2 data-[disabled]:text-gray-400 focus:outline-none',
+      toolBarResetZoomButton: 'w-12 py-1 text-sm focus:outline-none',
+    },
+  }),
 });
 export { defaultConfig };

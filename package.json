@@ -45,6 +45,13 @@
     "update:deps": "pnpm update --interactive --latest"
   },
   "dependencies": {
+    "@embedpdf/core": "^2.8.0",
+    "@embedpdf/engines": "^2.8.0",
+    "@embedpdf/plugin-document-manager": "^2.8.0",
+    "@embedpdf/plugin-render": "^2.8.0",
+    "@embedpdf/plugin-scroll": "^2.8.0",
+    "@embedpdf/plugin-viewport": "^2.8.0",
+    "@embedpdf/plugin-zoom": "^2.8.0",
     "@floating-ui/react": "^0.27.16",
     "@headlessui/react": "^2.2.9",
     "@liangskyli/axios-request": "^0.2.2",
