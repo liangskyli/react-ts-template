@@ -7,5 +7,4 @@ import * as methods from './methods.tsx';
 
 export type { PopupProps, Position };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export default Object.assign(Popup, methods);
