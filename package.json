@@ -37,6 +37,7 @@
     "mock-gen": "pnpm http-mock-gen -c mock-gen.config.ts",
     "prepare": "husky",
     "preview:dev": "pnpm vite preview -m dev",
+    "preview:dev-mock": "pnpm vite preview -m dev-mock",
     "preview:pro": "pnpm vite preview -m pro",
     "preview:test": "pnpm vite preview -m test",
     "test": "vitest run",
