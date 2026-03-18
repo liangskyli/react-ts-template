@@ -1,9 +1,10 @@
+import babel from '@rolldown/plugin-babel';
 import legacy from '@vitejs/plugin-legacy';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import type { UserConfig, UserConfigFnObject } from 'vite';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, withFilter } from 'vite';
 import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 
@@ -32,20 +33,12 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
     base: routerBase,
     plugins: [
       // React Compiler - 自动处理记忆化，无需手动使用 useMemo/useCallback
-      react({
-        babel: {
-          plugins: [
-            [
-              'babel-plugin-react-compiler',
-              {
-                // React Compiler 配置
-                // target: '19' 是默认值，支持 React 19 的所有特性
-              },
-            ],
-          ],
-        },
+      react(),
+      babel({
+        presets: [reactCompilerPreset()],
       }),
-      svgr(),
+      // 仅对以 `.svg?react` 结尾的文件加载 `svgr` 插件
+      withFilter(svgr(), { load: { id: /\.svg\?react$/ } }),
       // 在浏览器中直接看到上报的类型错误（更严格的类型校验）
       checker({
         typescript: true,
@@ -79,7 +72,7 @@ export const getViteConfig: UserConfigFnObject = ({ mode }) => {
       // 单个 chunk 文件的大小超过 2000kB 时发出警告（默认：超过500kb警告）
       chunkSizeWarningLimit: 2000,
       manifest: true,
-      rollupOptions: {
+      rolldownOptions: {
         // 分包
         output: {
           chunkFileNames: 'assets/js/[name]-[hash].js', // chunk包输出的文件夹名称

@@ -5,6 +5,7 @@ const svgModules = import.meta.glob<
   string,
   undefined | FC<SVGAttributes<SVGSVGElement>>
 >('@/icons/**/*.svg', {
+  // use vite-plugin-svgr
   query: '?react',
   eager: true,
   import: 'default',

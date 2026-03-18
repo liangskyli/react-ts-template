@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-%2361DAFB?logo=react" alt="React Version"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-%23007ACC?logo=typescript" alt="TypeScript Version"></a>
-  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7-%23646CFF?logo=vite" alt="Vite Version"></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-8-%23646CFF?logo=vite" alt="Vite Version"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%3E%3D20.19.0-brightgreen?logo=node.js" alt="Node Version"></a>
   <a href="https://github.com/liangskyli/react-ts-template/blob/main/LICENSE"><img src="https://img.shields.io/github/license/liangskyli/react-ts-template" alt="License"></a>
 </p>
