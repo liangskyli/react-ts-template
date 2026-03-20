@@ -55,7 +55,7 @@
     "@embedpdf/plugin-zoom": "^2.9.0",
     "@floating-ui/react": "^0.27.19",
     "@headlessui/react": "^2.2.9",
-    "@liangskyli/axios-request": "^0.2.2",
+    "@liangskyli/axios-request": "^0.4.0",
     "axios": "^1.13.6",
     "immer": "^11.1.4",
     "lru-cache": "^11.2.7",

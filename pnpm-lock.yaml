@@ -36,8 +36,8 @@ importers:
         specifier: ^2.2.9
         version: 2.2.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@liangskyli/axios-request':
-        specifier: ^0.2.2
-        version: 0.2.2(axios@1.13.6)
+        specifier: ^0.4.0
+        version: 0.4.0(axios@1.13.6)
       axios:
         specifier: ^1.13.6
         version: 1.13.6
@@ -1573,8 +1573,8 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@liangskyli/axios-request@0.2.2':
-    resolution: {integrity: sha512-uNLz4takcgrbF2FXu4rH2fffHbw0B6A3E4XOGRbbOv3Fk0fhkzl1pwfR82QdrlwyI7AkH8E7sDDmaon1s+ZTSg==}
+  '@liangskyli/axios-request@0.4.0':
+    resolution: {integrity: sha512-2zGBcoyA8NFEot05UpUdm8/kWEUiNHkseTSrcLQEAuQm4zqI1RTJ8phRNWWBHfBveb+8iER1XXd1H5s/8yHLfA==}
     engines: {node: '>=16.8.0'}
     peerDependencies:
       axios: '>=0.24.0'
@@ -1599,8 +1599,8 @@ packages:
       axios:
         optional: true
 
-  '@liangskyli/request@0.2.2':
-    resolution: {integrity: sha512-ck1sIIzgEXYoBMpkkOfW20fc/o7IHzF6OLEwESBTGCReeq1k7947bd3gJc7AJevaDBemVrXTyuHagORDdPJa6A==}
+  '@liangskyli/request@0.4.0':
+    resolution: {integrity: sha512-0zubKSTbOCAf2jwMlcdqh3CT8PxPfR52yy6ntdrf3A/EuFBHOBUnCzah6isotP9nIbjRBvCrtwGHBAoLB7xz4w==}
     engines: {node: '>=16.8.0'}
 
   '@liangskyli/utils@7.0.0':
@@ -7841,9 +7841,9 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@liangskyli/axios-request@0.2.2(axios@1.13.6)':
+  '@liangskyli/axios-request@0.4.0(axios@1.13.6)':
     dependencies:
-      '@liangskyli/request': 0.2.2
+      '@liangskyli/request': 0.4.0
       axios: 1.13.6
 
   '@liangskyli/http-mock-gen@7.0.1(@swc/core@1.15.2(@swc/helpers@0.5.17))(prettier@3.8.1)(typescript@5.9.3)':
@@ -7896,7 +7896,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@liangskyli/request@0.2.2':
+  '@liangskyli/request@0.4.0':
     dependencies:
       deepmerge: 4.3.1
 
@@ -8488,7 +8488,7 @@ snapshots:
 
   '@testing-library/dom@10.4.0':
     dependencies:
-      '@babel/code-frame': 7.28.6
+      '@babel/code-frame': 7.29.0
       '@babel/runtime': 7.28.6
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
